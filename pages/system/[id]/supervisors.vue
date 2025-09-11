@@ -35,7 +35,7 @@
 
                 </div>
 
-                <!-- Pagination -->
+                <!-- Pagination
                 <div v-if="totalPages > 1" class="flex justify-center items-center gap-4">
                     <UButton variant="outline" color="violet" icon="i-heroicons-chevron-left"
                         :disabled="currentPage === 1" @click="currentPage--">
@@ -57,7 +57,7 @@
                         :disabled="currentPage === totalPages" @click="currentPage++">
                         {{ t('next') }}
                     </UButton>
-                </div>
+                </div> -->
 
                 <div class="ml-auto flex gap-4 items-start">
                     <!-- Filter Field and Reset Button (left) -->

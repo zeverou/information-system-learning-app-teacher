@@ -54,7 +54,7 @@
 
                 </div>
 
-                <!-- Pagination -->
+                <!-- Pagination
                 <div v-if="totalPages > 1" class="flex justify-center items-center gap-4">
                     <UButton variant="outline" color="sky" icon="i-heroicons-chevron-left" :disabled="currentPage === 1"
                         @click="currentPage--">
@@ -72,25 +72,14 @@
                                     :componentId="'participants-page-count-1'" class="edit-button" />
                             </div>
                         </div>
-                        <!--
-                        <div class="highlightable" id="participants-page-count-2"
-                            @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('participants-page-count-2', $event)">
-                            <div class="component-wrapper">
-                                <span class="text-xs text-gray-500">
-                                    ({{ filteredParticipants.length }} {{ t('participants') }})
-                                </span>
-                                <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive" :componentId="'participants-page-count-2'"
-                                    class="edit-button" />
-                            </div>
-                        </div>
-                        -->
+
                     </div>
 
                     <UButton variant="outline" color="sky" icon="i-heroicons-chevron-right"
                         :disabled="currentPage === totalPages" @click="currentPage++">
                         {{ t('next') }}
                     </UButton>
-                </div>
+                </div> -->
 
                 <div class="ml-auto flex gap-4 items-start">
                     <!-- Filter Field and Reset Button (left) -->
