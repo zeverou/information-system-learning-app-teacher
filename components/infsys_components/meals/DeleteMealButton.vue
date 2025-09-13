@@ -1,8 +1,13 @@
 <template>
     <!-- Delete meal button -->
-    <UButton size="sm" color="red" variant="outline" @click="deleteMeal">
-        {{ t('delete') }}
-    </UButton>
+    <div class="delete-container">
+        <UButton size="sm" color="red" variant="outline" @click="deleteMeal">
+            {{ t('delete') }}
+        </UButton>
+        <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive" :componentId="componentId"
+            class="edit-button" />
+    </div>
+
 </template>
 
 <script setup lang="ts">
@@ -52,18 +57,18 @@ function deleteMeal() {
         return
     }
     try {
-            const result = system?.db.exec(actualDeleteMealQuery.value, [props.mealId])
-            const result2 = system?.db.exec(actualDeleteAllergensMealsQuery.value, [props.mealId])
-            const result3 = system?.db.exec(actualDeleteMealsParticipantsQuery.value, [props.mealId])
-            const result4 = system?.db.exec(actualDeleteMealsSupervisorsQuery.value, [props.mealId])
-            
-            selectedSystemStore.incrementDbNumber()
-            console.log("SQL: ", actualDeleteMealQuery, "PARAMS: ", [props.mealId])
-            toast.add({
-                title: t('delete_meal_success'),
+        const result = system?.db.exec(actualDeleteMealQuery.value, [props.mealId])
+        const result2 = system?.db.exec(actualDeleteAllergensMealsQuery.value, [props.mealId])
+        const result3 = system?.db.exec(actualDeleteMealsParticipantsQuery.value, [props.mealId])
+        const result4 = system?.db.exec(actualDeleteMealsSupervisorsQuery.value, [props.mealId])
+
+        selectedSystemStore.incrementDbNumber()
+        console.log("SQL: ", actualDeleteMealQuery, "PARAMS: ", [props.mealId])
+        toast.add({
+            title: t('delete_meal_success'),
             color: 'primary',
             icon: 'i-heroicons-check'
-            })
+        })
 
     } catch (error) {
         console.error("Failed to delete meal", error)
@@ -76,3 +81,16 @@ function deleteMeal() {
 }
 
 </script>
+
+<style scoped>
+.delete-container {
+    position: relative;
+    display: inline-block;
+}
+
+.edit-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+</style>

@@ -51,7 +51,7 @@
                             </div>
                             
                             <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive"
-                                :componentId="'meals-list'" class="edit-button" />
+                                :componentId="'meals'" class="edit-button" />
                         </div>
                     </div>
                 </div>
