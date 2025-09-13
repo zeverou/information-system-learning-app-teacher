@@ -264,6 +264,49 @@ navigateTo({
       additionals: {}
     });
 
+    const mealCountBadgeComponent = new Component({
+      id: "meals-count-badge",
+      name: "Meals Count Badge",
+      description: `Badge showing the count of meals, optionally filtered by when_served type.`,
+      html: {
+        "html": `
+        <div class="badge primary large">
+      <span class="icon">🍽️</span>
+      <span>{{ label }}: {{ mealsCount }}</span>
+    </div>
+    ` },
+      css: {
+        "css": `.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .badge.primary {
+    background-color: #f59e0b; /* Orange */
+    color: white;
+  }
+
+  .badge.large {
+    font-size: 1.25rem;
+  }
+
+  .icon {
+    font-size: 1.5rem;
+  }
+` },
+      js: { "js": `` },
+      sql: {
+        "sql-1": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}`,
+        "sql-2": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} WHERE when_served = ?`,
+      },
+      additionals: {}
+    });
+
     const sessionDateRangeComponent = new Component({
       id: "session-date-range",
       name: "Session Date Range",
@@ -1198,71 +1241,7 @@ navigateTo({
     });
 
 
-    // Store the instances into the store
-    componentCodeStore.updateDefaultComponent(statsMealsComponent);
-    componentCodeStore.updateDefaultComponent(statsParticipantsComponent);
-    componentCodeStore.updateDefaultComponent(statsSessionsComponent);
-    componentCodeStore.updateDefaultComponent(statsSupervisorsComponent);
-    componentCodeStore.updateDefaultComponent(participantsCapacityCountComponentAll);
-    componentCodeStore.updateDefaultComponent(tableCountBadgeComponent);
-    componentCodeStore.updateDefaultComponent(sessionDayCountBadgeComponent);
-    componentCodeStore.updateDefaultComponent(sessionDateRangeComponent);
-    componentCodeStore.updateDefaultComponent(sessionCapacitySectionComponent);
-    componentCodeStore.updateDefaultComponent(sessionParticipantsSectionComponent);
-    componentCodeStore.updateDefaultComponent(sessionSupervisorsSectionComponent);
-    componentCodeStore.updateDefaultComponent(sessionDeleteButtonComponent);
-    componentCodeStore.updateDefaultComponent(sessionStatusBadgeComponent);
-    componentCodeStore.updateDefaultComponent(participantsCapacityCountComponent);
-    componentCodeStore.updateDefaultComponent(participantsCapacityPercentageComponent);
-    componentCodeStore.updateDefaultComponent(participantsPageCount1Component);
-    componentCodeStore.updateDefaultComponent(participantsPageCount2Component);
-    componentCodeStore.updateDefaultComponent(participantsFilterResetComponent);
-    componentCodeStore.updateDefaultComponent(participantsFilterInputComponent);
-    componentCodeStore.updateDefaultComponent(participantsAddNameComponent);
-    componentCodeStore.updateDefaultComponent(participantsAddEmailComponent);
-    componentCodeStore.updateDefaultComponent(participantsAddPersonalNumberComponent);
-    componentCodeStore.updateDefaultComponent(participantsAddPhoneComponent);
-    componentCodeStore.updateDefaultComponent(participantsAddAddressComponent);
-    componentCodeStore.updateDefaultComponent(participantsAddAgeComponent);
-    componentCodeStore.updateDefaultComponent(participantsAddSessionComponent);
-    componentCodeStore.updateDefaultComponent(participantsAddAllergensComponent);
-    componentCodeStore.updateDefaultComponent(participantsCardComponent);
-    componentCodeStore.updateDefaultComponent(participantsDeleteButtonComponent);
-    componentCodeStore.updateDefaultComponent(participantsEditNameComponent);
-    componentCodeStore.updateDefaultComponent(participantsEditEmailComponent);
-    componentCodeStore.updateDefaultComponent(participantsEditPersonalNumberComponent);
-    componentCodeStore.updateDefaultComponent(participantsEditPhoneComponent);
-    componentCodeStore.updateDefaultComponent(participantsEditAddressComponent);
-    componentCodeStore.updateDefaultComponent(participantsEditAgeComponent);
-    componentCodeStore.updateDefaultComponent(participantsEditAllergensComponent);
-    componentCodeStore.updateDefaultComponent(participantsEditSessionsComponent);
-    componentCodeStore.updateDefaultComponent(participantsSessionMenuComponent);
-    componentCodeStore.updateDefaultComponent(participantsAllergenOptionsComponent);
-    componentCodeStore.updateDefaultComponent(participantsCountComponent);
-    componentCodeStore.updateDefaultComponent(sessionsCountComponent);
-    componentCodeStore.updateDefaultComponent(participantsSampleComponent);
-    componentCodeStore.updateDefaultComponent(participantsListComponent);
-    componentCodeStore.updateDefaultComponent(participantsAllergensComponent);
-    componentCodeStore.updateDefaultComponent(participantsSessionsComponent);
-    componentCodeStore.updateDefaultComponent(sessionsListComponent);
-    componentCodeStore.updateDefaultComponent(participantInsertComponent);
-    componentCodeStore.updateDefaultComponent(participantGetIdComponent);
-    componentCodeStore.updateDefaultComponent(participantUpdateComponent);
-    componentCodeStore.updateDefaultComponent(participantDeleteComponent);
-    componentCodeStore.updateDefaultComponent(sessionParticipantInsertComponent);
-    componentCodeStore.updateDefaultComponent(sessionParticipantDeleteComponent);
-    componentCodeStore.updateDefaultComponent(participantAllergenIdsComponent);
-    componentCodeStore.updateDefaultComponent(participantAllergenInsertComponent);
-    componentCodeStore.updateDefaultComponent(participantAllergenDeleteComponent);
-    componentCodeStore.updateDefaultComponent(participantAllergenCountComponent);
-    componentCodeStore.updateActualComponent(participantAllergenCountComponent);
-    componentCodeStore.updateDefaultComponent(validationNameComponent);
-    componentCodeStore.updateDefaultComponent(validationEmailComponent);
-    componentCodeStore.updateDefaultComponent(validationPersonalNumberComponent);
-    componentCodeStore.updateDefaultComponent(validationPhoneComponent);
-    componentCodeStore.updateDefaultComponent(validationDateRangeComponent);
-    componentCodeStore.updateActualComponent(sessionParticipantsCountComponent);
-
+    
     // Supervisors page components (mirroring participants)
     const supervisorsCapacityCountComponent = new Component({
       id: "supervisors-capacity-count",
@@ -1665,6 +1644,70 @@ navigateTo({
       },
       additionals: {}
     });
+// Store the instances into the store
+    componentCodeStore.updateDefaultComponent(statsMealsComponent);
+    componentCodeStore.updateDefaultComponent(statsParticipantsComponent);
+    componentCodeStore.updateDefaultComponent(statsSessionsComponent);
+    componentCodeStore.updateDefaultComponent(statsSupervisorsComponent);
+    componentCodeStore.updateDefaultComponent(participantsCapacityCountComponentAll);
+    componentCodeStore.updateDefaultComponent(tableCountBadgeComponent);
+    componentCodeStore.updateDefaultComponent(sessionDayCountBadgeComponent);
+    componentCodeStore.updateDefaultComponent(sessionDateRangeComponent);
+    componentCodeStore.updateDefaultComponent(sessionCapacitySectionComponent);
+    componentCodeStore.updateDefaultComponent(sessionParticipantsSectionComponent);
+    componentCodeStore.updateDefaultComponent(sessionSupervisorsSectionComponent);
+    componentCodeStore.updateDefaultComponent(sessionDeleteButtonComponent);
+    componentCodeStore.updateDefaultComponent(sessionStatusBadgeComponent);
+    componentCodeStore.updateDefaultComponent(participantsCapacityCountComponent);
+    componentCodeStore.updateDefaultComponent(participantsCapacityPercentageComponent);
+    componentCodeStore.updateDefaultComponent(participantsPageCount1Component);
+    componentCodeStore.updateDefaultComponent(participantsPageCount2Component);
+    componentCodeStore.updateDefaultComponent(participantsFilterResetComponent);
+    componentCodeStore.updateDefaultComponent(participantsFilterInputComponent);
+    componentCodeStore.updateDefaultComponent(participantsAddNameComponent);
+    componentCodeStore.updateDefaultComponent(participantsAddEmailComponent);
+    componentCodeStore.updateDefaultComponent(participantsAddPersonalNumberComponent);
+    componentCodeStore.updateDefaultComponent(participantsAddPhoneComponent);
+    componentCodeStore.updateDefaultComponent(participantsAddAddressComponent);
+    componentCodeStore.updateDefaultComponent(participantsAddAgeComponent);
+    componentCodeStore.updateDefaultComponent(participantsAddSessionComponent);
+    componentCodeStore.updateDefaultComponent(participantsAddAllergensComponent);
+    componentCodeStore.updateDefaultComponent(participantsCardComponent);
+    componentCodeStore.updateDefaultComponent(participantsDeleteButtonComponent);
+    componentCodeStore.updateDefaultComponent(participantsEditNameComponent);
+    componentCodeStore.updateDefaultComponent(participantsEditEmailComponent);
+    componentCodeStore.updateDefaultComponent(participantsEditPersonalNumberComponent);
+    componentCodeStore.updateDefaultComponent(participantsEditPhoneComponent);
+    componentCodeStore.updateDefaultComponent(participantsEditAddressComponent);
+    componentCodeStore.updateDefaultComponent(participantsEditAgeComponent);
+    componentCodeStore.updateDefaultComponent(participantsEditAllergensComponent);
+    componentCodeStore.updateDefaultComponent(participantsEditSessionsComponent);
+    componentCodeStore.updateDefaultComponent(participantsSessionMenuComponent);
+    componentCodeStore.updateDefaultComponent(participantsAllergenOptionsComponent);
+    componentCodeStore.updateDefaultComponent(participantsCountComponent);
+    componentCodeStore.updateDefaultComponent(sessionsCountComponent);
+    componentCodeStore.updateDefaultComponent(participantsSampleComponent);
+    componentCodeStore.updateDefaultComponent(participantsListComponent);
+    componentCodeStore.updateDefaultComponent(participantsAllergensComponent);
+    componentCodeStore.updateDefaultComponent(participantsSessionsComponent);
+    componentCodeStore.updateDefaultComponent(sessionsListComponent);
+    componentCodeStore.updateDefaultComponent(participantInsertComponent);
+    componentCodeStore.updateDefaultComponent(participantGetIdComponent);
+    componentCodeStore.updateDefaultComponent(participantUpdateComponent);
+    componentCodeStore.updateDefaultComponent(participantDeleteComponent);
+    componentCodeStore.updateDefaultComponent(sessionParticipantInsertComponent);
+    componentCodeStore.updateDefaultComponent(sessionParticipantDeleteComponent);
+    componentCodeStore.updateDefaultComponent(participantAllergenIdsComponent);
+    componentCodeStore.updateDefaultComponent(participantAllergenInsertComponent);
+    componentCodeStore.updateDefaultComponent(participantAllergenDeleteComponent);
+    componentCodeStore.updateDefaultComponent(participantAllergenCountComponent);
+    componentCodeStore.updateActualComponent(participantAllergenCountComponent);
+    componentCodeStore.updateDefaultComponent(validationNameComponent);
+    componentCodeStore.updateDefaultComponent(validationEmailComponent);
+    componentCodeStore.updateDefaultComponent(validationPersonalNumberComponent);
+    componentCodeStore.updateDefaultComponent(validationPhoneComponent);
+    componentCodeStore.updateDefaultComponent(validationDateRangeComponent);
+    componentCodeStore.updateDefaultComponent(sessionParticipantsCountComponent);
 
     // Register defaults for supervisors
     componentCodeStore.updateDefaultComponent(supervisorsCapacityCountComponent);
@@ -1697,9 +1740,10 @@ navigateTo({
     componentCodeStore.updateDefaultComponent(editMealComponent);
     componentCodeStore.updateDefaultComponent(whenServedComponent);
     componentCodeStore.updateDefaultComponent(mealPlanComponent);
-    componentCodeStore.updateActualComponent(sessionParticipantsListComponent);
-    componentCodeStore.updateActualComponent(sessionSupervisorsListComponent);
-    componentCodeStore.updateActualComponent(sessionSupervisorsCountComponent);
+    componentCodeStore.updateDefaultComponent(sessionParticipantsListComponent);
+    componentCodeStore.updateDefaultComponent(sessionSupervisorsListComponent);
+    componentCodeStore.updateDefaultComponent(sessionSupervisorsCountComponent);
+    componentCodeStore.updateDefaultComponent(mealCountBadgeComponent);
 
 
 
@@ -1737,6 +1781,7 @@ navigateTo({
     componentCodeStore.resetComponent("participants-capacity-count");
     componentCodeStore.resetComponent("dashboard-table-count-badge");
     componentCodeStore.resetComponent("session-day-count-badge");
+    componentCodeStore.resetComponent("meals-count-badge");
     componentCodeStore.resetComponent("session-date-range");
     componentCodeStore.resetComponent("session-capacity-section");
     componentCodeStore.resetComponent("session-participants-section");

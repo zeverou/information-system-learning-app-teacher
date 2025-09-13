@@ -3,23 +3,8 @@
         <label for="when-served-select" class="block text-sm font-medium text-gray-700 mb-2">
             {{ t('filter_by_when_served') }}
         </label>
-        <!-- Temporary HTML select for debugging -->
-        <select v-model="selectedValue" class="w-64 border rounded px-2 py-1">
-            <option value="">{{ t('all_meals') }}</option>
-            <option v-for="option in whenServedOptions.slice(1)" :key="option.value" :value="option.value">
-                {{ option.label }}
-            </option>
-        </select>
-        
-        <!-- <USelect
-            id="when-served-select"
-            v-model="selectedValue"
-            :options="whenServedOptions"
-            :placeholder="t('all_meals')"
-            :key="optionsKey"
-            class="w-64"
-            :items="whenServedOptions"
-        /> -->
+        <USelect id="when-served-select" v-model="selectedValue" :options="whenServedOptions"
+            :placeholder="t('all_meals')" :key="optionsKey" class="w-64" :items="whenServedOptions" />
     </div>
 </template>
 
@@ -30,15 +15,31 @@ import { useSelectedSystemStore } from '~/stores/useSelectedSystemStore'
 import { useComponentCodeStore } from '#imports'
 import { Component } from '~/model/Component'
 import { ComponentHandler } from '~/composables/ComponentHandler'
+import { useHighlightStore } from '~/stores/useHighlightStore'
+
 
 const { t } = useI18n()
 const selectedSystemStore = useSelectedSystemStore()
 const componentCodeStore = useComponentCodeStore()
-
+const highlightStore = useHighlightStore()
 // Props
 const props = defineProps<{
     selectedWhenServed: string
 }>()
+
+/* TODO: use USelect */
+/*
+const filterSessionsItems = computed(() => [
+    { label: t('all_sessions'), value: 'all' },
+    ...sessions.value.map(session => ({
+        label: formatDateRange(session.fromDate, session.toDate),
+        value: session.id
+    }))
+])
+*/
+
+
+const value = ''
 
 // Emits
 const emit = defineEmits<{
@@ -103,7 +104,7 @@ const whenServedValues = computed(() => {
 
 // Options for the select menu
 const whenServedOptions = computed(() => {
-    const options = [{ label: t('all_meals'), value: '' }]
+    const options = [{ label: t('all_meals'), value: 'all' }]
     console.log("When served values:", whenServedValues.value)
     whenServedValues.value.forEach(value => {
         if (value && value.trim()) {
@@ -137,6 +138,9 @@ const selectedValue = computed({
         emit('update:selectedWhenServed', value)
     }
 })
+
+useHighlightWatchers(highlightStore.highlightHandler, highlightStore);
+
 </script>
 
 <style scoped>

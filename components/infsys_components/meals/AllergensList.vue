@@ -3,7 +3,7 @@
         <UBadge v-for="allergen in allergens" :key="allergen.id" :label="getAllergenName(allergen.id)" color="red" variant="soft" class="mr-1 mb-1" />
         <span v-if="allergens.length === 0" class="text-sm text-green-600">
             <UIcon name="i-heroicons-check-circle" class="w-4 h-4 inline mr-1" />
-            No allergens
+            {{ t('no_allergens') }}
         </span>
     </div>
 </template>

@@ -7,6 +7,7 @@
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center gap-4">
                     <WhenServedMenu v-model:selectedWhenServed="selectedWhenServed" />
+                    <MealCountBadge :selectedWhenServed="selectedWhenServed" />
                 </div>
                 <AddMealButton />
             </div>
@@ -84,6 +85,7 @@ import { ComponentHandler } from '~/composables/ComponentHandler'
 import AllergensList from '~/components/infsys_components/meals/AllergensList.vue'
 import DeleteMealButton from '~/components/infsys_components/meals/DeleteMealButton.vue'
 import WhenServedMenu from '~/components/infsys_components/meals/WhenServedMenu.vue'
+import MealCountBadge from '~/components/infsys_components/meals/MealCountBadge.vue'
 import AddMealButton from '~/components/infsys_components/meals/AddMealButton.vue'
 import EditMealModal from '~/components/infsys_components/meals/EditMealModal.vue'
 
@@ -131,7 +133,7 @@ const meals = computed(() => {
 
 // Filtered meals based on selected when_served
 const filteredMeals = computed(() => {
-    if (!selectedWhenServed.value) {
+    if (!selectedWhenServed.value || selectedWhenServed.value === 'all') {
         return meals.value
     }
     return meals.value.filter(meal => meal.description === selectedWhenServed.value)
