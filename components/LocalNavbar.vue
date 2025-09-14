@@ -158,7 +158,7 @@
 
     <!-- Floating Button -->
     <UPopover v-model:open="tasksPopoverOpen" arrow style="z-index: 10001;">
-        <UButton icon="i-lucide-list-todo" :label="selectedTaskStore.selectedTask?.title || $t('tasks')" color="lime"
+        <UButton style="z-index: 10001;" icon="i-lucide-list-todo" :label="selectedTaskStore.selectedTask?.title || $t('tasks')" color="lime"
             variant="solid" size="xl"
             :class="['fixed bottom-15 right-15 rounded-full shadow-lg', { 'task-button-animation': selectedTaskStore.selectedTask }]">
             <span class="mobile-hidden">{{ selectedTaskStore.selectedTask?.title || $t('tasks') }}</span>
