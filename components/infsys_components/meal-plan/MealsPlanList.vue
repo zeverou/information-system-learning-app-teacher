@@ -1,9 +1,10 @@
 <template>
     <div class="meal-plan-container">
+        
 
         <div class="container mx-auto px-4 py-8">
             <div class="flex items-center justify-between mb-8">
-                <h1 class="text-4xl font-bold text-gray-900">{{ t('meal_plan') }}</h1>
+                <h1 class="text-4xl font-bold text-white-950">{{ t('meal_plan') }}</h1>
             </div>
 
             <!-- Sessions -->
@@ -134,6 +135,15 @@
                                                 <div class="supervisor-info">
                                                     <div class="supervisor-name">{{ supervisor.supervisorName }}</div>
                                                 </div>
+                                                <UButton 
+                                                    @click="removeSupervisorFromMeal(supervisor, meals[0].mealName, sessionId, date)"
+                                                    size="xs" 
+                                                    color="red" 
+                                                    variant="ghost"
+                                                    class="delete-supervisor-btn"
+                                                >
+                                                    <UIcon name="i-heroicons-trash" class="w-4 h-4" />
+                                                </UButton>
                                             </div>
                                         </div>
                                     </div>
@@ -279,6 +289,35 @@ function removeParticipantFromMeal(participant: any, mealInfo: string, sessionId
         }
     } else {
         console.warn('Meal not found for removal');
+    }
+}
+
+function removeSupervisorFromMeal(supervisor: any, mealInfo: string, sessionId: number, date: string) {
+    console.log('Removing supervisor from meal:', supervisor.supervisorName, 'from', mealInfo);
+
+    // Find the meal in the data structure
+    const sessionMeals = mealsMap.value[sessionId];
+    const mealsForDate = (sessionMeals && sessionMeals[date]) || [];
+    const meal = mealsForDate.find((m: any) => m.mealName === getMealName(mealInfo));
+
+    if (meal) {
+        // Remove the supervisor from the meal's supervisors array
+        const supervisorIndex = meal.supervisors.findIndex((s: any) =>
+            s.supervisorEmail === supervisor.supervisorEmail &&
+            s.supervisorName === supervisor.supervisorName
+        );
+
+        if (supervisorIndex !== -1) {
+            meal.supervisors.splice(supervisorIndex, 1);
+            console.log('Supervisor removed successfully');
+
+            // Force reactivity update
+            mealsMap.value = { ...mealsMap.value };
+        } else {
+            console.warn('Supervisor not found in meal');
+        }
+    } else {
+        console.warn('Meal not found for supervisor removal');
     }
 }
 
