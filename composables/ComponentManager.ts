@@ -8,7 +8,12 @@ export class ComponentManager {
     const componentCodeStore = useComponentCodeStore()
     const selectedSystemStore = useSelectedSystemStore();
 
-    const statsMealsHtml = `
+    // New instances created from the existing code above
+    const statsMealsComponent = new Component({
+      id: "stats-meals",
+      name: "Stats Meals",
+      description: `Component for meals stats. SQL: SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}`,
+      html: { "html": `
   <div class="stat-card">
     <div class="stat-icon">🍽️</div>
     <div class="stat-content">
@@ -16,40 +21,23 @@ export class ComponentManager {
       <div class="stat-label">{{ label }}</div>
     </div>
   </div>
-`
-    const statsMealsSql = `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}`
-
-    const statsMealsNavigateJs = `
+` },
+      css: { "css": "" },
+      js: { "js": `
 selectedTableStore.select('jídla');
 navigateTo({
   path: \`/system/\${systemId}/meals\`,
 });
-`
+` },
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}` },
+      additionals: {}
+    });
 
-    const statsParticipantsNavigateJs = `
-selectedTableStore.select('účastníci');
-navigateTo({
-  path: \`/system/\${systemId}/participants\`,
-});
-`
-
-
-    const statsSupervisorsNavigateJs = `
-selectedTableStore.select('vedoucí');
-navigateTo({
-  path: \`/system/\${systemId}/supervisors\`,
-});
-`
-
-
-    const statsSessionsNavigateJs = `
-selectedTableStore.select('turnusy');
-navigateTo({
-  path: \`/system/\${systemId}/sessions\`,
-});
-`
-
-    const statsParticipantsHtml = `
+    const statsParticipantsComponent = new Component({
+      id: "stats-participants",
+      name: "Stats Participants",
+      description: `Component for participants stats. SQL: SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}`,
+      html: { "html": `
   <div class="stat-card">
     <div class="stat-icon">👥</div>
     <div class="stat-content">
@@ -57,10 +45,23 @@ navigateTo({
       <div class="stat-label">{{ label }}</div>
     </div>
   </div>
-`
-    const statsParticipantsSql = `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}`
+` },
+      css: { "css": "" },
+      js: { "js": `
+selectedTableStore.select('účastníci');
+navigateTo({
+  path: \`/system/\${systemId}/participants\`,
+});
+` },
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}` },
+      additionals: {}
+    });
 
-    const statsSessionsHtml = `
+    const statsSessionsComponent = new Component({
+      id: "stats-sessions",
+      name: "Stats Sessions",
+      description: `Component for sessions stats. SQL: SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')}`,
+      html: { "html": `
   <div class="stat-card">
     <div class="stat-icon">📅</div>
     <div class="stat-content">
@@ -68,10 +69,23 @@ navigateTo({
       <div class="stat-label">{{ label }}</div>
     </div>
   </div>
-`
-    const statsSessionsSql = `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')}`
+` },
+      css: { "css": "" },
+      js: { "js": `
+selectedTableStore.select('turnusy');
+navigateTo({
+  path: \`/system/\${systemId}/sessions\`,
+});
+` },
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')}` },
+      additionals: {}
+    });
 
-    const statsSupervisorsHtml = `
+    const statsSupervisorsComponent = new Component({
+      id: "stats-supervisors",
+      name: "Stats Supervisors",
+      description: `Component for supervisors stats. SQL: SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')}`,
+      html: { "html": `
   <div class="stat-card">
     <div class="stat-icon">👨‍🏫</div>
     <div class="stat-content">
@@ -79,85 +93,15 @@ navigateTo({
       <div class="stat-label">{{ label }}</div>
     </div>
   </div>
-`
-    const statsSupervisorsSql = `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')}`
-
-    /*
-    componentCodeStore.updateDefaultComponentCode("stats-meals-html.vue", statsMealsHtml)
-    componentCodeStore.updateDefaultComponentCode("stats-meals-sql.vue", statsMealsSql)
-    componentCodeStore.updateDefaultComponentCode("stats-meals-js.vue", statsMealsNavigateJs)
-    
-    componentCodeStore.updateDefaultComponentCode("stats-participants-html.vue", statsParticipantsHtml)
-    componentCodeStore.updateDefaultComponentCode("stats-participants-sql.vue", statsParticipantsSql)
-    componentCodeStore.updateDefaultComponentCode("stats-participants-js.vue", statsParticipantsNavigateJs)
-    
-    componentCodeStore.updateDefaultComponentCode("stats-sessions-html.vue", statsSessionsHtml)
-    componentCodeStore.updateDefaultComponentCode("stats-sessions-sql.vue", statsSessionsSql)
-    componentCodeStore.updateDefaultComponentCode("stats-sessions-js.vue", statsSessionsNavigateJs)
-    
-    componentCodeStore.updateDefaultComponentCode("stats-supervisors-html.vue", statsSupervisorsHtml)
-    componentCodeStore.updateDefaultComponentCode("stats-supervisors-sql.vue", statsSupervisorsSql)
-    componentCodeStore.updateDefaultComponentCode("stats-supervisors-js.vue", statsSupervisorsNavigateJs)
-    
-    componentCodeStore.resetComponentCode("stats-meals-html.vue")
-    componentCodeStore.resetComponentCode("stats-meals-sql.vue")
-    componentCodeStore.resetComponentCode("stats-meals-js.vue")
-    
-    componentCodeStore.resetComponentCode("stats-participants-html.vue")
-    componentCodeStore.resetComponentCode("stats-participants-sql.vue")
-    componentCodeStore.resetComponentCode("stats-participants-js.vue")
-    
-    componentCodeStore.resetComponentCode("stats-sessions-html.vue")
-    componentCodeStore.resetComponentCode("stats-sessions-sql.vue")
-    componentCodeStore.resetComponentCode("stats-sessions-js.vue")
-    
-    componentCodeStore.resetComponentCode("stats-supervisors-html.vue")
-    componentCodeStore.resetComponentCode("stats-supervisors-sql.vue")
-    componentCodeStore.resetComponentCode("stats-supervisors-js.vue")
-    */
-
-    // New instances created from the existing code above
-    const statsMealsComponent = new Component({
-      id: "stats-meals",
-      name: "Stats Meals",
-      description: `Component for meals stats. SQL: ${statsMealsSql}`,
-      html: { "html": statsMealsHtml },
+` },
       css: { "css": "" },
-      js: { "js": statsMealsNavigateJs },
-      sql: { "sql": statsMealsSql },
-      additionals: {}
-    });
-
-    const statsParticipantsComponent = new Component({
-      id: "stats-participants",
-      name: "Stats Participants",
-      description: `Component for participants stats. SQL: ${statsParticipantsSql}`,
-      html: { "html": statsParticipantsHtml },
-      css: { "css": "" },
-      js: { "js": statsParticipantsNavigateJs },
-      sql: { "sql": statsParticipantsSql },
-      additionals: {}
-    });
-
-    const statsSessionsComponent = new Component({
-      id: "stats-sessions",
-      name: "Stats Sessions",
-      description: `Component for sessions stats. SQL: ${statsSessionsSql}`,
-      html: { "html": statsSessionsHtml },
-      css: { "css": "" },
-      js: { "js": statsSessionsNavigateJs },
-      sql: { "sql": statsSessionsSql },
-      additionals: {}
-    });
-
-    const statsSupervisorsComponent = new Component({
-      id: "stats-supervisors",
-      name: "Stats Supervisors",
-      description: `Component for supervisors stats. SQL: ${statsSupervisorsSql}`,
-      html: { "html": statsSupervisorsHtml },
-      css: { "css": "" },
-      js: { "js": statsSupervisorsNavigateJs },
-      sql: { "sql": statsSupervisorsSql },
+      js: { "js": `
+selectedTableStore.select('vedoucí');
+navigateTo({
+  path: \`/system/\${systemId}/supervisors\`,
+});
+` },
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')}` },
       additionals: {}
     });
 

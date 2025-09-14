@@ -45,6 +45,9 @@ Zde je jednoduchý návod jak aplikaci používat. Podrobná příručka pro uč
 
 3. **Další kroky jsou popsány v souboru** [docs/cs/teacher.md](./docs/cs/teacher.md).
 
+> [!NOTE]  
+> V příručce pro učitele je také exemplární vyřešení ukázkových úkolů.
+
 ### Student
 
 0. **Nastavení** - V kolonce `Nastavení` v navigačním menu můžete upravit jazyk aplikace a podívat se na klávesové zkratky.
