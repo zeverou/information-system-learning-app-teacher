@@ -91,6 +91,7 @@ import MealCountBadge from '~/components/infsys_components/meals/MealCountBadge.
 import AddMealButton from '~/components/infsys_components/meals/AddMealButton.vue'
 import EditMealModal from '~/components/infsys_components/meals/EditMealModal.vue'
 import { InformationSystem } from '~/model/InformationSystem'
+import { ComponentManager } from '#imports'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -112,6 +113,18 @@ watch(currentSystem, (newSystem) => {
     }
 }, { immediate: true })
 
+// Watch for database initialization and initialize components when ready
+watch(
+    () => selectedSystemStore.selectedSystem?.dbInitialized && !ComponentManager.areComponentsInitialized(),
+    (shouldInitialize) => {
+        if (shouldInitialize && selectedSystemStore.selectedSystem?.db) {
+            console.warn("[X] Components not initialized in meals.vue")
+            ComponentManager.initializeComponents()
+        }
+    },
+    { immediate: true }
+)
+
 const componentId = 'meals'
 
 const system = selectedSystemStore.selectedSystem
@@ -132,7 +145,7 @@ const meals = computed(() => {
 
     const _ = selectedSystemStore.dbNumber;
 
-    if (!system?.db || typeof system?.db?.query !== "function") {
+    if (!system?.db || !system?.dbInitialized || typeof system?.db?.query !== "function") {
         return []
     }
     const queryResult = system?.db.query(sqlQuery.value)
