@@ -24,7 +24,7 @@
       <div v-if="selectedTask">
         <div class="p-4">
           <div class="flex items-center mb-2">
-            <UCheckbox :model-value="selectedTask.completed" disabled class="mr-2" />
+            <UCheckbox color="lime" :model-value="selectedTask.completed" disabled class="mr-2" />
             <h3 class="text-lg font-bold">{{ selectedTask.title }}</h3>
           </div>
           <p class="mb-2">{{ selectedTask.description }}</p>
@@ -33,22 +33,22 @@
           <div class="flex items-center justify-between mb-6 mt-6">
             <!-- Step 1: Task Selected -->
             <div class="flex flex-col items-center">
-              <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mb-2">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center mb-2" style="background-color: #9ae600;">
                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
               </div>
-              <span class="text-xs text-center text-green-600 font-medium">{{ t('task_selected') }}</span>
+              <span class="text-xs text-center font-medium" style="color: #9ae600;">{{ t('task_selected') }}</span>
             </div>
 
             <!-- Connector Line -->
-            <div class="flex-1 h-0.5 mx-2" :class="selectedTask.componentsRepaired ? 'bg-green-500' : 'bg-gray-300'">
+            <div class="flex-1 h-0.5 mx-2" :style="selectedTask.componentsRepaired ? 'background-color: #9ae600;' : 'background-color: #d1d5db;'">
             </div>
 
             <!-- Step 2: Components Repaired -->
             <div class="flex flex-col items-center">
               <div class="w-8 h-8 rounded-full flex items-center justify-center mb-2"
-                :class="selectedTask.componentsRepaired ? 'bg-green-500' : 'bg-gray-300'">
+                :style="selectedTask.componentsRepaired ? 'background-color: #9ae600;' : 'background-color: #d1d5db;'">
                 <svg v-if="selectedTask.componentsRepaired" class="w-4 h-4 text-white" fill="none" stroke="currentColor"
                   viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -56,18 +56,18 @@
                 <span v-else class="w-3 h-3 bg-white rounded-full"></span>
               </div>
               <span class="text-xs text-center font-medium"
-                :class="selectedTask.componentsRepaired ? 'text-green-600' : 'text-gray-500'">
+                :style="selectedTask.componentsRepaired ? 'color: #9ae600;' : 'color: #6b7280;'">
                 {{ t('components_repaired') }}
               </span>
             </div>
 
             <!-- Connector Line -->
-            <div class="flex-1 h-0.5 mx-2" :class="selectedTask.completed ? 'bg-green-500' : 'bg-gray-300'"></div>
+            <div class="flex-1 h-0.5 mx-2" :style="selectedTask.completed ? 'background-color: #9ae600;' : 'background-color: #d1d5db;'"></div>
 
             <!-- Step 3: Task Completed -->
             <div class="flex flex-col items-center">
               <div class="w-8 h-8 rounded-full flex items-center justify-center mb-2"
-                :class="selectedTask.completed ? 'bg-green-500' : 'bg-gray-300'">
+                :style="selectedTask.completed ? 'background-color: #9ae600;' : 'background-color: #d1d5db;'">
                 <svg v-if="selectedTask.completed" class="w-4 h-4 text-white" fill="none" stroke="currentColor"
                   viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -75,7 +75,7 @@
                 <span v-else class="w-3 h-3 bg-white rounded-full"></span>
               </div>
               <span class="text-xs text-center font-medium"
-                :class="selectedTask.completed ? 'text-green-600' : 'text-gray-500'">
+                :style="selectedTask.completed ? 'color: #9ae600;' : 'color: #6b7280;'">
                 {{ t('task_completed') }}
               </span>
             </div>
@@ -88,13 +88,13 @@
           <div>
             <!-- Kind of task: select -->
             <div v-if="selectedTask.kind === 'select'">
-              <UButton variant="outline" style="margin-left: 5px;"
+              <UButton  variant="outline" style="margin-left: 5px;" color="lime"
                 :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.length === 0"
                 @click="handleSubmit">
                 {{ t('submit') }}
               </UButton>
 
-              <UButton v-if="selectedTask.answer !== 'none'" variant="outline" style="margin-left: 5px;"
+              <UButton v-if="selectedTask.answer !== 'none'" variant="outline" style="margin-left: 5px;" color="lime"
                 :disabled="!selectedTask.componentsRepaired" @click="evaluate()">
                 {{ t('check_repair_task') }}
               </UButton>
@@ -103,15 +103,15 @@
             <!-- Kind of task: type-correct -->
             <div v-if="selectedTask.kind === 'type-correct'">
               <UInput v-model="form.answer" placeholder="Enter your answer" class="mt-2" />
-              <UButton variant="outline" style="margin-left: 5px;" :disabled="selectedTask.completed"
-                @click="handleSubmit">{{
+              <UButton variant="outline" style="margin-left: 5px;" :disabled="selectedTask.completed" color="lime"
+                @click="handleSubmit">{{ 
                   t('submit') }}
               </UButton>
             </div>
 
             <!-- Kind of task: repair -->
             <div v-if="selectedTask.kind === 'repair'">
-              <UButton
+              <UButton color="lime"
                 :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.length === 0"
                 variant="outline" style="margin-left: 5px;" @click="handleSubmit">
                 {{ t('check_repair_task') }}
@@ -121,11 +121,11 @@
             <div v-if="selectedTask.componentsRepaired">
               <UForm :state="questionsForm" >
                 <div v-for="(question, idx) in questions" :key="idx" class="mb-2 flex items-center gap-2">
-                  <UCheckbox v-model="questionsForm[idx]" />
+                  <UCheckbox color="lime" v-model="questionsForm[idx]" />
                   <label>{{ question }}</label>
                 </div>
                 <UButton
-                  type="submit"
+                  type="submit" color="lime"
                   :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.length === 0"
                   variant="outline"
                   style="margin-left: 5px;"
@@ -137,9 +137,9 @@
 
           </div>
 
-          <UButton class="mt-4" @click="selectTask(selectedTask.id)">{{ t('back_to_tasks') }}</UButton>
+          <UButton color="lime" class="mt-4" @click="selectTask(selectedTask.id)">{{ t('back_to_tasks') }}</UButton>
           <div v-if="selectedTask.completed">
-            <USeparator color="primary" class="mt-4 mb-2" />
+            <USeparator color="lime" class="mt-4 mb-2" />
             <h3 class="text-lg font-semibold ">{{ t('feedback') }}</h3>
 
             <p> {{ selectedTask.feedback }}</p>
@@ -153,10 +153,10 @@
         </div>
         <div v-else class="space-y-2">
           <div v-for="(task, index) in tasks" :key="index" class="flex items-center gap-3 p-3 rounded-lg">
-            <UCheckbox :model-value="task.completed" disabled class="mr-2" />
+            <UCheckbox color="lime" :model-value="task.completed" disabled class="mr-2" />
             <UCard>
               {{ task.title }}
-              <UButton style="margin-left: 5px;" @click="selectTask(task.id)">{{ t('select_task') }}</UButton>
+              <UButton color="lime" style="margin-left: 5px;" @click="selectTask(task.id)">{{ t('select_task') }}</UButton>
             </UCard>
           </div>
         </div>
