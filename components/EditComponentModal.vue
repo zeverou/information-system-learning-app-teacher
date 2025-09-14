@@ -19,7 +19,7 @@
             </div>
 
             <UButton v-if="section.key === 'sql'" @click="toggleTables" class="tables-button">
-              Tables: {{ availableTables.length }}
+              {{ t('tables') }}: {{ availableTables.length }}
             </UButton>
           </div>
 
