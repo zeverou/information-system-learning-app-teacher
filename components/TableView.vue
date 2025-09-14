@@ -330,6 +330,15 @@ function isArrayType(type: string) {
 async function refreshDatabase() {
     try {
         await SystemReset.refreshDatabaseCore();
+        // Preselect the first table after refresh to reload data
+        if (props.tableNames.length > 0) {
+            // TODO: This is not the best way to reflect the changes of refreshing the database
+            /*
+            When db refreshes the data are not reloaded and selecting other table is needed
+            */ 
+            window.location.reload();
+            //emit('table-select', props.tableNames[0]);
+        }
         toast.add({
             title: t('refresh_database_success') || 'Database refreshed successfully',
             color: 'primary',
@@ -379,36 +388,28 @@ defineExpose({
 
 <template>
     <div>
-        <div class="flex flex-row items-center gap-4 w-full px-4 py-2">
+                                <h1 class="text-4xl font-bold mb-4">{{ t('database') }}</h1>
 
-            <!-- Table Selector -->
+        <div class="flex flex-row items-center justify-between w-full px-4 py-2">
+            <!-- Left side: Table Selector -->
             <div class="flex items-center gap-2" id="database-select-table">
                 <USelect size="xl" :model-value="selectedTableName" :items="tableNames" class="w-48"
                     @update:model-value="handleTableSelect" />
+                                    <UButton size="xl" :label="$t('refresh_database')" color="primary" variant="outline" icon="i-heroicons-arrow-path"
+                    @click="refreshDatabase" />
             </div>
 
-            <!-- Add Button -->
-            <UButton size="xl" variant="subtle" @click="addMethod">{{ t('add_entity') }}</UButton>
+            <!-- Right side: Add Button, Global Filter Input, Refresh Button -->
+            <div class="flex items-center gap-4">
+                <UButton size="xl" variant="subtle" @click="addMethod">{{ t('add_entity') }}</UButton>
 
-            <!-- Global Filter Input -->
-            <div id="database-filter">
-                <UInput size="xl" :disabled="highlightStore.isHighlightMode" v-model="globalFilter" class="max-w-sm"
-                    :placeholder="`${t('filter')} ${selectedTableName || 'items'}...`" />
+                <div id="database-filter">
+                    <UInput size="xl" :disabled="highlightStore.isHighlightMode" v-model="globalFilter" class="max-w-sm"
+                        :placeholder="`${t('filter')} ${selectedTableName || 'items'}...`" />
+                </div>
+
+
             </div>
-
-            <UButton size="xl" :label="$t('refresh_database')" color="primary" variant="outline" icon="i-heroicons-arrow-path"
-                @click="refreshDatabase" />
-
-            <!-- SQL Query Display -->
-            <!--
-            <div class="ml-auto text-sm text-gray-500 font-mono flex items-center">
-                <span>{{ t('sql_query') }}:</span>
-                <span class="ml-2 p-2 bg-gray-100 rounded text-xs">
-                    {{getSqlQuery(`SELECT * FROM ${selectedTableName || 'table'}`, autoColumns.map(col => (col as
-                        any)?.accessorKey || '').filter(Boolean))}}
-                </span>
-            </div>
-            -->
         </div>
 
         <!-- Replace UTable with native HTML table -->

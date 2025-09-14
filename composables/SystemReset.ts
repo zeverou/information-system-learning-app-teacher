@@ -52,6 +52,7 @@ static async refreshTasksCore() {
 
 static async refreshDatabaseCore() {
     const selectedSystemStore = useSelectedSystemStore();
+    selectedSystemStore.dbRefreshed = false;
     
     console.log("Refreshing database...");
     const systems: InformationSystem[] = FileHandler.getInformationSystems();
@@ -68,6 +69,7 @@ static async refreshDatabaseCore() {
     if (selectedSystemStore.selectedSystem) {
         await selectedSystemStore.selectedSystem.db.init(selectedSystemStore.selectedSystem.configData)
     }
+    selectedSystemStore.dbRefreshed = true;
 }
 
 }

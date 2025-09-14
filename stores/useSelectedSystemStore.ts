@@ -14,6 +14,7 @@ export const useSelectedSystemStore = defineStore('selectedSystem', () => {
   const sessions = ref<Session[]>([])
   const supervisors = ref<Supervisor[]>([])
   const dbNumber = ref<number>(0)
+  const dbRefreshed = ref<boolean>(false)
 
   // Actions
   function select(id: number) {
@@ -155,7 +156,8 @@ export const useSelectedSystemStore = defineStore('selectedSystem', () => {
     loadSessions,
     dbNumber,
     incrementDbNumber,
-    getDbNumber
+    getDbNumber,
+    dbRefreshed
   }
 }, {
   persist: {
