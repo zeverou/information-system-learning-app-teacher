@@ -12,12 +12,12 @@
                         <div class="highlightable" id="meals-edit-name"
                             @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('meals-edit-name', $event)">
                             <div class="component-wrapper">
-                                <label for="name" class="block text-sm font-medium text-white mb-1">{{ t('meal_name') }}</label>
+                                <label for="name" class="block text-sm font-medium text-white mb-1">{{ t('meal_name')
+                                    }}</label>
                                 <input
                                     :class="['form-input', { 'border-red-500': !editMealNameComputed, 'border-sky-500': editMealNameComputed }]"
                                     id="name" v-model="editMeal.name" type="text"
-                                    :disabled="highlightStore.isHighlightMode"
-                                    :placeholder="t('enter_meal_name')" />
+                                    :disabled="highlightStore.isHighlightMode" :placeholder="t('enter_meal_name')" />
                                 <div v-if="editMealNameError" class="text-red-500 text-sm mt-1 font-bold">
                                     {{ editMealNameError }}
                                 </div>
@@ -29,11 +29,11 @@
                         <div class="highlightable" id="meals-edit-when_served"
                             @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('meals-edit-when_served', $event)">
                             <div class="component-wrapper">
-                                <label for="when_served" class="block text-sm font-medium text-white mb-1">{{ t('when_served') }}</label>
+                                <label for="when_served" class="block text-sm font-medium text-white mb-1">{{
+                                    t('when_served') }}</label>
                                 <USelect :color="editMealWhenServedComputed ? 'sky' : 'red'" id="when_served"
                                     v-model="editMeal.when_served" :items="whenServedOptions"
-                                    :disabled="highlightStore.isHighlightMode"
-                                    :placeholder="t('select_when_served')" />
+                                    :disabled="highlightStore.isHighlightMode" :placeholder="t('select_when_served')" />
                                 <div v-if="editMealWhenServedError" class="text-red-500 text-sm mt-1 font-bold">
                                     {{ editMealWhenServedError }}
                                 </div>
@@ -59,7 +59,8 @@
                         </div>
 
                         <div class="flex flex-col gap-3 pt-4">
-                            <UButton type="submit" color="yellow" :loading="isSubmitting" :disabled="hasValidationErrors">
+                            <UButton type="submit" color="yellow" :loading="isSubmitting"
+                                :disabled="hasValidationErrors">
                                 {{ t('update') }}
                             </UButton>
                             <UButton variant="outline" color="yellow" @click="resetForm">
@@ -86,6 +87,9 @@ const selectedSystemStore = useSelectedSystemStore()
 const toast = useToast()
 const highlightStore = useHighlightStore()
 const componentCodeStore = useComponentCodeStore()
+
+const componentId = 'meals-edit'
+const editMealComponent = componentCodeStore.getComponentById(componentId) || componentCodeStore.getDefaultComponent(componentId)
 
 // Props
 const props = defineProps<{
@@ -146,12 +150,17 @@ const hasValidationErrors = computed(() => {
 })
 
 // When served options
-const whenServedOptions = [
-    { label: t('breakfast'), value: 'Breakfast' },
-    { label: t('lunch'), value: 'Lunch' },
-    { label: t('dinner'), value: 'Dinner' },
-    { label: t('snack'), value: 'Snack' }
-]
+/*
+const whenServedOptions = computed(() => {
+    const _ = selectedSystemStore.dbNumber
+    const query: string = componentCodeStore.getComponentCodeByType('participants-when-served-options', 'sql', 'sql') || ``;
+    const result = selectedSystemStore.selectedSystem?.db?.query(query)?.results || [];
+    return result.map(whenServed => ({
+        label: allergen.name,
+        value: allergen.allergen_id
+    }))
+})
+    */
 
 // Allergen options
 const allergenOptions = computed(() => {
@@ -203,8 +212,7 @@ const handleEditMeal = async (mealData: any) => {
         }
 
         // Get the edit meal component
-        const componentId = 'meals-edit'
-        const editMealComponent = componentCodeStore.getComponentById(componentId) || componentCodeStore.getDefaultComponent(componentId)
+
         const sqlQuery = editMealComponent?.sql?.['sql'] || ''
 
         if (!sqlQuery) {

@@ -18,6 +18,8 @@
                         <span class="mobile-hidden">Helper</span>
                     </UButton>
 
+                    <UButton icon="i-heroicons-table-cells" @click="navigateTo(`/system/${selectedSystemStore.selectedId}/database`)">{{ t('database') }}</UButton>
+
                     <UBadge color="red" variant="outline" size="lg">
                         {{ $t('score') }}: {{ scoreStore.score }}
                     </UBadge>
@@ -232,12 +234,7 @@ const localItems = ref<NavigationMenuItem[]>([
         to: `/system/${selectedSystemStore.selectedId}/meal-plan`,
         data_target: 'system-meal-plan',
     },
-    {
-        label: t('database'),
-        icon: 'i-heroicons-table-cells',
-        to: `/system/${selectedSystemStore.selectedId}/database`,
-        data_target: 'system-table',
-    },
+
 
 ])
 

@@ -1,17 +1,21 @@
 <template>
+
     <div class="dashboard-layout">
         <!--<aside class="dashboard-sidebar">
             <LocalNavbar :items="localItems" />
             <TaskList :system-id="system?.id" />
         </aside>-->
         <LocalNavbar />
+
         <main class="dashboard-main">
+    <h1 class="text-4xl font-bold mb-4">{{ t('dashboard') }}</h1>
+
             <div class="dashboard-content-row">
                 <div class="dashboard-content-main">
                     <div id="stats">
                         <dashboardStats :system-id="system?.id" />
                         <UCard>
-                            <DashboardTableCountBadge/>
+                            <DashboardTableCountBadge />
                         </UCard>
                     </div>
 

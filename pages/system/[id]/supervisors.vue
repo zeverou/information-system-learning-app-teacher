@@ -4,6 +4,9 @@
         <!-- TODO: move to components -->
 
         <div class="container mx-auto px-4 py-8">
+
+            <h1 class="text-4xl font-bold mb-4">{{ t('supervisors') }}</h1>
+            
             <div class="flex items-center gap-4 mb-6">
 
                 <!-- Session Select Menu-->

@@ -1,8 +1,10 @@
 <template>
     <div>
         <LocalNavbar />
-        
+
         <div class="container mx-auto px-4 py-8">
+                    <h1 class="text-4xl font-bold mb-4">{{ t('meals') }}</h1>
+
             <!-- Meals Controls -->
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center gap-4">

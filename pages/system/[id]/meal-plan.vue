@@ -1,7 +1,11 @@
 <template>
     <LocalNavbar></LocalNavbar>
+
+
     <!-- TODO: GROUP BY SESSIONS -->
     <div>
+                <h1 class="text-4xl font-bold mb-4">{{ t('meal_plan') }}</h1>
+
         <UCard v-for="meal in meals" :key="meal.description" class="mb-4" style="margin: 10px;">
             <UCardHeader>
                 <h3 class="text-lg font-semibold">{{ reformatDate(meal.description) }}</h3>

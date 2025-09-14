@@ -5,10 +5,10 @@ import { useClipboard } from '@vueuse/core'
 import type { TableColumn, DropdownMenuItem } from '@nuxt/ui'
 import type { Column } from '@tanstack/vue-table'
 import type { InformationSystem } from '~/model/InformationSystem'
-import { EditComponentModal } from '#components'
+//import { EditComponentModal } from '#components'
 import { usePropertyStore } from '#imports'
 import { useHighlightWatchers } from '~/composables/highlightWatchers'
-import '~/assets/css/highlight.css'
+// import '~/assets/css/highlight.css'
 import { useHighlightStore } from '#imports'
 import { useInformationSystemStore } from '~/stores/useInformationSystemStore'
 import { useSelectedSystemStore } from '~/stores/useSelectedSystemStore'
@@ -475,7 +475,7 @@ defineExpose({
             </tbody>
         </table>
 
-        <EditComponentModal v-if="highlightStore.isEditModeActive && highlightStore.selectedComponentId" />
+        <!--<EditComponentModal v-if="highlightStore.isEditModeActive && highlightStore.selectedComponentId" />-->
     </div>
 </template>
 
