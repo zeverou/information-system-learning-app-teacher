@@ -66,7 +66,6 @@
                             <UButton variant="outline" color="primary" @click="resetForm">
                                 {{ t('cancel') }}
                             </UButton>
-                            <UButton @click="helperMethod">Helper</UButton>
                         </div>
                     </UForm>
                 </UCard>

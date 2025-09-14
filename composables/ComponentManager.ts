@@ -1624,21 +1624,32 @@ navigateTo({
     });
 
     const mealPlanComponent = new Component({
-      id: "meal-plan",
-      name: "Meal Plan",
+      id: "meal-plan-list",
+      name: "Meal Plan List",
       description: `Component for getting meal plan information.`,
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
       sql: {
-        "sql-1": `SELECT DISTINCT date_served FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} ORDER BY date_served;`,
-        "sql-2": `SELECT * FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_supervisors')} ORDER BY date_served;`,
-        "sql-3": `SELECT * FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} ORDER BY date_served;`
-
-
+        "sql-1": `SELECT * FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')};`,
       },
       additionals: {}
     });
+
+    const mealListComponent = new Component({
+      id: "meal-plan-meal-list",
+      name: "Meal Plan Meal List",
+      description: `Component for getting meal plan information.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `SELECT * FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} JOIN;`,
+      },
+      additionals: {}
+    });
+
+
     // Store the instances into the store
     componentCodeStore.updateDefaultComponent(statsMealsComponent);
     componentCodeStore.updateDefaultComponent(statsParticipantsComponent);
@@ -1836,7 +1847,7 @@ navigateTo({
     componentCodeStore.resetComponent("meals-add");
     componentCodeStore.resetComponent("meals-edit");
     componentCodeStore.resetComponent("meals-when-served");
-    componentCodeStore.resetComponent("meal-plan");
+    componentCodeStore.resetComponent("meal-plan-list");
     componentCodeStore.resetComponent("session-participants-count");
     componentCodeStore.resetComponent("session-participants-list");
     componentCodeStore.resetComponent("session-supervisors-list");

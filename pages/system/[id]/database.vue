@@ -8,6 +8,8 @@ import { useSelectedSystemStore } from '~/stores/useSelectedSystemStore'
 import { useSelectedTableStore } from '~/stores/useSelectedTableStore'
 import LocalNavbar from '~/components/LocalNavbar.vue'
 import { usePropertyStore } from '#imports'
+import { USeparator } from '#components'
+import QueryExecutor from '~/components/infsys_components/database/QueryExecutor.vue'
 
 /* 2. Stores */
 const informationSystemStore = useInformationSystemStore()
@@ -342,6 +344,10 @@ onMounted(() => {
             @sort-change="handleSortChange"
             @filter-change="handleFilterChange"
         />
+
+        <USeparator></USeparator>
+
+        <QueryExecutor v-if="system" :system="system" />
 
         <EntityFormModal
             :open="editModalOpen"
