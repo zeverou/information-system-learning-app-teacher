@@ -30,6 +30,10 @@ npm run dev
 # Pak otevřete prohlížeč a přejděte na adresu http://localhost:3001
 # Tedy na port, který je uveden ve výstupu příkazu npm run dev
 ```
+Pokud byste chtěli aplikaci deploynout na vlastní server, postupujte podle kroků zde: https://nuxt.com/docs/3.x/getting-started/deployment.
+
+Nebo je aplikaci možné deploynout skrze Github Pages. Github Action pro to potřebná je v `.github/workflows/deploy.yml`.
+Stačí v Github repozitáři povolit Github Pages.
 
 ---
 
@@ -78,7 +82,7 @@ Zde je jednoduchý návod jak aplikaci používat. Podrobná příručka pro uč
 ## TBD (BP)
 
 - Vytvoření product tour (interaktivní návod, jak ovládat aplikaci) pomocí nějaké knihovny např. Intro.js, pro studenta i učitele.
-- Aktuálně tabulky jsou napsány v angličtině, ale lze v sql dotazech používat české názvy tabbulek, existuje most na přeložení názvů tabulek do češtiny. Ale nejde to s názvy sloupců, tj. je potřeba používat anglicé názvy sloupců.
+- Aktuálně tabulky jsou napsány v angličtině, ale lze v sql dotazech používat české názvy tabulek, existuje most na přeložení názvů tabulek do češtiny. Ale nejde to s názvy sloupců, tj. je potřeba používat anglicé názvy sloupců.
 - Editace komponent: byllo by dobré mít nějaký seznam proměnných dané stránky/komponeny, který by užiateli byli zobrazeny. Mohl by je pak např. používat v JS/html/sql kódu
 - Grafický editor pro tvorbu úkolů / vytváření chyb v komponentách
 - Vytvoření úvodních úkolů, které mají dávat nějaký hlubší smysl, ne jen reprezentativní ukázky.
