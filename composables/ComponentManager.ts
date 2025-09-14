@@ -264,48 +264,61 @@ navigateTo({
       additionals: {}
     });
 
-    const mealCountBadgeComponent = new Component({
-      id: "meals-count-badge",
-      name: "Meals Count Badge",
-      description: `Badge showing the count of meals, optionally filtered by when_served type.`,
-      html: {
-        "html": `
-        <div class="badge primary large">
-      <span class="icon">🍽️</span>
-      <span>{{ label }}: {{ mealsCount }}</span>
-    </div>
-    ` },
-      css: {
-        "css": `.badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-weight: bold;
-    cursor: pointer;
-  }
+const mealCountBadgeComponent = new Component({
+  id: "meals-count-badge",
+  name: "Meals Count Badge",
+  description: `Badge showing the count of meals, optionally filtered by when_served type.`,
+  html: {
+    "html": `
+      <div class="badge primary medium">
+        <span class="icon">🍽️</span>
+        <span>{{ label }}: {{ mealsCount }}</span>
+      </div>
+    `
+  },
+  css: {
+    "css": `.badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-  .badge.primary {
-    background-color: #f59e0b; /* Orange */
-    color: white;
-  }
+    .badge.primary {
+      background-color: #f59e0b; /* Orange */
+      color: white;
+    }
 
-  .badge.large {
-    font-size: 1.25rem;
-  }
+    .badge.small {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+    }
 
-  .icon {
-    font-size: 1.5rem;
-  }
-` },
-      js: { "js": `` },
-      sql: {
-        "sql-1": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}`,
-        "sql-2": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} WHERE when_served = ?`,
-      },
-      additionals: {}
-    });
+    .badge.medium {
+      font-size: 1rem;      /* medium text */
+      padding: 0.4rem 0.75rem; /* medium padding */
+    }
+
+    .badge.large {
+      font-size: 1.25rem;
+      padding: 0.5rem 1rem;
+    }
+
+    .icon {
+      font-size: 1.2rem; /* balanced icon size */
+    }
+    `
+  },
+  js: { "js": `` },
+  sql: {
+    "sql-1": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}`,
+    "sql-2": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} WHERE when_served = ?`,
+  },
+  additionals: {}
+});
+
 
     const sessionDateRangeComponent = new Component({
       id: "session-date-range",

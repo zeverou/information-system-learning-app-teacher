@@ -13,7 +13,7 @@
                 <div class="highlightable" :id="'participants-session-menu'"
                     @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('participants-session-menu', $event)">
                     <div class="component-wrapper">
-                        <USelect v-model="value" :items="filterSessionsItems"
+                        <USelect size="xl" v-model="value" :items="filterSessionsItems"
                             :disabled="highlightStore.isEditModeActive" />
                         <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive"
                             :componentId="'sessions-list'" class="edit-button" />
@@ -91,7 +91,7 @@
                         <div class="highlightable" id="participants-filter-reset"
                             @click="highlightStore.isHighlightMode ? highlightStore.highlightHandler.selectElement('participants-filter-reset', $event) : resetFilter()">
                             <div class="component-wrapper">
-                                <UButton variant="outline" color="sky" size="sm" icon="i-lucide-rotate-ccw"
+                                <UButton size="xl" variant="outline" color="sky" icon="i-lucide-rotate-ccw"
                                     :disabled="highlightStore.isEditModeActive">
                                 </UButton>
                             </div>
@@ -99,8 +99,8 @@
                         <div class="highlightable" id="participants-filter-input"
                             @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('participants-filter-input', $event)">
                             <div class="component-wrapper">
-                                <UInput v-model="filterText" color="sky" :placeholder="t('filter_participants')"
-                                    size="sm" :disabled="highlightStore.isEditModeActive" />
+                                <UInput size="xl" v-model="filterText" color="sky" :placeholder="t('filter_participants')"
+                                    :disabled="highlightStore.isEditModeActive" />
                                 <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive"
                                     :componentId="'participants-filter-input'" class="edit-button" />
                             </div>
@@ -108,7 +108,7 @@
 
                     </div>
                     <!-- Add Participant Button (right) -->
-                    <UButton color="sky" variant="outline" @click="createNewParticipant" icon="i-heroicons-plus">
+                    <UButton size="xl" color="sky" variant="outline" @click="createNewParticipant" icon="i-heroicons-plus">
                         {{ t('add_participant') }}
                     </UButton>
                 </div>

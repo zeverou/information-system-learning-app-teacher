@@ -22,19 +22,46 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useSelectedSystemStore } from '~/stores/useSelectedSystemStore'
+import { useSelectedSystemStore, useInformationSystemStore } from '#imports'
 import { useHighlightStore } from '~/stores/useHighlightStore'
 import { useComponentCodeStore } from '#imports'
 import { Component } from '~/model/Component'
 import { ComponentHandler } from '~/composables/ComponentHandler'
+import { InformationSystem } from '~/model/InformationSystem'
+import { ComponentManager } from '#imports'
 
 
 const route = useRoute()
 const { t } = useI18n()
 const systemStore = useSelectedSystemStore()
+const informationSystemStore = useInformationSystemStore()
 const highlightStore = useHighlightStore()
 const componentCodeStore = useComponentCodeStore()
 const selectedSystemStore = useSelectedSystemStore()
+
+// Get system from route and set as selected
+const systemId = route.params.id
+const systems = informationSystemStore.systems
+const currentSystem = computed(() => systems.find((sys: any) => sys.id === parseInt(systemId as string, 10)) || null)
+
+// Watch for system changes and set selected system
+watch(currentSystem, (newSystem) => {
+    if (newSystem) {
+        selectedSystemStore.setSelectedSystem(newSystem as InformationSystem)
+    }
+}, { immediate: true })
+
+// Watch for database initialization and initialize components when ready
+watch(
+    () => selectedSystemStore.selectedSystem?.dbInitialized && !ComponentManager.areComponentsInitialized(),
+    (shouldInitialize) => {
+        if (shouldInitialize && selectedSystemStore.selectedSystem?.db) {
+            console.warn("[X] Components not initialized in meal-plan.vue")
+            ComponentManager.initializeComponents()
+        }
+    },
+    { immediate: true }
+)
 
 const componentId = 'meal-plan'
 
@@ -49,7 +76,7 @@ const meals = computed(() => {
 
     const _ = selectedSystemStore.dbNumber;
 
-    if (!system?.db || typeof system?.db?.query !== "function") {
+    if (!system?.db || !system?.dbInitialized || typeof system?.db?.query !== "function") {
         return []
     }
     const queryResult = system?.db.query(actualParticipantMealsQuery.value)

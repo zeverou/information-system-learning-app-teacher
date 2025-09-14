@@ -1,6 +1,6 @@
 <template>
     <div class="when-served-menu">
-        <USelect id="when-served-select" v-model="selectedValue" :options="whenServedOptions"
+        <USelect size="lg" id="when-served-select" v-model="selectedValue" :options="whenServedOptions"
             :placeholder="t('all_meals')" :key="optionsKey" class="w-64" :items="whenServedOptions" />
     </div>
 </template>
