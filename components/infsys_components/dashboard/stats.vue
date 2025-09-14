@@ -2,13 +2,15 @@
   <div>
     <div class="dashboard-header">
       <h1 class="dashboard-title">{{ system?.name || 'Dashboard' }}</h1>
-      <p class="dashboard-subtitle">{{ t('dashboard_subtitle') }}</p>
+
     </div>
+    <h1 class="text-4xl font-bold mb-4">{{ t('dashboard') }}</h1>
+
     <div class="stats">
       <StatsSessions ref="statsSessionsRef" />
       <StatsParticipants ref="statsParticipantsRef" />
       <StatsSupervisors ref="statsSupervisorsRef" />
-      <StatsMeals ref="statsMealsRef"/>
+      <StatsMeals ref="statsMealsRef" />
     </div>
   </div>
 </template>

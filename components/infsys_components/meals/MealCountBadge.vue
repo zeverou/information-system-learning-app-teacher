@@ -1,19 +1,19 @@
 <template>
-  <div class="highlightable" id="meals-count-badge"
-    @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('meals-count-badge', $event)">
-    <div class="badge-wrapper">
-      <div class="badge-content-wrapper">
-        <!-- Rendered HTML -->
-        <div v-html="renderedHtml" class="badge-content"></div>
+  <div v-if="system" class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg">
+    <UIcon name="i-lucide-utensils" class="w-4 h-4 text-gray-600" />
 
-        <!-- Edit button positioned absolutely -->
-        <EditComponentModalOpenButton
-          v-if="highlightStore.isEditModeActive"
-          :componentId="componentId"
-          class="edit-button"
-        />
+    <!-- Meal Count -->
+    <div class="highlightable" :id="'meals-count-badge'"
+      @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('meals-count-badge', $event)">
+      <div class="component-wrapper">
+        <span class="text-sm font-medium text-gray-700">
+          {{ t('meal_count') }}: {{ mealsCount }}
+        </span>
+        <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive"
+          :componentId="'meals-count-badge'" class="edit-button" />
       </div>
     </div>
+
   </div>
   <EditComponentModal v-if="highlightStore.isEditModeActive && highlightStore.selectedComponentId" />
 </template>
@@ -48,22 +48,8 @@ const correctSqlQuery = computed(() => {
   }
   return mealsCountBadgeComponent.value?.sql?.['sql-1'] || ''
 })
-const correctHtmlTemplate = computed(() => mealsCountBadgeComponent.value?.html?.['html'] || '')
-const correctCss = computed(() => mealsCountBadgeComponent.value?.css?.['css'] || '')
 
 const sqlQuery = computed(() => ComponentHandler.getComponentValue(componentId, 'sql', correctSqlQuery.value))
-const htmlTemplate = computed(() => ComponentHandler.getComponentValue(componentId, 'html', correctHtmlTemplate.value))
-const css = computed(() => ComponentHandler.getComponentValue(componentId, 'css', correctCss.value))
-
-const renderedHtml = computed(() => {
-  const html = htmlTemplate.value
-    .replace('{{ mealsCount }}', String(mealsCount.value))
-    .replace('{{ label }}', getLabel())
-
-  return `<style>${css.value}</style>${html}`;
-});
-
-/* 3. Props */
 
 /* 4. Emits */
 // none
@@ -85,22 +71,14 @@ const mealsCount = computed(() => {
   return result || 0
 })
 
-const getLabel = () => {
-  return t('meal_count')
-}
-
 useHighlightWatchers(highlightStore.highlightHandler, highlightStore);
 
 </script>
 
 <style>
-.badge-wrapper {
+.component-wrapper {
+  position: relative;
   display: inline-block;
-}
-
-.badge-content-wrapper {
-  position: relative; /* This will be the reference for the button */
-  display: inline-block; /* Shrink to content size */
 }
 
 .edit-button {

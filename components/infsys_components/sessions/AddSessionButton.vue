@@ -1,6 +1,6 @@
 <template>
     <div>
-        <UButton color="sky" variant="outline" @click="handleButtonClick($event)" icon="i-heroicons-plus">
+        <UButton size="xl" color="yellow" variant="outline" @click="handleButtonClick($event)" icon="i-heroicons-plus">
             {{ t('add_session') }}
         </UButton>
     </div>

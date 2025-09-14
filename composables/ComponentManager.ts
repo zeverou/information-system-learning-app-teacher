@@ -223,56 +223,14 @@ navigateTo({
     });
 
     const sessionDayCountBadgeComponent = new Component({
-      id: "session-day-count-badge",
-      name: "Session Day Count Badge",
-      description: `Badge showing the count of days for a session.`,
-      html: {
-        "html": `
-        <div class="badge primary large">
-      <span class="icon">📅</span>
-      <span>{{ label }}: {{ dayCount }}</span>
-    </div>
-    ` },
-      css: {
-        "css": `.badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .badge.primary {
-    background-color: #10b981; /* Green */
-    color: white;
-  }
-
-  .badge.large {
-    font-size: 1.25rem;
-  }
-
-  .icon {
-    font-size: 1.5rem;
-  }
-` },
-      js: { "js": `const timeDifference = end.getTime() - start.getTime(); return Math.ceil(timeDifference / (1000 * 3600 * 24)) + 1;` },
-      sql: {
-        "sql": `SELECT from_date, to_date FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')} WHERE session_id = ?`,
-      },
-      additionals: {}
-    });
-
-const mealCountBadgeComponent = new Component({
-  id: "meals-count-badge",
-  name: "Meals Count Badge",
-  description: `Badge showing the count of meals, optionally filtered by when_served type.`,
+  id: "session-day-count-badge",
+  name: "Session Day Count Badge",
+  description: `Badge showing the count of days for a session.`,
   html: {
     "html": `
       <div class="badge primary medium">
-        <span class="icon">🍽️</span>
-        <span>{{ label }}: {{ mealsCount }}</span>
+        <span class="icon">📅</span>
+        <span>{{ label }}: {{ dayCount }}</span>
       </div>
     `
   },
@@ -287,7 +245,7 @@ const mealCountBadgeComponent = new Component({
     }
 
     .badge.primary {
-      background-color: #f59e0b; /* Orange */
+      background-color: #10b981; /* Green */
       color: white;
     }
 
@@ -297,7 +255,7 @@ const mealCountBadgeComponent = new Component({
     }
 
     .badge.medium {
-      font-size: 1rem;      /* medium text */
+      font-size: 1rem;         /* medium text */
       padding: 0.4rem 0.75rem; /* medium padding */
     }
 
@@ -310,6 +268,25 @@ const mealCountBadgeComponent = new Component({
       font-size: 1.2rem; /* balanced icon size */
     }
     `
+  },
+  js: { 
+    "js": `const timeDifference = end.getTime() - start.getTime(); return Math.ceil(timeDifference / (1000 * 3600 * 24)) + 1;` 
+  },
+  sql: {
+    "sql": `SELECT from_date, to_date FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')} WHERE session_id = ?`,
+  },
+  additionals: {}
+});
+
+const mealCountBadgeComponent = new Component({
+  id: "meals-count-badge",
+  name: "Meals Count Badge",
+  description: `Badge showing the count of meals, optionally filtered by when_served type.`,
+  html: {
+    "html": ``
+  },
+  css: {
+    "css": ``
   },
   js: { "js": `` },
   sql: {

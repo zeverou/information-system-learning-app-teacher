@@ -8,7 +8,6 @@
         <LocalNavbar />
 
         <main class="dashboard-main">
-    <h1 class="text-4xl font-bold mb-4">{{ t('dashboard') }}</h1>
 
             <div class="dashboard-content-row">
                 <div class="dashboard-content-main">
