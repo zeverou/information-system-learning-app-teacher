@@ -1587,7 +1587,8 @@ const mealCountBadgeComponent = new Component({
       css: { "css": "" },
       js: { "js": "" },
       sql: {
-        "sql": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} (name, when_served) VALUES (?, ?)`
+        "sql-1": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} (name, when_served) VALUES (?, ?)`,
+        "sql-2": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} (meal_id, allergen_id) VALUES (?, ?)`
       },
       additionals: {}
     });

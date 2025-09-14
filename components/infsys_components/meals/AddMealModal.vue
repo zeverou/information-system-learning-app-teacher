@@ -13,7 +13,7 @@
                             @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('meals-add-name', $event)">
                             <div class="component-wrapper">
                                 <label for="name" class="block text-sm font-medium text-white mb-1">{{ t('meal_name')
-                                    }}</label>
+                                }}</label>
                                 <input
                                     :class="['form-input', { 'border-red-500': !newMealNameComputed, 'border-sky-500': newMealNameComputed }]"
                                     id="name" v-model="newMeal.name" type="text"
@@ -88,6 +88,17 @@ const toast = useToast()
 const highlightStore = useHighlightStore()
 const componentCodeStore = useComponentCodeStore()
 
+const system = selectedSystemStore.selectedSystem
+if (!system?.db) {
+    throw new Error('Database not available')
+}
+
+// Get the add meal component
+const componentId = 'meals-add'
+const addMealComponent = componentCodeStore.getComponentById(componentId) || componentCodeStore.getDefaultComponent(componentId)
+const sqlQuery = addMealComponent?.sql?.['sql-1'] || ''
+
+
 // Props
 const props = defineProps<{
     addModalOpen: boolean
@@ -145,12 +156,13 @@ const hasValidationErrors = computed(() => {
 })
 
 // When served options
+/* TODO: hardcoded options only for czech lang */
 const whenServedOptions = [
-    { label: t('breakfast'), value: 'Breakfast' },
-    { label: t('lunch'), value: 'Lunch' },
-    { label: t('dinner'), value: 'Dinner' },
-    { label: t('snack'), value: 'Snack' }
+    { label: t('breakfast'), value: 'snídaně' },
+    { label: t('lunch'), value: 'oběd' },
+    { label: t('dinner'), value: 'večeře' },
 ]
+
 
 // Allergen options
 const allergenOptions = computed(() => {
@@ -172,38 +184,10 @@ const handleAddMeal = async (mealData: any) => {
     isSubmitting.value = true
 
     try {
-        const system = selectedSystemStore.selectedSystem
-        if (!system?.db) {
-            throw new Error('Database not available')
-        }
 
-        // Get the add meal component
-        const componentId = 'meals-add'
-        const addMealComponent = componentCodeStore.getComponentById(componentId) || componentCodeStore.getDefaultComponent(componentId)
-        const sqlQuery = addMealComponent?.sql?.['sql'] || ''
-
-        if (!sqlQuery) {
-            throw new Error('Add meal SQL query not found')
-        }
 
         // Execute the insert query
         system.db.exec(sqlQuery, [mealData.name, mealData.when_served])
-
-        // Handle allergens if provided
-        if (mealData.allergens && mealData.allergens.length > 0) {
-            // Get the inserted meal ID
-            const getMealIdQuery = componentCodeStore.getComponentCodeByType('meal-get-id', 'sql', 'sql') || '';
-            const mealIdResult = system.db.query(getMealIdQuery, [mealData.name, mealData.when_served]);
-            const mealId = mealIdResult?.results?.[0]?.meal_id;
-
-            if (mealId) {
-                // Add allergen associations
-                for (const allergenId of mealData.allergens) {
-                    const insertAllergenQuery = componentCodeStore.getComponentCodeByType('meal-allergen-insert', 'sql', 'sql') || '';
-                    system.db.exec(insertAllergenQuery, [mealId, allergenId]);
-                }
-            }
-        }
 
         // If we reach here without error, the meal was added successfully
         selectedSystemStore.incrementDbNumber()
@@ -211,6 +195,23 @@ const handleAddMeal = async (mealData: any) => {
             title: t('meal_added_successfully'),
             color: 'green'
         })
+
+        console.log("Meal allergens:", mealData.allergens)
+
+        // Get the last inserted row id
+        const result = system.db.query("SELECT last_insert_rowid() as id");
+
+        
+        const lastId = result.results[0].id
+        console.log("Last inserted meal ID:", lastId)
+
+
+        // Inserting allergens
+        for (const allergenId of mealData.allergens) {
+            const insertAllergenSql = componentCodeStore.getComponentCodeByType('meals-add', 'sql', 'sql-2') || ''
+            system.db.exec(insertAllergenSql, [lastId, allergenId])
+        }
+
         resetForm()
     } catch (error) {
         console.error('Failed to add meal:', error)
