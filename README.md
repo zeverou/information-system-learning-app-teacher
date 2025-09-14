@@ -5,7 +5,7 @@
 
 ## Přehled
 
-Tato aplikace je navržena pro studenty, kteří se učí o informačních systémech a jejich chybách. Umožňuje uživatelům procházet různé informační systémy, identifikovat chyby a opravovat je. 
+Tato aplikace je navržena pro studenty, kteří se učí o informačních systémech a jejich chybách. Umožňuje uživatelům procházet různé informační systémy, identifikovat chyby a opravovat je. Naimplementovaný informační systém, ve kterém se chyby hledají je zjednodušený model systému pro správu letního tábora.
 
 ### Technologie
 
@@ -39,7 +39,49 @@ Zde je jednoduchý návod jak aplikaci používat. Podrobná příručka pro uč
 
 ### Učitel
 
+1. **Úprava informačního systému** - V souboru `assets/data/information_system_*`/config.json` můžete upravit konfiguraci informačního systému, včetně úkolů pro studenty.
+
+2. **Přidání nových úkolů** - V souboru `assets/data/information_system_*`/csv můžete upravovat data informačního systému.
+
+3. **Další kroky jsou popsány v souboru** [docs/cs/teacher.md](./docs/cs/teacher.md).
+
 ### Student
+
+0. **Nastavení** - V kolonce `Nastavení` v navigačním menu můžete upravit jazyk aplikace a podívat se na klávesové zkratky.
+
+1. **Vstup do systému** - Otevřete aplikaci a vyberte informační systém (v kolonce `Systém`), který chcete prozkoumat.
+
+2. **Stránky systému** 
+    - V kolonce `Nástěnka` můžete vidět statistiky o informačním systému.
+    - V kolonce `Turnusy` můžete vidět a spravovat turnusy.
+    - V kolonce `Účastníci` můžete vidět a spravovat účastníky.
+    - V kolonce `Vedoucí` můžete vidět a spravovat vedoucí.
+    - V kolonce `Jídla` můžete vidět a spravovat jídla.
+    - V kolonce `Jídelníček` můžete vidět a spravovat jídelníček.
+
+3. **Další kolonky**
+    - V kolonce `Student` můžete vidět nápovědu pro práci s aplikací.
+    - V kolonce `Nastavení` můžete upravit jazyk aplikace a podívat se na klávesové zkratky.
+    - V kolonce `Obnovit systém` můžete obnovit systém do výchozího stavu.
+        - `Obnovit komponenty`: obnoví se původní vzhled komponent a i jejich fungování.
+        - `Obnovit úkoly`: obnoví se původní úkoly, které má student splnit. vyresetuje se skóre.
+    - V kolonce `Databáze` můžete vidět všechna data v informačním systému ve formě tabulek. Lze také spouštět SQL dotazy nad databází.
+    - V kolonce `Zapnout/Vypnout zvýraznění` - Zapne nebo vypne zvýraznění komponent v systému. Zvýrazní se všechny komponenty. Ty pak lze vybrat pro vyřešení úkolů - nalezeních chybné komponenty.
+    - V kolonce `Zapnout/Vypnout úpravy` - Zapne nebo vypne možnost úprav komponent v systému. Některé úkoly vyžadují úpravu komponent.
+
+
+4. **Hledání a oprava chyb** - V pravém dolnom rohu je tlačítko `Úkoly` (pokud student vybral nějaký úkol, tak se název tlačítka změní na název úkolu), kded můžete vidět seznam úkolů, které máte splnit. Kliknutím na úkol se zobrazí podrobnosti a můžete začít hledat chyby v systému.
+
+## TBD (BP)
+
+- Vytvoření product tour (interaktivní návod, jak ovládat aplikaci) pomocí nějaké knihovny např. Intro.js, pro studenta i učitele.
+- Aktuálně tabulky jsou napsány v angličtině, ale lze v sql dotazech používat české názvy tabbulek, existuje most na přeložení názvů tabulek do češtiny. Ale nejde to s názvy sloupců, tj. je potřeba používat anglicé názvy sloupců.
+- Editace komponent: byllo by dobré mít nějaký seznam proměnných dané stránky/komponeny, který by užiateli byli zobrazeny. Mohl by je pak např. používat v JS/html/sql kódu
+- Grafický editor pro tvorbu úkolů / vytváření chyb v komponentách
+- Vytvoření úvodních úkolů, které mají dávat nějaký hlubší smysl, ne jen reprezentativní ukázky.
+- Optimalizace pro mobilní zařízení.
+- Unit a E2E testy.
 
 ## Kontakt
 
+Pokud máte jakékoli dotazy nebo potřebujete pomoc, neváhejte mě kontaktovat na emailu: david.valek17@gmail.com
