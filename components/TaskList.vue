@@ -1,6 +1,7 @@
 <template>
-  <div class="max-w-md mx-auto mt-8">
-    <UCard>
+  <div class="max-w-md mx-auto mt-8" >
+    <UCard class="bg-slate-950">
+      
       <template #header>
         <h2 class="text-xl font-semibold text-center">{{ t('tasks') }}</h2>
       </template>
@@ -146,7 +147,7 @@
         </div>
       </div>
 
-      <div v-else>
+      <div v-else >
         <div v-if="tasks.length === 0" class="text-center text-gray-500 py-4">
           No tasks yet
         </div>

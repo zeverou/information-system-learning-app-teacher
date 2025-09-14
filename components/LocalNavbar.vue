@@ -25,6 +25,7 @@
                     </UBadge>
 
                     <!-- Tasks Popover -->
+                     <!--
                     <UPopover v-model:open="tasksPopoverOpen" arrow>
                         <UButton icon="i-lucide-list-todo" :label="selectedTaskStore.selectedTask?.title || $t('tasks')"
                             color="primary" variant="subtle" size="sm">
@@ -34,6 +35,7 @@
                             <TaskList />
                         </template>
                     </UPopover>
+                    -->
                 </div>
 
                 <!-- Second row of items -->
@@ -142,6 +144,17 @@
             </div>
         </div>
     </div>
+    
+    <!-- Floating Button -->
+    <UPopover v-model:open="tasksPopoverOpen" arrow>
+      <UButton icon="i-lucide-list-todo" :label="selectedTaskStore.selectedTask?.title || $t('tasks')" color="primary"
+        variant="solid" size="xl" :class="['fixed bottom-15 right-15 rounded-full shadow-lg', { 'task-button-animation': selectedTaskStore.selectedTask }]">
+        <span class="mobile-hidden">{{ selectedTaskStore.selectedTask?.title || $t('tasks') }}</span>
+      </UButton>
+      <template #content >
+        <TaskList />
+      </template>
+    </UPopover>
 </template>
 
 <style scoped>
