@@ -281,7 +281,9 @@ onMounted(() => {
 
 /* 11. Methods */
 async function handleHelperClick() {
+    console.log("Helper button clicked");
     console.log(ComponentHandler.isInErrorComponents("stats-meals"));
+    console.log(componentCodeStore.getComponentById("stats-meals"));
 }
 
 // Core refresh methods without toasts

@@ -10,6 +10,7 @@ export class Component {
     js: Record<string, string>;
     sql: Record<string, string>;
     additionals: Record<string, string>;
+    edited: boolean = false;
 
     constructor({
         id,

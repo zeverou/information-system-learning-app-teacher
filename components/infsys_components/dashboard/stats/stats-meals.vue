@@ -9,7 +9,6 @@
     </div>
 
   </div>
-  <EditComponentModal v-if="highlightStore.isEditModeActive && highlightStore.selectedComponentId" />
 
 </template>
 
@@ -50,9 +49,9 @@ const system = selectedSystemStore.selectedSystem;
 const mealsComponent = computed(() => componentCodeStore.getComponentById(componentId) || componentCodeStore.getDefaultComponent(componentId))
 console.log("Meals Component:", mealsComponent.value)
 
-const correctSqlQuery = computed(() => mealsComponent.value?.sql?.['sql'] || mealsComponent.value?.sql?.['default'] || '')
-const correctHtmlTemplate = computed(() => mealsComponent.value?.html?.['html'] || mealsComponent.value?.html?.['default'] || '')
-const correctNavigateJs = computed(() => mealsComponent.value?.js?.['js'] || mealsComponent.value?.js?.['default'] || '')
+const correctSqlQuery = computed(() => mealsComponent.value?.sql?.['sql'] || '')
+const correctHtmlTemplate = computed(() => mealsComponent.value?.html?.['html']  || '')
+const correctNavigateJs = computed(() => mealsComponent.value?.js?.['js']  || '')
 
 const sqlQuery = computed(() => ComponentHandler.getComponentValue(componentId, 'sql', correctSqlQuery.value))
 

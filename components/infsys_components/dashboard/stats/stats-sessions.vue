@@ -5,12 +5,11 @@
       <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive" :componentId="componentId" />
     </div>
   </div>
-  <EditComponentModal v-if="highlightStore.isEditModeActive && highlightStore.selectedComponentId"/>
 </template>
 
 <script setup lang="ts">
 /* 1. Imports */
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useSelectedSystemStore } from '~/stores/useSelectedSystemStore'
 import { TaskQueue, useSelectedTableStore } from '#imports'
 import { ComponentHandler } from '~/composables/ComponentHandler'
@@ -41,6 +40,9 @@ const componentId = 'stats-sessions';
 
 /* 8. Local state (ref, reactive) */
 const system = selectedSystemStore.selectedSystem;
+const sqlQuery = ref('')
+const htmlTemplate = ref('')
+const navigateJs = ref('')
 
 /* 9. Computed */
 
@@ -52,10 +54,6 @@ const sessionsComponent = computed(() => componentCodeStore.getComponentById(com
 const correctSqlQuery = computed(() => sessionsComponent.value?.sql?.['sql'] || sessionsComponent.value?.sql?.['default'] || '')
 const correctHtmlTemplate = computed(() => sessionsComponent.value?.html?.['html'] || sessionsComponent.value?.html?.['default'] || '')
 const correctNavigateJs = computed(() => sessionsComponent.value?.js?.['js'] || sessionsComponent.value?.js?.['default'] || '')
-
-const sqlQuery = computed(() => ComponentHandler.getComponentValue(componentId, 'sql', correctSqlQuery.value))
-const htmlTemplate = computed(() => ComponentHandler.getComponentValue(componentId, 'html', correctHtmlTemplate.value))
-const navigateJs = computed(() => ComponentHandler.getComponentValue(componentId, 'js', correctNavigateJs.value))
 
 const sessionsCount = computed(() => {
   if (!system?.db || typeof system?.db?.query !== "function") {
@@ -84,7 +82,11 @@ function navigate() {
 }
 
 /* 12. Lifecycle */
-// none
+onMounted(() => {
+  sqlQuery.value = ComponentHandler.getComponentValue(componentId, 'sql', correctSqlQuery.value)
+  htmlTemplate.value = ComponentHandler.getComponentValue(componentId, 'html', correctHtmlTemplate.value)
+  navigateJs.value = ComponentHandler.getComponentValue(componentId, 'js', correctNavigateJs.value)
+})
 
 /* 13. defineExpose (if needed) */
 

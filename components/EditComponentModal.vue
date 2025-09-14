@@ -293,8 +293,11 @@ function onApplyChanges(event: MouseEvent) {
       css: updateSection(currentComponent.css, sectionEntries.value.css || {}),
       js: updateSection(currentComponent.js, sectionEntries.value.js || {}),
       sql: updateSection(currentComponent.sql, sectionEntries.value.sql || {}),
-      additionals: updateSection(currentComponent.additionals, sectionEntries.value.additionals || {})
+      additionals: updateSection(currentComponent.additionals, sectionEntries.value.additionals || {}),
+      edited: true
     }
+
+
     
     console.log("Updated Component to be saved:", updatedComponent
       

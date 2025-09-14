@@ -113,7 +113,7 @@
             "elementClass": [
                 "stats-supervisors"
             ],
-            "round": 1,
+            "round": 2,
             "is_editable": false,
             "error-components": [
                 {

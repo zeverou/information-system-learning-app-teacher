@@ -74,14 +74,32 @@ export class ComponentHandler {
     }
 
     public static isInErrorComponents(componentFilename: string): boolean {
+
+        console.log("ID: ", componentFilename);
+
+        // if the component was edited
+        const componentCodeStore = useComponentCodeStore();
+        const actualComponent = componentCodeStore.getActualComponent(componentFilename);
+        if (actualComponent && actualComponent.edited) {
+            console.log("Component was edited, considered in error components.");
+            return false;
+        }
+
+        console.log("Component was NOT edited, checking error components.");
+
+        // else
         const errorComponentStore = useErrorComponentStore();
         return errorComponentStore.errorComponents.some(ec => ec.componentId === componentFilename);
     }
 
     public static getComponentValue(componentId: string, key: string, defaultValue: string): string {
+        
+        
         if (ComponentHandler.isInErrorComponents(componentId)) {
+            console.log(`Component ${componentId} is in error components. Getting variable ${key}.`);
             return ComponentHandler.getVariableValue(componentId, key) || defaultValue;
         }
+        console.log(`Component ${componentId} is NOT in error components. Returning default value for variable ${key}.`);
         return defaultValue;
     }
 }

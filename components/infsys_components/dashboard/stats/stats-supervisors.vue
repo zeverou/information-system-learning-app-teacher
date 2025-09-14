@@ -5,7 +5,6 @@
       <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive" :componentId="componentId" />
     </div>
   </div>
-    <EditComponentModal v-if="highlightStore.isEditModeActive && highlightStore.selectedComponentId"/>
 
 </template>
 
