@@ -18,7 +18,7 @@
                         <span class="mobile-hidden">Helper</span>
                     </UButton>
 
-                    <UButton icon="i-heroicons-table-cells" @click="navigateTo(`/system/${selectedSystemStore.selectedId}/database`)">{{ t('database') }}</UButton>
+                    <UButton icon="i-heroicons-table-cells" @click="navigateTo(`/system/${selectedSystemStore.selectedId}/database`)" size="sm">{{ t('database') }}</UButton>
 
                     <UBadge color="red" variant="outline" size="lg">
                         {{ $t('score') }}: {{ scoreStore.score }}
@@ -103,7 +103,7 @@
                 <!-- Fourth row of items -->
                 <div class="flex items-center gap-2 flex-wrap">
                     <UPopover v-model:open="resetPopoverOpen" arrow>
-                        <UButton icon="i-heroicons-arrow-path" :label="$t('refresh_system')" color="primary" variant="subtle" size="sm">
+                        <UButton  icon="i-heroicons-arrow-path" :label="$t('refresh_system')" color="primary" variant="subtle" size="sm">
                             <span class="mobile-hidden">{{ $t('refresh_system') }}</span>
                         </UButton>
                         <template #content>
