@@ -134,7 +134,7 @@
             "description": "Upravte uživatele: Tereza Nováková, tak aby měla i třetí jméno Svobodová, tedy její celé jméno bude Tereza Svobodová Nováková.",
             "status": "pending",
             "kind": "repair",
-            "answer": "tbl-účastníci == jméno:Tereza Svobodová Nováková",
+            "answer": "tbl-účastníci == name:Tereza Svobodová Nováková",
             "elementClass": [
                 "table-form-účastníci-alergeny"
             ],

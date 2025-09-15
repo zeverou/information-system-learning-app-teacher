@@ -77,7 +77,7 @@ export class TaskAnswerEval {
                 if (componentId.endsWith("-sql")) {
                     // Old format: extract component id and get sql code
                     const baseComponentId = componentId.replace("-sql", "");
-                    
+
                     // First check if there's an error component with overridden SQL
                     if (ComponentHandler.isInErrorComponents(baseComponentId)) {
                         const errorSql = ComponentHandler.getVariableValue(baseComponentId, "sql");
@@ -128,7 +128,7 @@ export class TaskAnswerEval {
                     }
                 }
                 query += conditions.join(" AND ");
-                query += " LIMIT 1;";    
+                query += " LIMIT 1;";
 
                 console.log(query);
 
@@ -140,7 +140,7 @@ export class TaskAnswerEval {
                     areAnswersCorrect = false;
                     break;
                 }
-                
+
 
                 // Add table comparison logic here if needed
             } else if (componentId.includes("js") || componentId.endsWith("-js")) {
@@ -148,7 +148,7 @@ export class TaskAnswerEval {
                 let actualJs: string;
                 if (componentId.endsWith("-js")) {
                     const baseComponentId = componentId.replace("-js", "");
-                    
+
                     // First check if there's an error component with overridden JS
                     if (ComponentHandler.isInErrorComponents(baseComponentId)) {
                         const errorJs = ComponentHandler.getVariableValue(baseComponentId, "js");
@@ -159,7 +159,7 @@ export class TaskAnswerEval {
                 } else {
                     actualJs = await componentCodeStore.getComponentCode(componentId);
                 }
-                
+
                 if (expectedAnswer === actualJs) {
                     console.log("JS code matches!");
                     continue;
@@ -173,7 +173,7 @@ export class TaskAnswerEval {
                 let actualHtml: string;
                 if (componentId.endsWith("-html")) {
                     const baseComponentId = componentId.replace("-html", "");
-                    
+
                     // First check if there's an error component with overridden HTML
                     if (ComponentHandler.isInErrorComponents(baseComponentId)) {
                         const errorHtml = ComponentHandler.getVariableValue(baseComponentId, "html");
@@ -184,7 +184,7 @@ export class TaskAnswerEval {
                 } else {
                     actualHtml = await componentCodeStore.getComponentCode(componentId);
                 }
-                
+
                 if (expectedAnswer === actualHtml) {
                     console.log("HTML code matches!");
                     continue;

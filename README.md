@@ -88,6 +88,11 @@ Zde je jednoduchý návod jak aplikaci používat. Podrobná příručka pro uč
 - Vytvoření úvodních úkolů, které mají dávat nějaký hlubší smysl, ne jen reprezentativní ukázky.
 - Optimalizace pro mobilní zařízení.
 - Unit a E2E testy.
+- Celkové zlepšení chodu aplikace a zlepšení dosavadních funkcionalit, např.
+    - Obnovení databáze z navigačního menu - nyní se to dá pouze z kolonky `Databáze`.
+    - Více možností pro editaci komponent. Více komponent.
+    - Zrychlení aplikace a loading animace.
+    - Kontrola vyřešení úkolů dokáže zkontrolovat zda upravený SQL dotaz je správný, ale nedokáže to pro JS a HTML. To lze jen zatím zkontrolovat podle tohom zda byla např. přidána nějaká entita.
 
 ## Kontakt
 
