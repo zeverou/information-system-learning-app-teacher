@@ -95,7 +95,6 @@
                             <UCard class="p-4 min-w-96 max-h-screen overflow-y-auto">
                                 <template #header>
                                     <div class="flex items-center justify-between">
-                                        <h3 class="text-lg font-semibold">Student</h3>
                                         <UButton icon="i-lucide-x" color="neutral" variant="ghost"
                                             @click="studentDrawerOpen = false" />
                                     </div>
