@@ -32,7 +32,9 @@ const highlightStore = useHighlightStore()
 const componentCodeStore = useComponentCodeStore()
 const selectedSystemStore = useSelectedSystemStore()
 
-const currentSystem = computed(() => systems.find((sys: any) => sys.id === parseInt(systemId as string, 10)) || null)
+// Debug information system store
+console.log("Information system store:", informationSystemStore)
+console.log("Systems in store:", informationSystemStore.systems)
 
 const componentId = 'meal-plan'
 
@@ -59,11 +61,25 @@ watch(
     () => selectedSystemStore.selectedSystem?.dbInitialized && !ComponentManager.areComponentsInitialized(),
     (shouldInitialize) => {
         if (shouldInitialize && selectedSystemStore.selectedSystem?.db) {
-            console.warn("[X] Components not initialized in sessions.vue")
+            console.warn("[X] Components not initialized in meal-plan.vue")
             ComponentManager.initializeComponents()
         }
     },
     { immediate: true }
 )
+
+// Watch for database availability and trigger data loading
+watch(() => selectedSystemStore.selectedSystem?.db, (newDb) => {
+    if (newDb) {
+        console.log("Database is available for meal plan")
+    }
+})
+
+// Watch for system changes and ensure data loading
+watch(() => selectedSystemStore.selectedSystem, (newSystem) => {
+    if (newSystem?.db) {
+        console.log("System with database available for meal plan")
+    }
+})
 
 </script>

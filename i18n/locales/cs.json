@@ -246,5 +246,9 @@
     "meal_participant_removed_error": "Chyba při odebírání účastníka z jídla",
     "meal_participant_removed_success": "Účastník {name} úspěšně odebrán z jídla",
     "meal_supervisor_removed_error": "Chyba při odebírání vedoucího z jídla",
-    "meal_supervisor_removed_success": "Vedoucí {name} úspěšně odebrán z jídla"
+    "meal_supervisor_removed_success": "Vedoucí {name} úspěšně odebrán z jídla",
+    "no_meal_plan_data": "Žádná data o jídelníčku",
+    "no_meal_plan_description": "V systému nejsou aktuálně žádná data o jídelníčku."
+
+
 }

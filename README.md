@@ -102,6 +102,8 @@ Zde je jednoduchý návod jak aplikaci používat. Podrobná příručka pro uč
 - Import systému z uložiště. (Uložení někde v localStorage, atd.)
 - Nějaké sortotování pro účastníky, jídla, atd.
 - Více modikikovatelného kódu pro komponenty.
+- Responzivní web + Možnost použití na mobilních zařízeních.
+- Obnovení databáze bez její reinicializace. 
 
 ## Kontakt
 

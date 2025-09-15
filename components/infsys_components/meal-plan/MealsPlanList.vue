@@ -512,9 +512,20 @@ onMounted(() => {
     }
 })
 
+// Watch for database availability and load meal plan data
+watch(() => selectedSystemStore.selectedSystem?.db, (newDb) => {
+    console.log("Database availability changed:", !!newDb);
+    if (newDb) {
+        console.log("Database available, loading meal plan data");
+        loadData();
+    }
+})
+
+// Watch for system changes and load meal plan data
 watch(() => selectedSystemStore.selectedSystem, (newSystem) => {
-    console.log("System changed:", newSystem);
-    if (newSystem) {
+    console.log("System changed:", newSystem?.id || "null");
+    if (newSystem?.db) {
+        console.log("System with database available, loading meal plan data");
         loadData();
     }
 })

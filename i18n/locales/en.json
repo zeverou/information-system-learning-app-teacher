@@ -240,5 +240,7 @@
     "meal_participant_removed_error": "Error removing participant from meal",
     "meal_participant_removed_success": "Participant {name} successfully removed from meal",
     "meal_supervisor_removed_error": "Error removing supervisor from meal",
-    "meal_supervisor_removed_success": "Supervisor {name} successfully removed from meal"
+    "meal_supervisor_removed_success": "Supervisor {name} successfully removed from meal",
+    "no_meal_plan_data": "No meal plan data",
+    "no_meal_plan_description": "There is currently no meal plan data in the system."
 }
