@@ -181,6 +181,10 @@
                 <p class="empty-description">{{ t('no_meal_plan_description') }}</p>
             </div>
 
+            <!-- Add Components -->
+            <AddParticipantToMeal />
+            <AddSupervisorToMeal />
+
             <USeparator color="primary" />
 
         </div>
@@ -196,6 +200,8 @@ import { useComponentCodeStore } from '#imports'
 import { ComponentHandler } from '~/composables/ComponentHandler'
 import { useHighlightWatchers } from '~/composables/highlightWatchers'
 import { useToast } from '#imports'
+import AddParticipantToMeal from './AddParticipantToMeal.vue'
+import AddSupervisorToMeal from './AddSupervisorToMeal.vue'
 import '~/assets/css/highlight.css'
 
 

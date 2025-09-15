@@ -248,7 +248,25 @@
     "meal_supervisor_removed_error": "Chyba při odebírání vedoucího z jídla",
     "meal_supervisor_removed_success": "Vedoucí {name} úspěšně odebrán z jídla",
     "no_meal_plan_data": "Žádná data o jídelníčku",
-    "no_meal_plan_description": "V systému nejsou aktuálně žádná data o jídelníčku."
-
-
+    "no_meal_plan_description": "V systému nejsou aktuálně žádná data o jídelníčku.",
+    "add_participant_to_meal": "Přidat účastníkovi jídlo",
+    "add_supervisor_to_meal": "Přidat vedoucímu jídlo",
+    "select_participant": "Vybrat účastníka",
+    "select_supervisor": "Vybrat vedoucího",
+    "select_meal": "Vybrat jídlo",
+    "choose_participant": "Vyberte účastníka...",
+    "choose_supervisor": "Vyberte vedoucího...",
+    "choose_meal": "Vyberte jídlo...",
+    "choose_date": "Vyberte datum...",
+    "add_to_meal": "Přidat k jídlu",
+    "validation_error": "Chyba validace",
+    "select_participant_and_meal": "Prosím vyberte účastníka i jídlo",
+    "select_supervisor_and_meal": "Prosím vyberte vedoucího i jídlo",
+    "select_participant_meal_and_date": "Prosím vyberte účastníka, jídlo i datum",
+    "select_supervisor_meal_and_date": "Prosím vyberte vedoucího, jídlo i datum",
+    "database_not_available": "Databáze není dostupná",
+    "participant_added_to_meal_success": "Účastník úspěšně přidán k jídlu",
+    "supervisor_added_to_meal_success": "Vedoucí úspěšně přidán k jídlu",
+    "participant_add_to_meal_error": "Chyba při přidávání účastníka k jídlu",
+    "supervisor_add_to_meal_error": "Chyba při přidávání vedoucího k jídlu"
 }

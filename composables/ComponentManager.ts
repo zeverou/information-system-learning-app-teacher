@@ -1652,6 +1652,109 @@ navigateTo({
       additionals: {}
     });
 
+    // Add Participant to Meal Components
+    const addParticipantToMealSelectComponent = new Component({
+      id: "add-participant-to-meal-select",
+      name: "Add Participant to Meal - Participant Select",
+      description: `Component for selecting participants to add to meals.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `SELECT participant_id as id, name FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} ORDER BY name`,
+      },
+      additionals: {}
+    });
+
+    const addParticipantToMealMealsComponent = new Component({
+      id: "add-participant-to-meal-meals",
+      name: "Add Participant to Meal - Meals Select",
+      description: `Component for selecting meals to add participants to.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `SELECT meal_id as id, name, when_served FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} ORDER BY when_served, name`,
+      },
+      additionals: {}
+    });
+
+    const addParticipantToMealInsertComponent = new Component({
+      id: "add-participant-to-meal-insert",
+      name: "Add Participant to Meal - Insert",
+      description: `Component for inserting participant-meal relationships.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} (meal_id, participant_id, date_served) VALUES (?, ?, ?)`,
+      },
+      additionals: {}
+    });
+
+    // Add Supervisor to Meal Components
+    const addSupervisorToMealSelectComponent = new Component({
+      id: "add-supervisor-to-meal-select",
+      name: "Add Supervisor to Meal - Supervisor Select",
+      description: `Component for selecting supervisors to add to meals.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `SELECT supervisor_id as id, name FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} ORDER BY name`,
+      },
+      additionals: {}
+    });
+
+    const addSupervisorToMealMealsComponent = new Component({
+      id: "add-supervisor-to-meal-meals",
+      name: "Add Supervisor to Meal - Meals Select",
+      description: `Component for selecting meals to add supervisors to.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `SELECT meal_id as id, name, when_served FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} ORDER BY when_served, name`,
+      },
+      additionals: {}
+    });
+
+    const addSupervisorToMealInsertComponent = new Component({
+      id: "add-supervisor-to-meal-insert",
+      name: "Add Supervisor to Meal - Insert",
+      description: `Component for inserting supervisor-meal relationships.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_supervisors')} (meal_id, supervisor_id, date_served) VALUES (?, ?, ?)`,
+      },
+      additionals: {}
+    });
+
+    // Date components for meal assignments
+    const addParticipantToMealDateComponent = new Component({
+      id: "add-participant-to-meal-date",
+      name: "Add Participant to Meal - Date Selection",
+      description: `Component for selecting date when meal is served to participant.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: { "sql-1": "" },
+      additionals: {}
+    });
+
+    const addSupervisorToMealDateComponent = new Component({
+      id: "add-supervisor-to-meal-date",
+      name: "Add Supervisor to Meal - Date Selection",
+      description: `Component for selecting date when meal is served with supervisor.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: { "sql-1": "" },
+      additionals: {}
+    });
+
 
     // Store the instances into the store
         componentCodeStore.updateDefaultComponent(mealListComponent);
@@ -1755,6 +1858,14 @@ navigateTo({
     componentCodeStore.updateDefaultComponent(mealPlanSupervisorAllergensComponent);
     componentCodeStore.updateDefaultComponent(mealParticipantDeleteComponent);
     componentCodeStore.updateDefaultComponent(mealSupervisorDeleteComponent);
+    componentCodeStore.updateDefaultComponent(addParticipantToMealSelectComponent);
+    componentCodeStore.updateDefaultComponent(addParticipantToMealMealsComponent);
+    componentCodeStore.updateDefaultComponent(addParticipantToMealInsertComponent);
+    componentCodeStore.updateDefaultComponent(addSupervisorToMealSelectComponent);
+    componentCodeStore.updateDefaultComponent(addSupervisorToMealMealsComponent);
+    componentCodeStore.updateDefaultComponent(addSupervisorToMealInsertComponent);
+    componentCodeStore.updateDefaultComponent(addParticipantToMealDateComponent);
+    componentCodeStore.updateDefaultComponent(addSupervisorToMealDateComponent);
     componentCodeStore.updateDefaultComponent(sessionParticipantsListComponent);
     componentCodeStore.updateDefaultComponent(sessionSupervisorsListComponent);
     componentCodeStore.updateDefaultComponent(sessionSupervisorsCountComponent);
@@ -1861,6 +1972,14 @@ navigateTo({
     componentCodeStore.resetComponent("meal-plan-supervisor-allergen-list");
     componentCodeStore.resetComponent("meal-participant-delete");
     componentCodeStore.resetComponent("meal-supervisor-delete");
+    componentCodeStore.resetComponent("add-participant-to-meal-select");
+    componentCodeStore.resetComponent("add-participant-to-meal-meals");
+    componentCodeStore.resetComponent("add-participant-to-meal-insert");
+    componentCodeStore.resetComponent("add-supervisor-to-meal-select");
+    componentCodeStore.resetComponent("add-supervisor-to-meal-meals");
+    componentCodeStore.resetComponent("add-supervisor-to-meal-insert");
+    componentCodeStore.resetComponent("add-participant-to-meal-date");
+    componentCodeStore.resetComponent("add-supervisor-to-meal-date");
     componentCodeStore.resetComponent("session-participants-count");
     componentCodeStore.resetComponent("session-participants-list");
     componentCodeStore.resetComponent("session-supervisors-list");
