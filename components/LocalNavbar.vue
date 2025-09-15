@@ -14,16 +14,16 @@
 
                 <!-- First row of items -->
                 <div class="flex items-center gap-2 flex-wrap">
-                    
+                    <!--
                     <UButton label="Helper" @click="handleHelperClick" size="md">
                         <span class="mobile-hidden">Helper</span>
                     </UButton>
-                    
-                    <UButton icon="i-heroicons-table-cells"
+                    -->
+                    <UButton icon="i-heroicons-table-cells" variant="outline"
                         @click="navigateTo(`/system/${selectedSystemStore.selectedId}/database`)" size="md">{{
                         t('database') }}</UButton>
 
-                    <UBadge color="red" variant="outline" size="md">
+                    <UBadge color="red" variant="outline" size="xl">
                         {{ $t('score') }}: {{ scoreStore.score }}
                     </UBadge>
 

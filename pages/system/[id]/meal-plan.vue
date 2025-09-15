@@ -7,6 +7,8 @@
     <div>
         <MealsPlanList></MealsPlanList>
     </div>
+        <EditComponentModal v-if="highlightStore.isEditModeActive && highlightStore.selectedComponentId" />
+
 </template>
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'

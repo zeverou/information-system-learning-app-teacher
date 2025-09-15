@@ -100,6 +100,9 @@ Zde je jednoduchý návod jak aplikaci používat. Podrobná příručka pro uč
 - Počet bodů za úkoly.
 - Odeslání výsledku.
 - Import systému z uložiště. (Uložení někde v localStorage, atd.)
+- Nějaké sortotování pro účastníky, jídla, atd.
+- Více modikikovatelného kódu pro komponenty.
+
 ## Kontakt
 
 Pokud máte jakékoli dotazy nebo potřebujete pomoc, neváhejte mě kontaktovat na emailu: david.valek17@gmail.com

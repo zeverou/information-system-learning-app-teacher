@@ -466,20 +466,6 @@ defineExpose({
                             <template v-if="col.id === 'od' || col.id === 'do'">
                                 {{ formatDate(row[col.id!]) }}
                             </template>
-                            <!-- Special rendering for 'name' column with avatar -->
-                            <template v-else-if="col.id === 'name'">
-                                <div class="flex items-center gap-3">
-                                    <UAvatar v-if="row.id" size="lg" :alt="`${row.name || row.id} avatar`" />
-                                    <div>
-                                        <p class="font-medium text-highlighted">
-                                            {{ row.name }}
-                                        </p>
-                                        <p v-if="row.age">
-                                            {{ row.age }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </template>
                             <!-- Special rendering for array data columns (like roles, alergeny, etc.) -->
                             <template v-else-if="isArrayColumn(row[col.id!])">
                                 <div class="flex flex-wrap gap-1">

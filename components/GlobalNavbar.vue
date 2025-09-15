@@ -54,12 +54,7 @@ const items = computed<NavigationMenuItem[]>(() => [
     to: '/settings',
     data_target: 'settings',
   },
-  {
-    label: t('development'),
-    icon: 'i-heroicons-code-bracket',
-    to: '/development',
-    data_target: 'development',
-  },
+
 ])
 
 const isOnSystemDetailPage = computed(() => {

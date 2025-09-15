@@ -232,5 +232,13 @@
     "session_id": "Session ID",
     "actions": "Actions",
     "custom_query": "Custom Query",
-    "sql_query": "SQL Query"
+    "sql_query": "SQL Query",
+    "no_participants_description": "There are currently no participants in the system.",
+    "no_supervisors_description": "There are currently no supervisors in the system.",
+    "unique_meals_count": "Unique meals count",
+    "portions": "Portion Count",
+    "meal_participant_removed_error": "Error removing participant from meal",
+    "meal_participant_removed_success": "Participant {name} successfully removed from meal",
+    "meal_supervisor_removed_error": "Error removing supervisor from meal",
+    "meal_supervisor_removed_success": "Supervisor {name} successfully removed from meal"
 }

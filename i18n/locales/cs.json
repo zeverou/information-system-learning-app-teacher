@@ -238,5 +238,13 @@
     "personal_number": "Rodné číslo",
     "actions": "Akce",
     "custom_query": "Vlastní dotaz",
-    "sql_query": "SQL dotaz"
+    "sql_query": "SQL dotaz",
+    "no_participants_description": "V systému nejsou aktuálně žádní účastníci.",
+    "no_supervisors_description": "V systému nejsou aktuálně žádní vedoucí.",
+    "unique_meals_count": "Počet unikátních jídel",
+    "portions": "Počet porcí",
+    "meal_participant_removed_error": "Chyba při odebírání účastníka z jídla",
+    "meal_participant_removed_success": "Účastník {name} úspěšně odebrán z jídla",
+    "meal_supervisor_removed_error": "Chyba při odebírání vedoucího z jídla",
+    "meal_supervisor_removed_success": "Vedoucí {name} úspěšně odebrán z jídla"
 }

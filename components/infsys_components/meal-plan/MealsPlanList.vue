@@ -1,6 +1,6 @@
 <template>
     <div class="meal-plan-container">
-        
+
 
         <div class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between mb-8">
@@ -9,7 +9,8 @@
 
             <!-- Sessions -->
             <div v-for="(dates, sessionId) in dateMap" :key="sessionId" class="session-card mb-8">
-                <div class="session-header cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors" @click="expanded[sessionId] = !expanded[sessionId]">
+                <div class="session-header cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors"
+                    @click="expanded[sessionId] = !expanded[sessionId]">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <UIcon name="i-heroicons-calendar-days" class="w-6 h-6 text-sky-600" />
@@ -22,10 +23,12 @@
                                 {{ formatDate(dates[0]) }} - {{ formatDate(dates[dates.length - 1]) }}
                             </UBadge>
                             <UBadge size="xl" color="green" variant="soft">
-                                {{ getTotalMealsCount(sessionId) }} {{ t('meals') }}
+                                {{ t('unique_meals_count') }} {{ getTotalMealsCount(sessionId) }}
                             </UBadge>
-                            <UIcon
-                                :name="expanded[sessionId] ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
+                            <UBadge size="xl" color="violet" variant="soft">
+                                {{ t('portions') }} {{ getTotalPortionsCount(sessionId) }}
+                            </UBadge>
+                            <UIcon :name="expanded[sessionId] ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
                                 class="w-5 h-5 text-gray-500 transition-transform hover:text-gray-700" />
                         </div>
                     </div>
@@ -34,7 +37,8 @@
                 <!-- Dates -->
                 <div v-if="expanded[sessionId]" class="dates-grid">
                     <div v-for="date in dates" :key="date" class="date-card">
-                        <div class="date-header cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors" @click="dateExpanded[date] = !dateExpanded[date]">
+                        <div class="date-header cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors"
+                            @click="dateExpanded[date] = !dateExpanded[date]">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <UIcon name="i-heroicons-calendar" class="w-5 h-5 text-sky-600" />
@@ -43,8 +47,11 @@
                                     </h3>
                                 </div>
                                 <div class="flex items-center gap-3">
-                                    <UBadge size="xl" color="neutral" variant="soft">
-                                        {{ getMealsCount(sessionId, date) }} {{ t('meals') }}
+                                    <UBadge size="xl" color="primary" variant="soft">
+                                        {{ t('unique_meals_count') }} {{ getMealsCount(sessionId, date) }}
+                                    </UBadge>
+                                    <UBadge size="xl" color="violet" variant="soft">
+                                        {{ t('portions') }} {{ getPortionsCount(sessionId, date) }}
                                     </UBadge>
                                     <UIcon
                                         :name="dateExpanded[date] ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
@@ -55,8 +62,8 @@
 
                         <!-- Meals -->
                         <div v-if="dateExpanded[date]" class="meals-container">
-                            <div v-for="(meals, mealInfo) in getMealsGroupedByType(sessionId, date)"
-                                :key="mealInfo" class="meal-item">
+                            <div v-for="(meals, mealInfo) in getMealsGroupedByType(sessionId, date)" :key="mealInfo"
+                                class="meal-item">
                                 <div class="meal-header" @click="mealExpanded[mealInfo] = !mealExpanded[mealInfo]">
                                     <div
                                         class="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors">
@@ -64,13 +71,12 @@
                                             <UIcon name="i-heroicons-cake" class="w-5 h-5 text-sky-600" />
                                             <div class="flex flex-col gap-2">
                                                 <strong class="text-lg text-gray-900">{{ mealInfo }}</strong>
-                                                <div v-if="getAllergensForMeal(meals[0]?.mealId || 0).length > 0" class="flex flex-wrap gap-1">
+                                                <!-- Debug: Show meal ID -->
+                                                <div v-if="getMealAllergenNames(meals[0]?.mealId || 0).length > 0"
+                                                    class="flex flex-wrap gap-1">
                                                     <UBadge
-                                                        v-for="allergen in getAllergensForMeal(meals[0]?.mealId || 0)"
-                                                        :key="allergen"
-                                                        size="sm"
-                                                        color="red"
-                                                        variant="soft">
+                                                        v-for="allergen in getMealAllergenNames(meals[0]?.mealId || 0)"
+                                                        :key="allergen" size="sm" color="red" variant="soft">
                                                         {{ allergen }}
                                                     </UBadge>
                                                 </div>
@@ -104,17 +110,30 @@
                                             {{ t('participants') }} ({{ meals[0].participants.length }})
                                         </h4>
                                         <div class="participants-grid">
-                                            <div v-for="participant in meals[0].participants" :key="participant.participantEmail"
-                                                class="participant-card">
+                                            <div v-for="participant in meals[0].participants"
+                                                :key="participant.participantEmail" class="participant-card">
                                                 <div class="participant-avatar">
                                                     <UIcon name="i-heroicons-user" class="w-8 h-8 text-sky-600" />
                                                 </div>
                                                 <div class="participant-info">
-                                                    <div class="participant-name">{{ participant.participantName }}</div>
+                                                    <div class="participant-name">{{ participant.participantName }}
+                                                    </div>
                                                 </div>
-                                                <div class="participant-actions">
-                                                    <UButton size="sm" color="red" variant="ghost" @click="removeParticipantFromMeal(participant, mealInfo, sessionId, date)"
-                                                        icon="i-heroicons-trash" />
+                                                <div :id="'meal-participant-delete'" class="highlightable relative">
+                                                    <div class="participant-actions">
+                                                        <UButton
+                                                            @click="highlightStore.isHighlightMode ? highlightStore.highlightHandler.selectElement('meal-participant-delete', $event) : removeParticipantFromMeal(participant, meals[0].mealName, sessionId, date)"
+                                                            size="xs" color="red" variant="ghost"
+                                                            class="delete-participant-btn">
+                                                            <UIcon name="i-heroicons-trash" class="w-4 h-4" />
+                                                        </UButton>
+                                                    </div>
+                                                    <div class="absolute top-0 right-0">
+                                                        <EditComponentModalOpenButton
+                                                            v-if="highlightStore.isEditModeActive"
+                                                            component-id="meal-participant-delete">
+                                                        </EditComponentModalOpenButton>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -127,23 +146,24 @@
                                             {{ t('supervisors') }} ({{ meals[0].supervisors.length }})
                                         </h4>
                                         <div class="supervisors-grid">
-                                            <div v-for="supervisor in meals[0].supervisors" :key="supervisor.supervisorEmail"
-                                                class="supervisor-card">
+                                            <div v-for="supervisor in meals[0].supervisors"
+                                                :key="supervisor.supervisorEmail" class="supervisor-card">
                                                 <div class="supervisor-avatar">
                                                     <UIcon name="i-heroicons-user" class="w-8 h-8 text-violet-600" />
                                                 </div>
                                                 <div class="supervisor-info">
                                                     <div class="supervisor-name">{{ supervisor.supervisorName }}</div>
                                                 </div>
-                                                <UButton 
-                                                    @click="removeSupervisorFromMeal(supervisor, meals[0].mealName, sessionId, date)"
-                                                    size="xs" 
-                                                    color="red" 
-                                                    variant="ghost"
-                                                    class="delete-supervisor-btn"
-                                                >
+                                                <div class="highlightable relative" :id="'meal-supervisor-delete'">
+                                                    <UButton
+                                                    @click="highlightStore.isHighlightMode ? highlightStore.highlightHandler.selectElement('meal-supervisor-delete', $event) : removeSupervisorFromMeal(supervisor, meals[0].mealName, sessionId, date)"
+                                                    size="xs" color="red" variant="ghost" class="delete-supervisor-btn">
                                                     <UIcon name="i-heroicons-trash" class="w-4 h-4" />
                                                 </UButton>
+                                                    <div class="absolute top-0 right-0">
+                                                        <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive" :componentId="'meal-supervisor-delete'" />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -161,7 +181,7 @@
                 <p class="empty-description">{{ t('no_meal_plan_description') }}</p>
             </div>
 
-    <USeparator color="primary" />
+            <USeparator color="primary" />
 
         </div>
     </div>
@@ -174,16 +194,22 @@ import { useSelectedSystemStore, useInformationSystemStore } from '#imports'
 import { useHighlightStore } from '~/stores/useHighlightStore'
 import { useComponentCodeStore } from '#imports'
 import { ComponentHandler } from '~/composables/ComponentHandler'
+import { useHighlightWatchers } from '~/composables/highlightWatchers'
+import { useToast } from '#imports'
+import '~/assets/css/highlight.css'
 
 
 const { t } = useI18n()
 const componentCodeStore = useComponentCodeStore()
 const selectedSystemStore = useSelectedSystemStore()
+const highlightStore = useHighlightStore()
+const toast = useToast()
 
 const componentId = 'meal-plan-list'
 
 const mealPlanListComponent = computed(() => componentCodeStore.getComponentById(componentId) || componentCodeStore.getDefaultComponent(componentId))
-console.log("Meal Plan List Component:", mealPlanListComponent.value)
+const mealPlanMealAllergenListComponent = computed(() => componentCodeStore.getComponentById("meal-plan-meal-allergen-list") || componentCodeStore.getDefaultComponent("meal-plan-meal-allergen-list"))
+
 
 const mealPlanListQuery = computed(() => mealPlanListComponent.value?.sql?.['sql-2'] || '')
 const actualMealPlanListQuery = computed(() => ComponentHandler.getComponentValue(componentId, 'sql-2', mealPlanListQuery.value))
@@ -193,6 +219,28 @@ const actualSupervisorQuery = computed(() => ComponentHandler.getComponentValue(
 
 const allergenQuery = computed(() => mealPlanListComponent.value?.sql?.['sql-4'] || `SELECT allergen_id, name FROM \${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} JOIN \${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} ON \${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')}.meal_id = \${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}.meal_id WHERE \${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')}.meal_id = ?`)
 const actualAllergenQuery = computed(() => ComponentHandler.getComponentValue(componentId, 'sql-4', allergenQuery.value))
+
+const mealAllergenListQuery = computed(() => mealPlanMealAllergenListComponent.value?.sql?.['sql-1'] || '')
+const actualMealAllergenListQuery = computed(() => ComponentHandler.getComponentValue("meal-plan-meal-allergen-list", 'sql-1', mealAllergenListQuery.value))
+
+function getMealAllergenNames(mealId: number) {
+    console.log("DEBUG: getMealAllergenNames called with mealId:", mealId);
+    if (!system?.db || typeof system?.db?.query !== "function") {
+        return []
+    }
+
+    try {
+        const result = system.db.query(actualMealAllergenListQuery.value, [mealId])
+        console.log("XXX Meal Allergen Query:", actualMealAllergenListQuery.value, mealId)
+        console.log("XXX Meal Allergen Result:", result)
+        if (result?.success && result.results) {
+            return result.results.map((row: any) => row.name)
+        }
+    } catch (error) {
+        console.warn(`Failed to fetch allergens for meal ${mealId}:`, error);
+    }
+    return []
+}
 
 const system = selectedSystemStore.selectedSystem;
 
@@ -231,6 +279,14 @@ function getMealsGroupedByType(sessionId: number, date: string) {
     const grouped: Record<string, any[]> = {};
 
     for (const meal of meals) {
+        // Skip meals that have no participants and no supervisors
+        const hasParticipants = meal.participants && meal.participants.length > 0;
+        const hasSupervisors = meal.supervisors && meal.supervisors.length > 0;
+
+        if (!hasParticipants && !hasSupervisors) {
+            continue; // Skip this meal
+        }
+
         const key = `${meal.mealName}`;
         if (!grouped[key]) {
             grouped[key] = [];
@@ -256,6 +312,69 @@ function getTotalMealsCount(sessionId: number): number {
     return totalMeals;
 }
 
+function getPortionsCount(sessionId: number, date: string): number {
+    const meals = mealsMap.value[sessionId]?.[date] || [];
+    let totalPortions = 0;
+    for (const meal of meals) {
+        totalPortions += (meal.participants?.length || 0) + (meal.supervisors?.length || 0);
+    }
+    return totalPortions;
+}
+
+function getTotalPortionsCount(sessionId: number): number {
+    const dates = dateMap.value[sessionId] || [];
+    let totalPortions = 0;
+    for (const date of dates) {
+        totalPortions += getPortionsCount(sessionId, date);
+    }
+    return totalPortions;
+}
+useHighlightWatchers(highlightStore.highlightHandler, highlightStore);
+
+const deleteParticipantMealComponent = computed(() => componentCodeStore.getComponentById("meal-participant-delete") || componentCodeStore.getDefaultComponent("meal-participant-delete"))
+
+const deleteParticipantMealQuery = computed(() => deleteParticipantMealComponent.value?.sql?.['sql-1'] || ``)
+
+const actualDeleteParticipantMealQuery = computed(() => ComponentHandler.getComponentValue("meal-participant-delete", 'sql-1', deleteParticipantMealQuery.value))
+
+const deleteSupervisorMealComponent = computed(() => componentCodeStore.getComponentById("meal-supervisor-delete") || componentCodeStore.getDefaultComponent("meal-supervisor-delete"))
+
+const deleteSupervisorMealQuery = computed(() => deleteSupervisorMealComponent.value?.sql?.['sql-1'] || ``)
+
+const actualDeleteSupervisorMealQuery = computed(() => ComponentHandler.getComponentValue("meal-supervisor-delete", 'sql-1', deleteSupervisorMealQuery.value))
+
+function deleteParticipantMeal(participantId: number, mealId: number) {
+    if (!system?.db || typeof system?.db?.query !== "function") {
+        console.warn("Database not available or query method missing.");
+        return false;
+    }
+
+    try {
+        const result = system.db.exec(actualDeleteParticipantMealQuery.value, [mealId, participantId]);
+        selectedSystemStore.incrementDbNumber();
+        return true;
+    } catch (error) {
+        console.warn(`Failed to delete participant with ID ${participantId}:`, error);
+        return false;
+    }
+}
+
+function deleteSupervisorMeal(supervisorId: number, mealId: number) {
+    if (!system?.db || typeof system?.db?.query !== "function") {
+        console.warn("Database not available or query method missing.");
+        return false;
+    }
+
+    try {
+        const result = system.db.exec(actualDeleteSupervisorMealQuery.value, [mealId, supervisorId]);
+        selectedSystemStore.incrementDbNumber();
+        return true;
+    } catch (error) {
+        console.warn(`Failed to delete supervisor with ID ${supervisorId}:`, error);
+        return false;
+    }
+}
+
 function getMealName(mealInfo: string): string {
     // Extract meal name from "Meal Name (Time)" format
     const match = mealInfo.match(/^(.+)\s*\([^)]+\)$/);
@@ -274,24 +393,55 @@ function removeParticipantFromMeal(participant: any, mealInfo: string, sessionId
     const mealsForDate = (sessionMeals && sessionMeals[date]) || [];
     const meal = mealsForDate.find((m: any) => m.mealName === getMealName(mealInfo));
 
-    if (meal) {
-        // Remove the participant from the meal's participants array
-        const participantIndex = meal.participants.findIndex((p: any) =>
-            p.participantEmail === participant.participantEmail &&
-            p.participantName === participant.participantName
-        );
+    if (meal && participant.participantId && meal.mealId) {
+        // Delete from database first
+        const success = deleteParticipantMeal(participant.participantId, meal.mealId);
 
-        if (participantIndex !== -1) {
-            meal.participants.splice(participantIndex, 1);
-            console.log('Participant removed successfully');
+        if (success) {
+            // Remove the participant from the meal's participants array
+            const participantIndex = meal.participants.findIndex((p: any) =>
+                p.participantEmail === participant.participantEmail &&
+                p.participantName === participant.participantName
+            );
 
-            // Force reactivity update
-            mealsMap.value = { ...mealsMap.value };
+            if (participantIndex !== -1) {
+                meal.participants.splice(participantIndex, 1);
+                console.log('Participant removed successfully from database and UI');
+
+                // Force reactivity update
+                mealsMap.value = { ...mealsMap.value };
+
+                // Show success toast
+                toast.add({
+                    title: t('meal_participant_removed_success', { name: participant.participantName }),
+                    color: 'primary',
+                    icon: 'i-heroicons-check'
+                });
+            } else {
+                console.warn('Participant not found in meal UI data');
+                toast.add({
+                    title: t('meal_participant_removed_error'),
+                    color: 'red',
+                    icon: 'i-heroicons-exclamation-triangle'
+                });
+            }
         } else {
-            console.warn('Participant not found in meal');
+            console.error('Failed to remove participant from database');
+            toast.add({
+                title: t('meal_participant_removed_error'),
+                color: 'red',
+                icon: 'i-heroicons-exclamation-triangle'
+            });
         }
     } else {
-        console.warn('Meal not found for removal');
+        console.warn('Missing participant ID or meal ID for database deletion');
+        console.log('Participant:', participant);
+        console.log('Meal:', meal);
+        toast.add({
+            title: t('meal_participant_removed_error'),
+            color: 'red',
+            icon: 'i-heroicons-exclamation-triangle'
+        });
     }
 }
 
@@ -303,24 +453,55 @@ function removeSupervisorFromMeal(supervisor: any, mealInfo: string, sessionId: 
     const mealsForDate = (sessionMeals && sessionMeals[date]) || [];
     const meal = mealsForDate.find((m: any) => m.mealName === getMealName(mealInfo));
 
-    if (meal) {
-        // Remove the supervisor from the meal's supervisors array
-        const supervisorIndex = meal.supervisors.findIndex((s: any) =>
-            s.supervisorEmail === supervisor.supervisorEmail &&
-            s.supervisorName === supervisor.supervisorName
-        );
+    if (meal && supervisor.supervisorId && meal.mealId) {
+        // Delete from database first
+        const success = deleteSupervisorMeal(supervisor.supervisorId, meal.mealId);
 
-        if (supervisorIndex !== -1) {
-            meal.supervisors.splice(supervisorIndex, 1);
-            console.log('Supervisor removed successfully');
+        if (success) {
+            // Remove the supervisor from the meal's supervisors array
+            const supervisorIndex = meal.supervisors.findIndex((s: any) =>
+                s.supervisorEmail === supervisor.supervisorEmail &&
+                s.supervisorName === supervisor.supervisorName
+            );
 
-            // Force reactivity update
-            mealsMap.value = { ...mealsMap.value };
+            if (supervisorIndex !== -1) {
+                meal.supervisors.splice(supervisorIndex, 1);
+                console.log('Supervisor removed successfully from database and UI');
+
+                // Force reactivity update
+                mealsMap.value = { ...mealsMap.value };
+
+                // Show success toast
+                toast.add({
+                    title: t('meal_supervisor_removed_success', { name: supervisor.supervisorName }),
+                    color: 'primary',
+                    icon: 'i-heroicons-check'
+                });
+            } else {
+                console.warn('Supervisor not found in meal UI data');
+                toast.add({
+                    title: t('meal_supervisor_removed_error'),
+                    color: 'red',
+                    icon: 'i-heroicons-exclamation-triangle'
+                });
+            }
         } else {
-            console.warn('Supervisor not found in meal');
+            console.error('Failed to remove supervisor from database');
+            toast.add({
+                title: t('meal_supervisor_removed_error'),
+                color: 'red',
+                icon: 'i-heroicons-exclamation-triangle'
+            });
         }
     } else {
-        console.warn('Meal not found for supervisor removal');
+        console.warn('Missing supervisor ID or meal ID for database deletion');
+        console.log('Supervisor:', supervisor);
+        console.log('Meal:', meal);
+        toast.add({
+            title: t('meal_supervisor_removed_error'),
+            color: 'red',
+            icon: 'i-heroicons-exclamation-triangle'
+        });
     }
 }
 
@@ -375,10 +556,13 @@ function loadData() {
 
         // Process participant data
         if (participantResult.success && participantResult.results) {
+            console.log("DEBUG: Processing participant results:", participantResult.results);
             for (const row of participantResult.results) {
+                console.log("DEBUG: Processing row:", row);
                 const sessionId = row.session_id;
                 const date = row.date_served;
                 const mealId = row.meal_id;
+                console.log("DEBUG: Extracted mealId:", mealId);
 
                 if (!mealsMap.value[sessionId]) {
                     mealsMap.value[sessionId] = {};
@@ -398,12 +582,14 @@ function loadData() {
                         supervisors: [],
                         allergens: []
                     };
+                    console.log("DEBUG: Created new meal:", meal);
                     mealsMap.value[sessionId][date].push(meal);
                 }
 
                 // Add participant
                 if (row.participant_name && row.participant_email) {
                     meal.participants.push({
+                        participantId: row.participant_id,
                         participantName: row.participant_name,
                         participantEmail: row.participant_email
                     });
@@ -413,10 +599,13 @@ function loadData() {
 
         // Process supervisor data
         if (supervisorResult.success && supervisorResult.results) {
+            console.log("DEBUG: Processing supervisor results:", supervisorResult.results);
             for (const row of supervisorResult.results) {
+                console.log("DEBUG: Processing supervisor row:", row);
                 const sessionId = row.session_id;
                 const date = row.date_served;
                 const mealId = row.meal_id;
+                console.log("DEBUG: Extracted supervisor mealId:", mealId);
 
                 if (!mealsMap.value[sessionId]) {
                     mealsMap.value[sessionId] = {};
@@ -436,12 +625,14 @@ function loadData() {
                         supervisors: [],
                         allergens: []
                     };
+                    console.log("DEBUG: Created new meal for supervisor:", meal);
                     mealsMap.value[sessionId][date].push(meal);
                 }
 
                 // Add supervisor
                 if (row.supervisor_name && row.supervisor_email) {
                     meal.supervisors.push({
+                        supervisorId: row.supervisor_id,
                         supervisorName: row.supervisor_name,
                         supervisorEmail: row.supervisor_email
                     });
@@ -484,7 +675,6 @@ const allergens = computed(() => {
 </script>
 
 <style scoped>
-
 /* Session Cards */
 .session-card {
     background: white;

@@ -1567,6 +1567,8 @@ navigateTo({
       additionals: {}
     });
 
+    
+
     const mealPlanComponent = new Component({
       id: "meal-plan-list",
       name: "Meal Plan List",
@@ -1576,8 +1578,8 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `SELECT * FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')};`,
-        "sql-2": `SELECT DISTINCT m.name AS meal_name, mp.date_served, m.when_served, p.name AS participant_name, p.email AS participant_email, sp.session_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} m JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} mp ON m.meal_id = mp.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} p ON p.participant_id = mp.participant_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} sp ON sp.participant_id = p.participant_id`,
-        "sql-3": `SELECT DISTINCT m.name AS meal_name, mp.date_served, m.when_served, s.name AS supervisor_name, s.email AS supervisor_email, sp.session_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} m JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_supervisors')} mp ON m.meal_id = mp.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} s ON s.supervisor_id = mp.supervisor_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} sp ON sp.supervisor_id = s.supervisor_id`,
+        "sql-2": `SELECT DISTINCT m.name AS meal_name, m.meal_id, mp.date_served, m.when_served, p.name AS participant_name, p.participant_id, p.email AS participant_email, sp.session_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} m JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} mp ON m.meal_id = mp.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} p ON p.participant_id = mp.participant_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} sp ON sp.participant_id = p.participant_id`,
+        "sql-3": `SELECT DISTINCT m.name AS meal_name,  m.meal_id, mp.date_served, m.when_served, s.name AS supervisor_name, s.supervisor_id ,s.email AS supervisor_email, sp.session_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} m JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_supervisors')} mp ON m.meal_id = mp.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} s ON s.supervisor_id = mp.supervisor_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} sp ON sp.supervisor_id = s.supervisor_id`,
         "sql-4": `SELECT allergen_id, name FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} ON ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')}.meal_id = ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}.meal_id WHERE ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')}.meal_id = ?`,
 
 
@@ -1586,20 +1588,74 @@ navigateTo({
     });
 
     const mealListComponent = new Component({
-      id: "meal-plan-meal-list",
+      id: "meal-plan-meal-allergen-list",
       name: "Meal Plan Meal List",
       description: `Component for getting meal plan information.`,
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
       sql: {
-        "sql-1": `SELECT m.*, mp.meal_id AS mp_meal_id, mp.participant_id AS mp_participant_id, sp.session_id, sp.participant_id AS sp_participant_id, p.* FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} m JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} mp ON m.meal_id = mp.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} sp ON sp.participant_id = mp.participant_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} p ON p.participant_id = mp.participant_id WHERE sp.session_id = ?`,
+        "sql-1": `SELECT am.allergen_id, a.name, am.meal_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} AS am JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} AS m ON am.meal_id = m.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')} AS a ON a.allergen_id = am.allergen_id WHERE am.meal_id = ?`,
+      },
+      additionals: {}
+    });
+
+    const mealPlanParticipantAllergensComponent = new Component({
+      id: "meal-plan-participant-allergen-list",
+      name: "Meal Plan Participant Allergen List",
+      description: `Component for getting meal plan allergens related to participants.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `SELECT a.name, mp.participant_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} AS am JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} AS m ON am.meal_id = m.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')} AS a ON a.allergen_id = am.allergen_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} AS mp ON mp.meal_id = m.meal_id WHERE am.meal_id = ?`,
+      },
+      additionals: {}
+    });
+
+    const mealPlanSupervisorAllergensComponent = new Component({
+      id: "meal-plan-supervisor-allergen-list",
+      name: "Meal Plan Supervisor Allergen List",
+      description: `Component for getting meal plan allergens related to supervisors.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `SELECT a.name, ms.supervisor_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} AS am JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} AS m ON am.meal_id = m.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')} AS a ON a.allergen_id = am.allergen_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_supervisors')} AS ms ON ms.meal_id = m.meal_id WHERE am.meal_id = ?`,
+      },
+      additionals: {}
+    });
+
+    const mealParticipantDeleteComponent = new Component({
+      id: "meal-participant-delete",
+      name: "Meal Participant Delete",
+      description: `Component for deleting a participant from a meal.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} WHERE meal_id = ? AND participant_id = ?`,
+      },
+      additionals: {}
+    });
+
+    const mealSupervisorDeleteComponent = new Component({
+      id: "meal-supervisor-delete",
+      name: "Meal Supervisor Delete",
+      description: `Component for deleting a supervisor from a meal.`,
+      html: { "html": "" },
+      css: { "css": "" },
+      js: { "js": "" },
+      sql: {
+        "sql-1": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_supervisors')} WHERE meal_id = ? AND supervisor_id = ?`,
       },
       additionals: {}
     });
 
 
     // Store the instances into the store
+        componentCodeStore.updateDefaultComponent(mealListComponent);
+
     componentCodeStore.updateDefaultComponent(statsMealsComponent);
     componentCodeStore.updateDefaultComponent(statsParticipantsComponent);
     componentCodeStore.updateDefaultComponent(statsSessionsComponent);
@@ -1695,6 +1751,10 @@ navigateTo({
     componentCodeStore.updateDefaultComponent(editMealComponent);
     componentCodeStore.updateDefaultComponent(whenServedComponent);
     componentCodeStore.updateDefaultComponent(mealPlanComponent);
+    componentCodeStore.updateDefaultComponent(mealPlanParticipantAllergensComponent);
+    componentCodeStore.updateDefaultComponent(mealPlanSupervisorAllergensComponent);
+    componentCodeStore.updateDefaultComponent(mealParticipantDeleteComponent);
+    componentCodeStore.updateDefaultComponent(mealSupervisorDeleteComponent);
     componentCodeStore.updateDefaultComponent(sessionParticipantsListComponent);
     componentCodeStore.updateDefaultComponent(sessionSupervisorsListComponent);
     componentCodeStore.updateDefaultComponent(sessionSupervisorsCountComponent);
@@ -1797,10 +1857,15 @@ navigateTo({
     componentCodeStore.resetComponent("meals-edit");
     componentCodeStore.resetComponent("meals-when-served");
     componentCodeStore.resetComponent("meal-plan-list");
+    componentCodeStore.resetComponent("meal-plan-participant-allergen-list");
+    componentCodeStore.resetComponent("meal-plan-supervisor-allergen-list");
+    componentCodeStore.resetComponent("meal-participant-delete");
+    componentCodeStore.resetComponent("meal-supervisor-delete");
     componentCodeStore.resetComponent("session-participants-count");
     componentCodeStore.resetComponent("session-participants-list");
     componentCodeStore.resetComponent("session-supervisors-list");
     componentCodeStore.resetComponent("session-supervisors-count");
+    componentCodeStore.resetComponent("meal-plan-meal-allergen-list");
   }
 
   public static areComponentsInitialized(): boolean {

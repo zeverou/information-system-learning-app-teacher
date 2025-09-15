@@ -78,21 +78,21 @@ onMounted(() => {
   <div class="flex flex-col gap-4 min-h-screen" :class="flexJustifyClass">
     <UCard v-for="(system, index) in systems" :key="system.id" :class="{ 'mt-4': index === 0 }" class="w-full max-w-4xl mx-auto">
       <template #header>
-        <h2 class="text-lg font-semibold">{{ system.name }}</h2>
+        <h2 class="text-xl font-semibold">{{ system.name }}</h2>
       </template>
 
-      <p class="text-sm text-white-600/25">{{ system.description }}</p>
+      <p class="text-base text-white-600/25">{{ system.description }}</p>
 
       <template #footer>
         <div class="flex justify-between items-center w-full">
-          <UButton color="primary" variant="outline" @click="navigateToSystem(system.id)">
+          <UButton size="lg" color="primary" variant="outline" @click="navigateToSystem(system.id)">
             {{ t('enter_system') }}
           </UButton>
-
+          <!--
           <UButton :loading="isReloading" icon="heroicons-outline:refresh" color="primary" variant="solid" @click="reloadSystems">
             Reload
           </UButton>
-
+          -->
         </div>
       </template>
     </UCard>
