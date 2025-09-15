@@ -43,7 +43,6 @@
 
           <!-- Show selected SQL entry -->
           <div v-else-if="section.key === 'sql'" class="sql-editor-container">
-            <div class="current-sql-key">{{ selectedSqlKey }}</div>
             <textarea
               :value="getSelectedSqlValue()"
               @input="(event) => onEntryInput(event, section.key, selectedSqlKey)"

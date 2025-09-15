@@ -633,7 +633,7 @@
                                     </div>
                                 </div>
                                 <div class="flex flex-col gap-3 pt-4">
-                                    <UButton type="submit" color="violet" :loading="isSubmitting">
+                                    <UButton type="submit" color="violet" :loading="isSubmitting" :disabled="hasEditParticipantErrors">
                                         {{ t('save_changes') }}
                                     </UButton>
                                     <UButton variant="outline" color="violet" @click="resetForm">

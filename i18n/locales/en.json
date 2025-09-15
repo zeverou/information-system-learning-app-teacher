@@ -231,5 +231,6 @@
     "personal_number": "Personal Number",
     "session_id": "Session ID",
     "actions": "Actions",
-    "custom_query": "Custom Query"
+    "custom_query": "Custom Query",
+    "sql_query": "SQL Query"
 }

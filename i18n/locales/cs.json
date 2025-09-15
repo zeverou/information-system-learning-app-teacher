@@ -237,5 +237,6 @@
     "email": "E-mail",
     "personal_number": "Rodné číslo",
     "actions": "Akce",
-    "custom_query": "Vlastní dotaz"
+    "custom_query": "Vlastní dotaz",
+    "sql_query": "SQL dotaz"
 }
