@@ -15,15 +15,15 @@
                 <!-- First row of items -->
                 <div class="flex items-center gap-2 flex-wrap">
                     
-                    <UButton label="Helper" @click="handleHelperClick" size="sm">
+                    <UButton label="Helper" @click="handleHelperClick" size="md">
                         <span class="mobile-hidden">Helper</span>
                     </UButton>
                     
                     <UButton icon="i-heroicons-table-cells"
-                        @click="navigateTo(`/system/${selectedSystemStore.selectedId}/database`)" size="sm">{{
+                        @click="navigateTo(`/system/${selectedSystemStore.selectedId}/database`)" size="md">{{
                         t('database') }}</UButton>
 
-                    <UBadge color="red" variant="outline" size="lg">
+                    <UBadge color="red" variant="outline" size="md">
                         {{ $t('score') }}: {{ scoreStore.score }}
                     </UBadge>
 
@@ -45,7 +45,7 @@
                 <div class="flex items-center gap-2 flex-wrap">
                     <UButton :icon="highlightStore.isHighlightMode ? 'i-lucide-lightbulb' : 'i-lucide-lightbulb-off'"
                         :label="highlightStore.isHighlightMode ? $t('disable_highlight') : $t('enable_highlight')"
-                        color="lime" :variant="highlightStore.isHighlightMode ? 'solid' : 'subtle'" size="sm"
+                        color="lime" :variant="highlightStore.isHighlightMode ? 'solid' : 'subtle'" size="md"
                         @click="highlightStore.toggleHighlight">
                         <span class="mobile-hidden">{{ highlightStore.isHighlightMode ? $t('disable_highlight') :
                             $t('enable_highlight')
@@ -54,7 +54,7 @@
 
                     <UButton :icon="highlightStore.isEditModeActive ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
                         :label="highlightStore.isEditModeActive ? $t('disable_edit') : $t('enable_edit')" color="yellow"
-                        :variant="highlightStore.isEditModeActive ? 'solid' : 'subtle'" size="sm"
+                        :variant="highlightStore.isEditModeActive ? 'solid' : 'subtle'" size="md"
                         @click="highlightStore.toggleEdit">
                         <span class="mobile-hidden">{{ highlightStore.isEditModeActive ? $t('disable_edit') :
                             $t('enable_edit')
@@ -88,7 +88,7 @@
                     <!-- Student Drawer -->
                     <UDrawer v-model:open="studentDrawerOpen" direction="right">
                         <UButton color="sky" variant="outline" @click="studentDrawerOpen = true"
-                            icon="i-lucide-graduation-cap" size="sm">
+                            icon="i-lucide-graduation-cap" size="md">
                             <span class="mobile-hidden">{{ $t('student') }}</span>
                         </UButton>
                         <template #content>
@@ -112,7 +112,7 @@
                 <div class="flex items-center gap-2 flex-wrap">
                     <UPopover v-model:open="resetPopoverOpen" arrow>
                         <UButton icon="i-heroicons-arrow-path" :label="$t('refresh_system')" color="primary"
-                            variant="subtle" size="sm">
+                            variant="subtle" size="md">
                             <span class="mobile-hidden">{{ $t('refresh_system') }}</span>
                         </UButton>
                         <template #content>
@@ -134,18 +134,18 @@
                     <!-- Exit System Popover -->
                     <UPopover v-model:open="exitPopoverOpen" arrow>
                         <UButton icon="i-heroicons-arrow-right-on-rectangle" :label="$t('exit_system')" color="red"
-                            variant="subtle" size="sm">
+                            variant="subtle" size="md">
                             <span class="mobile-hidden">{{ $t('exit_system') }}</span>
                         </UButton>
                         <template #content>
                             <UCard>
                                 <div class="flex flex-col gap-2">
-                                    <UButton :label="$t('leave_system')" color="red" variant="outline"
+                                    <UButton size="md" :label="$t('leave_system')" color="red" variant="outline"
                                         icon="i-heroicons-arrow-right-on-rectangle" @click="leaveSystem" />
                                     <!-- TODO: Implement saving -->
-                                    <UButton disabled :label="$t('leave_and_save')" color="yellow" variant="outline"
+                                    <UButton size="md" disabled :label="$t('leave_and_save')" color="yellow" variant="outline"
                                         icon="i-heroicons-document-check" @click="leaveAndSave" />
-                                    <UButton :label="$t('stay_in_system')" color="neutral" variant="outline"
+                                    <UButton size="md" :label="$t('stay_in_system')" color="neutral" variant="outline"
                                         icon="i-heroicons-x-mark" @click="stayInSystem" />
                                 </div>
                             </UCard>

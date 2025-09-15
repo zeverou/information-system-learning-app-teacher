@@ -1,6 +1,6 @@
 <template>
   <UDrawer v-model:open="isOpen" direction="right">
-    <UButton size="sm" color="sky" variant="outline" @click="openDrawer" icon="i-heroicons-cog-6-tooth">
+    <UButton size="md" color="sky" variant="outline" @click="openDrawer" icon="i-heroicons-cog-6-tooth">
       <span class="mobile-hidden">{{ t('settings') }}</span>
     </UButton>
 
@@ -9,7 +9,7 @@
         <template #header>
           <div class="flex justify-between items-center">
             <h3 class="text-lg font-semibold">{{ t('settings') }}</h3>
-            <UButton icon="i-lucide-x" color="neutral" variant="ghost" @click="isOpen = false" />
+            <UButton size="md" icon="i-lucide-x" color="neutral" variant="ghost" @click="isOpen = false" />
           </div>
         </template>
 

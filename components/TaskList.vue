@@ -3,7 +3,18 @@
     <UCard class="bg-slate-950">
 
       <template #header>
-        <h2 class="text-xl font-semibold text-center">{{ t('tasks') }}</h2>
+        <div class="flex items-center justify-between">
+          <!-- Empty left space to balance the layout -->
+          <div class="w-20"></div>
+          <!-- Centered Tasks title -->
+          <h2 class="text-3xl font-semibold text-center flex-1">{{ t('tasks') }}</h2>
+          <!-- Back button on the right -->
+          <UButton v-if="selectedTask" color="lime" @click="selectTask(selectedTask.id)" icon="i-heroicons-arrow-left" size="sm">
+            {{ t('back_to_tasks') }}
+          </UButton>
+          <!-- Empty space when no back button to keep title centered -->
+          <div v-else class="w-20"></div>
+        </div>
       </template>
 
       <!-- Green animation overlay -->
@@ -24,13 +35,13 @@
       <div v-if="selectedTask">
         <div class="p-4">
           <div class="flex items-center mb-2">
-            <UCheckbox color="lime" :model-value="selectedTask.completed" disabled class="mr-2" />
-            <h3 class="text-lg font-bold">{{ selectedTask.title }}</h3>
+            <UCheckbox color="lime" :model-value="selectedTask.completed" disabled class="mr-2 mb-1" />
+            <h3 class="text-2xl font-bold mb-1">{{ selectedTask.title }}</h3>
           </div>
-          <p class="mb-2">{{ selectedTask.description }}</p>
+          <p class="mb-2 text-lg">{{ selectedTask.description }}</p>
 
           <!-- Custom Progress Steps -->
-          <div class="flex items-center justify-between mb-6 mt-6">
+          <div class="flex items-center justify-between mb-8 mt-8">
             <!-- Step 1: Task Selected -->
             <div class="flex flex-col items-center">
               <div class="w-8 h-8 rounded-full flex items-center justify-center mb-2"
@@ -39,7 +50,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
               </div>
-              <span class="text-xs text-center font-medium" style="color: #9ae600;">{{ t('task_selected') }}</span>
+              <span class="text-sm text-center font-medium" style="color: #9ae600;">{{ t('task_selected') }}</span>
             </div>
 
             <!-- Connector Line -->
@@ -57,7 +68,7 @@
                 </svg>
                 <span v-else class="w-3 h-3 bg-white rounded-full"></span>
               </div>
-              <span class="text-xs text-center font-medium"
+              <span class="text-sm text-center font-medium"
                 :style="selectedTask.componentsRepaired ? 'color: #9ae600;' : 'color: #6b7280;'">
                 {{ t('components_repaired') }}
               </span>
@@ -77,7 +88,7 @@
                 </svg>
                 <span v-else class="w-3 h-3 bg-white rounded-full"></span>
               </div>
-              <span class="text-xs text-center font-medium"
+              <span class="text-sm text-center font-medium"
                 :style="selectedTask.completed ? 'color: #9ae600;' : 'color: #6b7280;'">
                 {{ t('task_completed') }}
               </span>
@@ -89,75 +100,85 @@
           <span>{{ selectedTask.kind }}</span><br>
 -->
           <div>
-            <!-- Kind of task: select -->
-            <div v-if="selectedTask.kind === 'select'">
-              <UButton variant="outline" style="margin-left: 5px;" color="lime"
-                :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.length === 0"
-                @click="handleSubmit">
-                {{ t('submit') }}
-              </UButton>
-
-              <UButton v-if="selectedTask.answer !== 'none'" variant="outline" style="margin-left: 5px;" color="lime"
-                :disabled="!selectedTask.componentsRepaired" @click="evaluate()">
-                {{ t('check_repair_task') }}
-              </UButton>
-            </div>
-
-            <!-- Kind of task: type-correct -->
+            <!-- Input for type-correct tasks -->
             <div v-if="selectedTask.kind === 'type-correct'">
-              <UInput v-model="form.answer" placeholder="Enter your answer" class="mt-2" />
-              <UButton variant="outline" style="margin-left: 5px;" :disabled="selectedTask.completed" color="lime"
-                @click="handleSubmit">{{
-                  t('submit') }}
-              </UButton>
+              <UInput v-model="form.answer" placeholder="Enter your answer" class="mt-2 mb-4" />
             </div>
 
-            <!-- Kind of task: repair -->
-            <div v-if="selectedTask.kind === 'repair'">
-              <UButton color="lime"
-                :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.length === 0"
-                variant="outline" style="margin-left: 5px;" @click="handleSubmit">
-                {{ t('check_repair_task') }}
-              </UButton>
-            </div>
-
-            <div v-if="selectedTask.componentsRepaired">
+            <!-- Questions form for repaired components -->
+            <div v-if="selectedTask.componentsRepaired" class="mb-4">
               <UForm :state="questionsForm">
                 <div v-for="(question, idx) in questions" :key="idx" class="mb-2 flex items-center gap-2">
                   <UCheckbox color="lime" v-model="questionsForm[idx]" />
-                  <label>{{ question }}</label>
+                  <label class="text-base">{{ question }}</label>
                 </div>
-                <UButton type="submit" color="lime"
-                  :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.length === 0"
-                  variant="outline" style="margin-left: 5px;">
-                  {{ t('check_repair_task') }}
-                </UButton>
               </UForm>
             </div>
 
+            <!-- Button container with flex layout -->
+            <div class="flex items-center gap-2">
+              <!-- Kind of task: select -->
+              <template v-if="selectedTask.kind === 'select' && !selectedTask.completed">
+                <UButton variant="outline" color="lime"
+                  :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.length === 0"
+                  @click="handleSubmit">
+                  {{ t('submit') }}
+                </UButton>
+
+                <UButton v-if="selectedTask.answer !== 'none'" variant="outline" color="lime"
+                  :disabled="!selectedTask.componentsRepaired" @click="evaluate()">
+                  {{ t('check_repair_task') }}
+                </UButton>
+              </template>
+
+              <!-- Kind of task: type-correct -->
+              <template v-if="selectedTask.kind === 'type-correct' && !selectedTask.completed">
+                <UButton variant="outline" :disabled="selectedTask.completed" color="lime"
+                  @click="handleSubmit">
+                  {{ t('submit') }}
+                </UButton>
+              </template>
+
+              <!-- Kind of task: repair -->
+              <template v-if="selectedTask.kind === 'repair' && !selectedTask.completed">
+                <UButton color="lime"
+                  :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.length === 0"
+                  variant="outline" @click="handleSubmit">
+                  {{ t('check_repair_task') }}
+                </UButton>
+              </template>
+
+              <!-- Button for repaired components -->
+              <template v-if="selectedTask.componentsRepaired && !selectedTask.completed">
+                <UButton type="submit" color="lime"
+                  :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.length === 0"
+                  variant="outline">
+                  {{ t('check_repair_task') }}
+                </UButton>
+              </template>
+            </div>
           </div>
-
-          <UButton color="lime" class="mt-4" @click="selectTask(selectedTask.id)">{{ t('back_to_tasks') }}</UButton>
           <div v-if="selectedTask.completed">
-            <USeparator color="lime" class="mt-4 mb-2" />
-            <h3 class="text-lg font-semibold ">{{ t('feedback') }}</h3>
+            <USeparator color="lime" class="mt-8 mb-6" />
+            <h3 class="text-2xl font-semibold mb-2">{{ t('feedback') }}</h3>
 
-            <p> {{ selectedTask.feedback }}</p>
+            <p class="text-lg"> {{ selectedTask.feedback }}</p>
           </div>
         </div>
       </div>
 
       <div v-else>
-        <div v-if="tasks.length === 0" class="text-center text-gray-500 py-4">
+        <div v-if="tasks.length === 0" class="text-center text-gray-500 py-4 text-lg">
           No tasks yet
         </div>
         <div v-else class="space-y-2">
           <div v-for="(task, index) in tasks" :key="index" class="flex items-center gap-3 p-3 rounded-lg">
             <UCheckbox color="lime" :model-value="task.completed" disabled class="mr-2" />
-            <UCard>
-              {{ task.title }}
-              <UButton color="lime" style="margin-left: 5px;" @click="selectTask(task.id)">{{ t('select_task') }}
-              </UButton>
+            <UCard class="flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-lg font-medium">{{ task.title }}</span>
+                <UButton style="margin-left: 10px;" color="lime" size="sm" @click="selectTask(task.id)">{{ t('select_task') }}</UButton>
+              </div>
             </UCard>
           </div>
         </div>
