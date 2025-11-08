@@ -21,7 +21,6 @@ logs
 # Local env files
 .env
 .env.*
-!.env.example
 
 # Playwright
 /test-results/
@@ -29,3 +28,20 @@ logs
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# IDEs
+.vscode/
+*.code-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.idea/
+*.launch
+*.launch.json
+
+# Mac system files
+.DS_Store
+.AppleDouble
+.LSOverride
