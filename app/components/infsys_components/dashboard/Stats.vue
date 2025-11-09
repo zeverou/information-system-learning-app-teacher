@@ -20,10 +20,10 @@
 import { computed, ref } from 'vue'
 import { useInformationSystemStore } from '~/stores/useInformationSystemStore'
 import { useSelectedSystemStore } from '~/stores/useSelectedSystemStore'
-import StatsSessions from '~/components/infsys_components/dashboard/stats/stats-sessions.vue'
-import StatsParticipants from '~/components/infsys_components/dashboard/stats/stats-participants.vue'
-import StatsSupervisors from '~/components/infsys_components/dashboard/stats/stats-supervisors.vue'
-import StatsMeals from '~/components/infsys_components/dashboard/stats/stats-meals.vue'
+import StatsSessions from '~/components/infsys_components/dashboard/stats/StatsSessions.vue'
+import StatsParticipants from '~/components/infsys_components/dashboard/stats/StatsParticipants.vue'
+import StatsSupervisors from '~/components/infsys_components/dashboard/stats/StatsSupervisors.vue'
+import StatsMeals from '~/components/infsys_components/dashboard/stats/StatsMeals.vue'
 import '@/assets/css/stats.css'
 
 /* 2. Stores */

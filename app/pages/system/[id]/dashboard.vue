@@ -12,7 +12,7 @@
             <div class="dashboard-content-row">
                 <div class="dashboard-content-main">
                     <div id="stats">
-                        <dashboardStats :system-id="system?.id" />
+                        <DashboardStats :system-id="system?.id" />
                         <UCard>
                             <DashboardTableCountBadge />
                         </UCard>
@@ -31,7 +31,7 @@ import { useRoute } from 'vue-router'
 import { useInformationSystemStore } from '~/stores/useInformationSystemStore'
 import { useHighlightStore } from '~/stores/useHighlightStore'
 import { useSelectedComponentStore } from '~/stores/useSelectedComponentStore'
-import dashboardStats from '~/components/infsys_components/dashboard/stats.vue'
+import DashboardStats from '~/components/infsys_components/dashboard/Stats.vue'
 import DashboardTableCountBadge from '~/components/infsys_components/dashboard/TableCountBadge.vue'
 import { ComponentManager, usePersistentStorageTestStore } from "#imports"
 import { useHighlightWatchers } from '~/composables/highlightWatchers'
