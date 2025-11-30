@@ -54,7 +54,7 @@ export class SystemReset {
         const selectedSystemStore = useSelectedSystemStore();
         selectedSystemStore.dbRefreshed = false;
 
-        console.log("Refreshing database...");
+        console.log("Refreshing database of the system:", selectedSystemStore.selectedSystem?.id);
 
         if (selectedSystemStore.selectedSystem) {
             // Use the store's initializeDb method which handles static initialization correctly

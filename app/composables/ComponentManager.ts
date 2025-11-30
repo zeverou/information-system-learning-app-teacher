@@ -96,6 +96,8 @@ navigateTo({
       additionals: {}
     });
 
+    console.log("XXXXXX_:", statsSessionsComponent);
+
     const statsSupervisorsComponent = new Component({
       id: "stats-supervisors",
       name: "Stats Supervisors",

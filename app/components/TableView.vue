@@ -367,7 +367,8 @@ async function refreshDatabase() {
             color: 'primary',
             icon: 'i-lucide-check-circle'
         })
-    } catch {
+    } catch(error) {
+        console.error(error)
         toast.add({
             title: t('refresh_database_error') || 'Database refresh error',
             color: 'red',

@@ -156,8 +156,7 @@
                                 <div class="flex flex-col gap-2">
                                     <UButton size="md" :label="$t('leave_system')" color="red" variant="outline"
                                         icon="i-heroicons-arrow-right-on-rectangle" @click="leaveSystem" />
-                                    <!-- TODO: Implement saving -->
-                                    <UButton size="md" disabled :label="$t('leave_and_save')" color="yellow"
+                                    <UButton size="md" :label="$t('leave_and_save')" color="yellow"
                                         variant="outline" icon="i-heroicons-document-check" @click="leaveAndSave" />
                                     <UButton size="md" :label="$t('stay_in_system')" color="neutral" variant="outline"
                                         icon="i-heroicons-x-mark" @click="stayInSystem" />
@@ -209,6 +208,7 @@ import type { InformationSystem } from '~/model/InformationSystem'
 import SettingsDrawer from '~/components/SettingsDrawer.vue'
 import TeacherComponent from '~/components/TeacherComponent.vue'
 import StudentComponent from '~/components/StudentComponent.vue'
+import { IndexedDbHandler } from '~/utils/IndexedDbHandler'
 
 /* 2. Stores */
 const highlightStore = useHighlightStore()
@@ -320,8 +320,8 @@ async function handleHelperClick() {
 }
 
 async function printTableData() {
-    if (selectedSystemStore.selectedSystem) {
-        const tableNames: string[] = selectedSystemStore?.selectedSystem?.db?.getAllTableNames();
+    if (selectedSystemStore.selectedSystem && selectedSystemStore.selectedSystem.db) {
+        const tableNames: string[] = selectedSystemStore.selectedSystem.db.getAllTableNames();
         for (const tableName of tableNames) {
             const data = await selectedSystemStore.selectedSystem.db.query(`SELECT * FROM ${tableName} LIMIT 5`);
             console.log(`Table: ${tableName}`, data);
@@ -410,15 +410,40 @@ async function leaveSystem() {
 }
 
 async function leaveAndSave() {
-    // TODO: Implement save functionality
-    console.log("Saving results...");
-    toast.add({
-        title: t('save_success') || 'Results saved successfully',
-        color: 'primary',
-        icon: 'i-lucide-check-circle'
-    })
-    await navigateTo('/systems')
-    exitPopoverOpen.value = false
+    try {
+        const system = selectedSystemStore.selectedSystem;
+        if (!system) {
+            throw new Error("No system selected");
+        }
+
+        // Save the InformationSystem object
+        await IndexedDbHandler.saveInformationSystem(system);
+
+        // Save the database if it exists
+        if (system.db) {
+            const dbData = system.db.exportDatabase();
+            await IndexedDbHandler.saveSystemDB(system.id, dbData);
+        }
+
+        toast.add({
+            title: t('save_success') || 'Results saved successfully',
+            color: 'primary',
+            icon: 'i-lucide-check-circle'
+        });
+
+        await navigateTo('/systems');
+        await SystemReset.refreshComponentsCore();
+        await SystemReset.refreshDatabaseCore();
+        await SystemReset.refreshTasksCore();
+        exitPopoverOpen.value = false;
+    } catch (error) {
+        console.error("Save failed:", error);
+        toast.add({
+            title: t('save_error') || 'Save failed',
+            color: 'red',
+            icon: 'i-lucide-alert-triangle'
+        });
+    }
 }
 
 async function stayInSystem() {

@@ -211,6 +211,22 @@ async function uploadSystem() {
         return
       }
 
+      // Initialize the database for the uploaded system
+      try {
+        console.log('Initializing database for uploaded system...')
+        system.db = await InformationSystem.databaseInitStatic(system.configData || system)
+        system.dbInitialized = true
+        console.log('Database initialized successfully')
+      } catch (error) {
+        console.error('Error initializing database for uploaded system:', error)
+        toast.add({
+          title: t('upload_error'),
+          description: t('error_initializing_database'),
+          color: 'red'
+        })
+        return
+      }
+
       informationSystemStore.addSystem(system)
       loadedSystemTitle.value = system.name
       console.log('loadedSystemTitle set to:', loadedSystemTitle.value)

@@ -1,7 +1,9 @@
 export class IndexedDbHandler {
     private static DB_NAME = 'InformationSystemDB';
     private static SYSTEMS_STORE_NAME = 'systems';
-    private static VERSION = 2; // Increased version to add new store
+    private static DATABASES_STORE_NAME = 'databases';
+    private static COMPONENT_STORE_NAME = 'components';
+    private static VERSION = 3; // Increased version to add databases store
 
     private static async openDB(): Promise<IDBDatabase> {
         return new Promise((resolve, reject) => {
@@ -20,6 +22,12 @@ export class IndexedDbHandler {
                 const db = (event.target as IDBOpenDBRequest).result;
                 if (!db.objectStoreNames.contains(this.SYSTEMS_STORE_NAME)) {
                     db.createObjectStore(this.SYSTEMS_STORE_NAME);
+                }
+                if (!db.objectStoreNames.contains(this.DATABASES_STORE_NAME)) {
+                    db.createObjectStore(this.DATABASES_STORE_NAME);
+                }
+                if (!db.objectStoreNames.contains(this.COMPONENT_STORE_NAME)) {
+                    db.createObjectStore(this.COMPONENT_STORE_NAME);
                 }
             };
         });
@@ -57,6 +65,45 @@ export class IndexedDbHandler {
             const transaction = db.transaction([this.SYSTEMS_STORE_NAME], 'readwrite');
             const store = transaction.objectStore(this.SYSTEMS_STORE_NAME);
             const request = store.delete(systemId);
+
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    // Database storage methods
+    public static async saveDatabase(systemId: number, data: Uint8Array): Promise<void> {
+        const db = await this.openDB();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction([this.DATABASES_STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(this.DATABASES_STORE_NAME);
+            const request = store.put(data, `system_${systemId}`);
+
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    public static async loadDatabase(systemId: number): Promise<Uint8Array | null> {
+        const db = await this.openDB();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction([this.DATABASES_STORE_NAME], 'readonly');
+            const store = transaction.objectStore(this.DATABASES_STORE_NAME);
+            const request = store.get(`system_${systemId}`);
+
+            request.onsuccess = () => {
+                resolve(request.result ? (request.result as Uint8Array) : null);
+            };
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    public static async deleteDatabase(systemId: number): Promise<void> {
+        const db = await this.openDB();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction([this.DATABASES_STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(this.DATABASES_STORE_NAME);
+            const request = store.delete(`system_${systemId}`);
 
             request.onsuccess = () => resolve();
             request.onerror = () => reject(request.error);
@@ -129,8 +176,9 @@ export class IndexedDbHandler {
             const transaction = db.transaction([this.SYSTEMS_STORE_NAME], 'readwrite');
             const store = transaction.objectStore(this.SYSTEMS_STORE_NAME);
             
-            // Convert system to JSON for storage
-            const systemData = JSON.stringify(system);
+            // Convert system to JSON for storage, excluding db
+            const systemCopy = { ...system, db: null };
+            const systemData = JSON.stringify(systemCopy);
             const request = store.put(systemData, `system_${system.id}`);
 
             request.onsuccess = () => resolve();

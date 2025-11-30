@@ -761,6 +761,8 @@ export default class DbHandler {
         const sql = "SELECT name FROM sqlite_master WHERE type='table'";
         const result = this.query(sql);
         if (result.success) {
+        console.log("Tables: ", this.tableNameMap );    
+
             return result.results.map((row: any) => row.name as string);
         }
         return [];
