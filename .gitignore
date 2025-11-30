@@ -49,3 +49,6 @@ logs
 # Demo systems
 /systems
 
+/cypress/screenshots
+/cypress/videos
+

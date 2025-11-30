@@ -5,13 +5,17 @@ import { Component } from "~/model/Component";
  */
 export class ComponentManager {
   public static initializeComponents() {
+
+    console.log("Initializing components...");
     const componentCodeStore = useComponentCodeStore()
     const selectedSystemStore = useSelectedSystemStore();
 
-    if (!selectedSystemStore.selectedSystem?.db) {
-      console.warn("Cannot initialize components: Database not ready");
-      return;
-    }
+    // Component maps are now part of the InformationSystem object, no need to load separately
+
+    // if (!selectedSystemStore.selectedSystem?.db) {
+    //   console.warn("Cannot initialize components: Database not ready");
+    //   return;
+    // }
 
     // New instances created from the existing code above
     const statsMealsComponent = new Component({
@@ -43,7 +47,7 @@ navigateTo({
     const statsParticipantsComponent = new Component({
       id: "stats-participants",
       name: "Stats Participants",
-      description: `Component for participants stats. SQL: SELECT COUNT(*) as count FROM ${getTableName('participants')}`,
+      description: `Component for participants stats. SQL: SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}`,
       html: {
         "html": `
   <div class="stat-card">
@@ -62,7 +66,7 @@ navigateTo({
   path: \`/systems/\${systemId}/participants\`,
 });
 ` },
-      sql: { "sql": `SELECT COUNT(*) as count FROM ${getTableName('participants')}` },
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}` },
       additionals: {}
     });
 
@@ -648,8 +652,7 @@ navigateTo({
         "js": `(p.name && p.name.toLowerCase().includes(text)) ||
                (p.email && p.email.toLowerCase().includes(text)) ||
                (p.phone && p.phone.toLowerCase().includes(text)) ||
-               (p.address && p.address.toLowerCase().includes(text)) ||
-               (p.sessions && getSessionNames(p.sessions).toLowerCase().includes(text))`
+               (p.address && p.address.toLowerCase().includes(text))`
       },
       sql: { "sql": "" },
       additionals: {}
@@ -1269,8 +1272,7 @@ navigateTo({
         "js": `(p.name && p.name.toLowerCase().includes(text)) ||
                (p.email && p.email.toLowerCase().includes(text)) ||
                (p.phone && p.phone.toLowerCase().includes(text)) ||
-               (p.address && p.address.toLowerCase().includes(text)) ||
-               (p.sessions && getSessionNames(p.sessions).toLowerCase().includes(text))`
+               (p.address && p.address.toLowerCase().includes(text))`
       },
       sql: { "sql": "" },
       additionals: {}
@@ -1910,8 +1912,6 @@ navigateTo({
     componentCodeStore.resetComponent("supervisor-allergen-ids");
     componentCodeStore.resetComponent("supervisor-allergen-insert");
     componentCodeStore.resetComponent("supervisor-allergen-delete");
-
-    // Reset
     componentCodeStore.resetComponent("stats-meals");
     componentCodeStore.resetComponent("stats-participants");
     componentCodeStore.resetComponent("stats-sessions");
@@ -2001,8 +2001,8 @@ navigateTo({
   }
 
   public static areComponentsInitialized(): boolean {
-    const componentCodeStore = useComponentCodeStore();
-    return componentCodeStore.defaultComponentMap.length > 0;
+    const selectedSystemStore = useSelectedSystemStore();
+    return selectedSystemStore.selectedSystem?.defaultComponentMap.length > 0;
   }
 
 }

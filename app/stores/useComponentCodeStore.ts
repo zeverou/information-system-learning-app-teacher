@@ -1,43 +1,84 @@
 import { defineStore } from 'pinia'
+import { reactive, watch, computed } from 'vue'
 import { Component } from '~/model/Component'
+import { IndexedDbHandler } from '~/utils/IndexedDbHandler'
+import { useSelectedSystemStore } from './useSelectedSystemStore'
 
 export const useComponentCodeStore = defineStore('componentCode', () => {
 
-  const defaultComponentMap = reactive<Array<Component>>([])
-  let actualComponentMap = reactive<Array<Component>>([])
+  const selectedSystemStore = useSelectedSystemStore()
+
+  // Use computed properties to delegate to the current system's component maps
+  const state = reactive({
+    get defaultComponentMap() {
+      return selectedSystemStore.selectedSystem?.defaultComponentMap || []
+    },
+    set defaultComponentMap(value: Component[]) {
+      if (selectedSystemStore.selectedSystem) {
+        selectedSystemStore.selectedSystem.defaultComponentMap = value
+      }
+    },
+    get actualComponentMap() {
+      return selectedSystemStore.selectedSystem?.actualComponentMap || []
+    },
+    set actualComponentMap(value: Component[]) {
+      if (selectedSystemStore.selectedSystem) {
+        selectedSystemStore.selectedSystem.actualComponentMap = value
+      }
+    }
+  })
+
+  function getDefaultComponentMap() {
+    return state.defaultComponentMap
+  }
+
+  function getActualComponentMap() {
+    return state.actualComponentMap
+  }
 
   // New methods for Component instances
   function updateDefaultComponent(component: Component) {
-    const index = defaultComponentMap.findIndex(c => c.id === component.id)
+    console.log("Updating default component with id:", component.id)
+    if (!selectedSystemStore.selectedSystem) return
+
+    const index = selectedSystemStore.selectedSystem.defaultComponentMap.findIndex(c => c.id === component.id)
     if (index >= 0) {
-      defaultComponentMap[index] = component
+      selectedSystemStore.selectedSystem.defaultComponentMap[index] = component
     } else {
-      defaultComponentMap.push(component)
+      selectedSystemStore.selectedSystem.defaultComponentMap.push(component)
     }
+    // Save complete system to IndexedDB
+    selectedSystemStore.selectedSystem.saveToIndexedDB()
   }
 
   function getComponentById(id: string): Component | undefined {
-    return actualComponentMap.find(c => c.id === id)
+    return selectedSystemStore.selectedSystem?.actualComponentMap.find(c => c.id === id)
   }
 
   function getDefaultComponent(id: string): Component | undefined {
-    return defaultComponentMap.find(c => c.id === id)
+    return selectedSystemStore.selectedSystem?.defaultComponentMap.find(c => c.id === id)
   }
 
   function updateActualComponent(component: Component) {
-    const index = actualComponentMap.findIndex(c => c.id === component.id)
+    console.log("Updating actual component with id:", component.id)
+    if (!selectedSystemStore.selectedSystem) return
+
+    const index = selectedSystemStore.selectedSystem.actualComponentMap.findIndex(c => c.id === component.id)
     if (index >= 0) {
-      actualComponentMap[index] = component
+      selectedSystemStore.selectedSystem.actualComponentMap[index] = component
     } else {
-      actualComponentMap.push(component)
+      selectedSystemStore.selectedSystem.actualComponentMap.push(component)
     }
+    // Save complete system to IndexedDB
+    selectedSystemStore.selectedSystem.saveToIndexedDB()
   }
 
   function getActualComponent(id: string): Component | undefined {
-    return actualComponentMap.find(c => c.id === id)
+    return selectedSystemStore.selectedSystem?.actualComponentMap.find(c => c.id === id)
   }
 
   function resetComponent(id: string) {
+    console.log("Resetting component with id:", id)
     const defaultComp = getDefaultComponent(id)
     if (defaultComp) {
       updateActualComponent(defaultComp)
@@ -45,17 +86,27 @@ export const useComponentCodeStore = defineStore('componentCode', () => {
   }
 
   function resetAllComponents() {
-    actualComponentMap.splice(0, actualComponentMap.length);
-    actualComponentMap.push(...defaultComponentMap);
+    console.log("Resetting all components to default")
+    if (!selectedSystemStore.selectedSystem) return
+
+    selectedSystemStore.selectedSystem.actualComponentMap.splice(0, selectedSystemStore.selectedSystem.actualComponentMap.length)
+    selectedSystemStore.selectedSystem.actualComponentMap.push(...selectedSystemStore.selectedSystem.defaultComponentMap)
+    // Save complete system to IndexedDB
+    selectedSystemStore.selectedSystem.saveToIndexedDB()
   }
 
   function updateComponent(id: string, component: Component) {
-    const index = actualComponentMap.findIndex(c => c.id === id)
+    console.log("Updating component with id:", id)
+    if (!selectedSystemStore.selectedSystem) return
+
+    const index = selectedSystemStore.selectedSystem.actualComponentMap.findIndex(c => c.id === id)
     if (index >= 0) {
-      actualComponentMap[index] = component
+      selectedSystemStore.selectedSystem.actualComponentMap[index] = component
     } else {
-      actualComponentMap.push(component)
+      selectedSystemStore.selectedSystem.actualComponentMap.push(component)
     }
+    // Save complete system to IndexedDB
+    selectedSystemStore.selectedSystem.saveToIndexedDB()
   }
 
   // New methods to get specific component code by type
@@ -86,16 +137,35 @@ export const useComponentCodeStore = defineStore('componentCode', () => {
         js: { ...defaultComponent.js },
         sql: { ...defaultComponent.sql }
       }
-      actualComponentMap.push(component)
+      if (selectedSystemStore.selectedSystem) {
+        selectedSystemStore.selectedSystem.actualComponentMap.push(component)
+      }
     }
     
     const key = specificKey || codeType || 'default'
     component[codeType][key] = code
+    // Save complete system to IndexedDB
+    selectedSystemStore.selectedSystem?.saveToIndexedDB()
+  }
+
+  // Watch for unexpected changes to the maps so we can trace who modifies the store (useful for debugging F5/rehydration behavior)
+  try {
+    watch(() => selectedSystemStore.selectedSystem?.actualComponentMap.length, (newLen, oldLen) => {
+      console.trace('[componentCodeStore] actualComponentMap length changed', oldLen, '->', newLen)
+    }, { immediate: true })
+
+    watch(() => selectedSystemStore.selectedSystem?.defaultComponentMap.length, (newLen, oldLen) => {
+      console.trace('[componentCodeStore] defaultComponentMap length changed', oldLen, '->', newLen)
+    }, { immediate: true })
+  } catch (e) {
+    // In some runtime environments or during SSR, watch might not be available; swallow errors
+    console.debug('[componentCodeStore] watch init failed', e)
   }
 
   return {
-    defaultComponentMap,
-    actualComponentMap,
+    ...state,
+    getDefaultComponentMap,
+    getActualComponentMap,
     updateDefaultComponent,
     getDefaultComponent,
     updateActualComponent,
@@ -106,42 +176,5 @@ export const useComponentCodeStore = defineStore('componentCode', () => {
     updateComponent,
     getComponentCodeByType,
     updateComponentCodeByType
-  }
-}, {
-  persist: {
-    serializer: {
-      serialize: JSON.stringify,
-      deserialize: (value: string) => {
-        const parsed = JSON.parse(value)
-
-        console.log("Deserializing componentCode store:", parsed)
-        
-        // Check if this is old data structure with componentCodeMap properties
-        if (parsed.defaultComponentCodeMap || parsed.actualComponentCodeMap) {
-          console.log("Detected old data structure, clearing store and localStorage")
-          // Clear the persisted data from localStorage
-          localStorage.removeItem('componentCode')
-          return {
-            defaultComponentMap: [],
-            actualComponentMap: []
-          }
-        }
-        
-        // Convert plain objects back to Component instances
-        if (parsed.defaultComponentMap && Array.isArray(parsed.defaultComponentMap)) {
-          parsed.defaultComponentMap = parsed.defaultComponentMap.map((comp: any) => new Component(comp))
-        } else {
-          parsed.defaultComponentMap = []
-        }
-        
-        if (parsed.actualComponentMap && Array.isArray(parsed.actualComponentMap)) {
-          parsed.actualComponentMap = parsed.actualComponentMap.map((comp: any) => new Component(comp))
-        } else {
-          parsed.actualComponentMap = []
-        }
-        
-        return parsed
-      }
-    }
   }
 })

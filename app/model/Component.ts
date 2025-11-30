@@ -20,7 +20,8 @@ export class Component {
         css,
         js,
         sql,
-        additionals
+        additionals,
+        edited
     }: {
         id: string;
         name: string;
@@ -30,6 +31,7 @@ export class Component {
         js: Record<string, string>;
         sql: Record<string, string>;
         additionals: Record<string, string>;
+        edited?: boolean;
     }) {
         this.id = id;
         this.name = name;
@@ -39,5 +41,7 @@ export class Component {
         this.js = js;
         this.sql = sql;
         this.additionals = additionals;
+        // Preserve edited flag from serialized data when available
+        this.edited = (edited as boolean) ?? false;
     }
 }

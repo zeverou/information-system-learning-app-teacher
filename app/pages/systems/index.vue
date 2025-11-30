@@ -255,7 +255,7 @@ async function uploadSystem() {
       <!-- Systems List -->
       <div v-if="informationSystemStore.systems.length > 0" class="space-y-6">
         <UCard v-for="(system, index) in informationSystemStore.systems" :key="system.id"
-          class="transition hover:ring-2 hover:ring-teacher-500/50 cursor-pointer shadow-lg dark:bg-gray-900/50"
+          class="group transition hover:ring-2 hover:ring-teacher-500/50 cursor-pointer shadow-lg dark:bg-gray-900/50"
           :class="getCardBorderClass(index)" @click="navigateToSystem(system.id)">
           <div class="space-y-4">
             <!-- System Header with Icon, Title, and Delete Button -->
@@ -269,8 +269,8 @@ async function uploadSystem() {
                   <p class="text-sm text-gray-500">{{ t('information_system') }}</p>
                 </div>
               </div>
-              <UButton icon="i-lucide-trash-2" color="red" variant="ghost" size="sm"
-                @click.stop="deleteSystem(system.id)" class="opacity-0 group-hover:opacity-100 transition-opacity" />
+              <UButton icon="i-lucide-trash-2" color="red" variant="ghost" size="md"
+                @click.stop="deleteSystem(system.id)" />
             </div>
 
             <!-- Description -->

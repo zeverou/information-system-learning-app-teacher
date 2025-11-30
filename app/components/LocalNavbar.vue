@@ -24,8 +24,9 @@
 
                         <template #content>
                             <div style="min-width: 300px; border: 1px transparent; border-radius: 8px; padding: 10px;">
-                                <UButton @click="printTableData" variant="soft" style="width: 100%;">Print database table names</UButton>
-                            
+                                <UButton class="mb-2" @click="printTableData" variant="soft" style="width: 100%;">Print database table names</UButton>
+                                <UButton class="mb-2" @click="IsDbNull" variant="soft" style="width: 100%;">Check if db is null</UButton>
+                                <UButton class="mb-2" @click="openComponentExplorer" variant="soft" style="width: 100%;">Open Component Explorer</UButton>
                             </div>
                         </template>
                     </UPopover>
@@ -326,6 +327,18 @@ async function printTableData() {
             console.log(`Table: ${tableName}`, data);
         }
     }
+}
+
+async function IsDbNull() {
+    if (selectedSystemStore.selectedSystem) {
+        console.log(selectedSystemStore.selectedSystem.db === null ? "Database is null." : "Database is not null.");
+    } else {
+        console.log("No system selected.");
+    }
+}
+
+function openComponentExplorer() {
+    navigateTo(`/systems/${selectedSystemStore.selectedId}/component-explorer`);
 }
 
 

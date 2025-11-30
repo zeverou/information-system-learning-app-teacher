@@ -1,6 +1,7 @@
 import DbHandler from "~/composables/DbHandler";
 import { Participant } from "./Participant";
 import { Task } from "./Task";
+import { Component } from "./Component";
 import { IndexedDbHandler } from "~/utils/IndexedDbHandler";
 
 export interface Table<T = any> {
@@ -12,6 +13,8 @@ export class InformationSystem {
 
   // TODO: use db attribute for IS
   public db: DbHandler | null;
+  public defaultComponentMap: Component[] = [];
+  public actualComponentMap: Component[] = [];
 
   constructor(
     public id: number,
@@ -22,27 +25,31 @@ export class InformationSystem {
     public tasks: Task[] = [],
     public configData: any,
     public dbNumber: number = 0,
-    public dbInitialized: boolean = false
+    public dbInitialized: boolean = false,
+    defaultComponentMap: Component[] = [],
+    actualComponentMap: Component[] = []
   ) {
     // Don't initialize db here - it will be set later during hydration
     this.db = null as any;
+    this.defaultComponentMap = defaultComponentMap;
+    this.actualComponentMap = actualComponentMap;
   }
 
   public static async databaseInitStatic(json: any) {
-    // Try to load from IndexedDB first
+    // Try to load complete system from IndexedDB first
     if (json.id) {
       try {
-        const buffer = await IndexedDbHandler.loadSystemDB(json.id);
-        if (buffer) {
-          console.log("Loading database from IndexedDB for system:", json.name);
-          const dbHandler = await DbHandler.fromBuffer(buffer, json);
-          return dbHandler;
+        const system = await InformationSystem.loadFromIndexedDB(json.id);
+        if (system && system.db) {
+          console.log("Loading complete system from IndexedDB for system:", json.name);
+          return system.db;
         }
       } catch (e) {
-        console.error("Failed to load from IndexedDB", e);
+        console.error("Failed to load complete system from IndexedDB", e);
       }
     }
 
+    // Fallback to loading database separately
     const dbHandler = await DbHandler.fromJSON(json);
     console.log("Database initialized for Information System (static):", json.name);
 
@@ -51,6 +58,10 @@ export class InformationSystem {
       try {
         const exported = dbHandler.exportDatabase();
         await IndexedDbHandler.saveSystemDB(json.id, exported);
+        // Also save component maps if they exist
+        if (json.defaultComponentMap || json.actualComponentMap) {
+          await IndexedDbHandler.saveComponentMaps(json.defaultComponentMap || [], json.actualComponentMap || []);
+        }
       } catch (e) {
         console.error("Failed to save to IndexedDB", e);
       }
@@ -78,12 +89,11 @@ export class InformationSystem {
     this.dbInitialized = true;
     console.log("Database initialized for Information System (new):", this.name);
 
-    // Save to IndexedDB
+    // Save complete system to IndexedDB
     try {
-      const exported = this.db.exportDatabase();
-      await IndexedDbHandler.saveSystemDB(this.id, exported);
+      await this.saveToIndexedDB();
     } catch (e) {
-      console.error("Failed to save to IndexedDB", e);
+      console.error("Failed to save complete system to IndexedDB", e);
     }
   }
 
@@ -99,14 +109,71 @@ export class InformationSystem {
       Task.fromJSON(task)
     );
 
+    // Parse component maps
+    const defaultComponentMap: Component[] = (json.defaultComponentMap || []).map((comp: any) =>
+      new Component(comp)
+    );
+    const actualComponentMap: Component[] = (json.actualComponentMap || []).map((comp: any) =>
+      new Component(comp)
+    );
+
     return new InformationSystem(
       json.id,
-      json.directory || "",
+      json.directory,
       json.name,
       json.description,
       tables,
       tasks,
-      json
+      json.configData,
+      json.dbNumber || 0,
+      json.dbInitialized || false,
+      defaultComponentMap,
+      actualComponentMap
     );
+  }
+
+  public async saveComponentMaps(): Promise<void> {
+    try {
+      await IndexedDbHandler.saveComponentMaps(this.defaultComponentMap, this.actualComponentMap);
+      console.log(`Saved component maps for system ${this.name}`);
+    } catch (error) {
+      console.error(`Failed to save component maps for system ${this.name}:`, error);
+    }
+  }
+
+  // Save entire InformationSystem object to IndexedDB
+  public async saveToIndexedDB(): Promise<void> {
+    try {
+      await IndexedDbHandler.saveInformationSystem(this);
+      console.log(`Saved complete InformationSystem ${this.name} to IndexedDB`);
+    } catch (error) {
+      console.error(`Failed to save InformationSystem ${this.name} to IndexedDB:`, error);
+    }
+  }
+
+  // Load entire InformationSystem object from IndexedDB
+  public static async loadFromIndexedDB(systemId: number): Promise<InformationSystem | null> {
+    try {
+      const systemData = await IndexedDbHandler.loadInformationSystem(systemId);
+      if (systemData) {
+        const system = InformationSystem.fromJSON(systemData);
+        console.log(`Loaded complete InformationSystem ${system.name} from IndexedDB`);
+        return system;
+      }
+      return null;
+    } catch (error) {
+      console.error(`Failed to load InformationSystem ${systemId} from IndexedDB:`, error);
+      return null;
+    }
+  }
+
+  // Delete entire InformationSystem object from IndexedDB
+  public static async deleteFromIndexedDB(systemId: number): Promise<void> {
+    try {
+      await IndexedDbHandler.deleteInformationSystem(systemId);
+      console.log(`Deleted InformationSystem ${systemId} from IndexedDB`);
+    } catch (error) {
+      console.error(`Failed to delete InformationSystem ${systemId} from IndexedDB:`, error);
+    }
   }
 }

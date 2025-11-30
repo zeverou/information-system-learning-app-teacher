@@ -54,14 +54,25 @@ export const useSelectedSystemStore = defineStore('selectedSystem', () => {
     if (system.db) {
       loadSessions()
     }
+    // Component maps are now part of the system object, no need to load separately
   }
 
   async function initializeDb() {
     if (selectedSystem.value) {
       console.log("Reinitializing selected system database.")
-      const dbHandler = await InformationSystem.databaseInitStatic(selectedSystem.value.configData);
-      selectedSystem.value.db = dbHandler;
-      console.log("Selected system database initialized:", selectedSystem.value.db.query("SELECT * FROM účastníci").results);
+      
+      // Try to load complete system from IndexedDB first
+      const loadedSystem = await InformationSystem.loadFromIndexedDB(selectedSystem.value.id)
+      if (loadedSystem && loadedSystem.db) {
+        selectedSystem.value = loadedSystem
+        console.log("Loaded complete system from IndexedDB:", selectedSystem.value.name)
+      } else {
+        // Fallback to initializing database separately
+        const dbHandler = await InformationSystem.databaseInitStatic(selectedSystem.value.configData);
+        selectedSystem.value.db = dbHandler;
+        console.log("Selected system database initialized:", selectedSystem.value.db.query("SELECT * FROM účastníci").results);
+      }
+      
       // Load error components after database initialization
       loadErrorComponents()
       // Load sessions after db init
