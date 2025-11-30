@@ -222,7 +222,7 @@ async function uploadSystem() {
   <div class="max-w-5xl mx-auto py-12 px-4 sm:px-6">
     <div class="grid grid-cols-1 gap-8">
 
-      <!-- Header Section -->
+    <!-- Header Section -->
       <UCard class="border-t-4 border-teacher-500 shadow-lg dark:bg-gray-900/50">
         <div class="flex flex-col md:flex-row items-start gap-6">
           <div class="hidden md:flex p-3 bg-teacher-500/10 rounded-lg text-teacher-500">
@@ -230,20 +230,20 @@ async function uploadSystem() {
           </div>
 
           <div class="flex-1">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 class="systems-page-title text-3xl font-bold text-gray-900 dark:text-white mb-2">
               {{ t('information_systems') }}
             </h1>
 
             <div class="flex flex-col lg:flex-row lg:items-center gap-6">
-              <p class="text-lg text-gray-600 dark:text-gray-300 max-w-prose leading-relaxed flex-1">
+              <p class="systems-page-description text-lg text-gray-600 dark:text-gray-300 max-w-prose leading-relaxed flex-1">
                 {{ t('manage_your_systems_description') }}
               </p>
 
               <div class="flex flex-wrap gap-4">
-                <UButton icon="i-lucide-plus-circle" size="lg" color="teacher" @click="open = true">
+                <UButton class="add-new-system-button" icon="i-lucide-plus-circle" size="lg" color="teacher" @click="open = true">
                   {{ t('add_new_system') }}
                 </UButton>
-                <UButton icon="i-lucide-trash-2" size="lg" color="red" variant="outline" @click="confirmClearSystems">
+                <UButton class="clear-all-systems-button" icon="i-lucide-trash-2" size="lg" color="red" variant="outline" @click="confirmClearSystems">
                   {{ t('clear_systems') }}
                 </UButton>
               </div>
@@ -265,7 +265,7 @@ async function uploadSystem() {
                   <UIcon name="i-heroicons-computer-desktop" class="w-6 h-6 text-teacher-500" />
                 </div>
                 <div>
-                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ system.name }}</h3>
+                  <h3 class="system-name text-xl font-semibold text-gray-900 dark:text-white">{{ system.name }}</h3>
                   <p class="text-sm text-gray-500">{{ t('information_system') }}</p>
                 </div>
               </div>
@@ -303,7 +303,7 @@ async function uploadSystem() {
       </div>
 
       <!-- Upload Modal -->
-      <UModal v-model:open="open" :title="t('add_new_system')" close-icon="i-lucide-x">
+      <UModal class="system-zip-upload" v-model:open="open" :title="t('add_new_system')" close-icon="i-lucide-x">
         <template #body>
           <div class="space-y-6">
             <UFileUpload v-model="value" accept=".zip" :description="t('upload_system_zip')" class="w-full" />
@@ -319,7 +319,7 @@ async function uploadSystem() {
             </div>
 
             <UButton v-if="value && !loadedSystemTitle" icon="i-lucide-upload" color="teacher" variant="solid"
-              class="w-full" @click="uploadSystem">
+              class="upload-system-button w-full" @click="uploadSystem">
               {{ t('upload_system') }}
             </UButton>
           </div>
