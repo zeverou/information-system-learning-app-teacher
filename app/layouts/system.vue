@@ -1,6 +1,6 @@
 <template>
   <div class="system-layout">
-    <div class="main-content">
+    <div class="main-content" :class="{ 'main-content-expanded': taskMenuStore.taskMenuDisplayedAsSidebar && taskMenuStore.sidebarCollapsed }">
       <SystemNavbar class="system-navbar" />
       <div class="slot-content">
         <CustomScrollbar>
@@ -9,7 +9,7 @@
       </div>
       <ContextMenu class="context-menu" />
     </div>
-    <div v-if="taskMenuStore.taskMenuDisplayedAsSidebar" class="content-placeholder">
+    <div v-if="taskMenuStore.taskMenuDisplayedAsSidebar" class="content-placeholder" :class="{ 'content-placeholder-collapsed': taskMenuStore.sidebarCollapsed }">
       <TaskList class="task-list-sidebar" />
     </div>
   </div>
@@ -32,6 +32,11 @@ const taskMenuStore = useTaskMenuStore()
   flex: 1;
   height: 100vh;
   width: 70vw;
+  transition: width 0.3s ease;
+}
+
+.main-content-expanded {
+  width: calc(100vw - 48px);
 }
 
 .system-navbar {
@@ -59,6 +64,12 @@ const taskMenuStore = useTaskMenuStore()
   position: sticky;
   top: 0;
   overflow-y: auto;
+  transition: width 0.3s ease;
+}
+
+.content-placeholder-collapsed {
+  width: 48px;
+  overflow: hidden;
 }
 
 .task-list-sidebar {

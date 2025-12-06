@@ -1,5 +1,15 @@
 <template>
-  <div class="max-w-md mx-auto mt-8">
+  <!-- Collapsed sidebar view -->
+  <div 
+    v-if="taskMenuStore.taskMenuDisplayedAsSidebar && taskMenuStore.sidebarCollapsed" 
+    class="collapsed-sidebar"
+    @click="taskMenuStore.toggleSidebarCollapsed"
+  >
+    <UIcon name="i-heroicons-chevron-left" class="w-6 h-6 text-gray-400" />
+  </div>
+
+  <!-- Full task list view -->
+  <div v-else class="max-w-md mx-auto mt-8">
     <UCard class="bg-slate-950">
 
       <template #header>
@@ -8,8 +18,18 @@
           <div class="w-20"></div>
           <!-- Centered Tasks title -->
           <h2 class="text-3xl font-semibold text-center flex-1 mt-4">{{ t('tasks') }}</h2>
+          <!-- Collapse button when displayed as sidebar -->
+          <UButton 
+            v-if="taskMenuStore.taskMenuDisplayedAsSidebar" 
+            class="mt-4" 
+            color="neutral" 
+            variant="ghost"
+            icon="i-heroicons-chevron-right" 
+            size="md"
+            @click="taskMenuStore.toggleSidebarCollapsed"
+          />
           <!-- Back button on the right -->
-          <UButton v-if="selectedTask" class="mt-4" color="lime" @click="selectTask(selectedTask.id)" icon="i-heroicons-arrow-left" size="md">
+          <UButton v-else-if="selectedTask" class="mt-4" color="lime" @click="selectTask(selectedTask.id)" icon="i-heroicons-arrow-left" size="md">
             {{ t('back_to_tasks') }}
           </UButton>
           <!-- Empty space when no back button to keep title centered -->
@@ -213,6 +233,7 @@ const scoreStore = useScoreStore()
 const errorComponentStore = useErrorComponentStore()
 const highlightStore = useHighlightStore()
 const componentCodeStore = useComponentCodeStore()
+const taskMenuStore = useTaskMenuStore()
 
 /* 3. Context hooks */
 const { t } = useI18n()
@@ -730,6 +751,25 @@ onMounted(() => {
 .task-completed-fade-enter-from,
 .task-completed-fade-leave-to {
   opacity: 0;
+}
+
+.collapsed-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #0f172a;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.collapsed-sidebar:hover {
+  background-color: #1e293b;
+}
+
+.collapsed-sidebar:hover .w-6 {
+  color: #9ae600;
 }
 
 .task-completed-fade-enter-to,
