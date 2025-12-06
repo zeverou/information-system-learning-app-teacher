@@ -1,7 +1,5 @@
 <template>
     <div>
-        <LocalNavbar />
-
         <div class="container mx-auto px-4 py-8">
                     <h1 class="text-4xl font-bold mb-4">{{ t('sessions') }}</h1>
 
@@ -118,9 +116,12 @@ import SessionSupervisorsCount from '~/components/infsys_components/sessions/Ses
 import SessionDeleteButton from '~/components/infsys_components/sessions/SessionDeleteButton.vue'
 import AddSessionButton from '~/components/infsys_components/sessions/AddSessionButton.vue'
 import EditSessionModal from '~/components/infsys_components/sessions/EditSessionModal.vue'
-import LocalNavbar from '~/components/LocalNavbar.vue'
 import { InformationSystem } from '~/model/InformationSystem'
 import { ComponentManager } from '#imports'
+
+definePageMeta({
+  layout: 'system'
+});
 
 const route = useRoute()
 const selectedSystemStore = useSelectedSystemStore()

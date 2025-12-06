@@ -8,6 +8,10 @@ import { useSelectedSystemStore } from '#imports'
 import { useComponentCodeStore } from '~/stores/useComponentCodeStore'
 import { Component } from '~/model/Component'
 
+definePageMeta({
+  layout: 'system'
+});
+
 /* 2. Stores */
 const store = useInformationSystemStore()
 const selectedSystemStore = useSelectedSystemStore()
@@ -59,5 +63,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <LocalNavbar />
+  <div></div>
 </template>

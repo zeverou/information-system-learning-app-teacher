@@ -1,7 +1,5 @@
 <template>
     <div>
-        <LocalNavbar />
-
         <div class="container mx-auto px-4 py-8">
                     <h1 class="text-4xl font-bold mb-4">{{ t('meals') }}</h1>
 
@@ -92,6 +90,10 @@ import AddMealButton from '~/components/infsys_components/meals/AddMealButton.vu
 import EditMealModal from '~/components/infsys_components/meals/EditMealModal.vue'
 import { InformationSystem } from '~/model/InformationSystem'
 import { ComponentManager } from '#imports'
+
+definePageMeta({
+  layout: 'system'
+});
 
 const route = useRoute()
 const { t } = useI18n()

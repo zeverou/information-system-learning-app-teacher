@@ -6,10 +6,13 @@ import { InformationSystem } from '~/model/InformationSystem'
 import { useInformationSystemStore } from '~/stores/useInformationSystemStore'
 import { useSelectedSystemStore } from '~/stores/useSelectedSystemStore'
 import { useSelectedTableStore } from '~/stores/useSelectedTableStore'
-import LocalNavbar from '~/components/LocalNavbar.vue'
 import { usePropertyStore } from '#imports'
 import { USeparator } from '#components'
 import QueryExecutor from '~/components/database/QueryExecutor.vue'
+
+definePageMeta({
+  layout: 'system'
+});
 
 /* 2. Stores */
 const informationSystemStore = useInformationSystemStore()
@@ -308,8 +311,6 @@ onMounted(() => {
 
 <template>
     <div>
-        <LocalNavbar/>
-        
         <TableView
             :table-names="tableNames"
             :selected-table-name="selectedTableName"

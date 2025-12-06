@@ -2,10 +2,8 @@
 
     <div class="dashboard-layout">
         <!--<aside class="dashboard-sidebar">
-            <LocalNavbar :items="localItems" />
             <TaskList :system-id="system?.id" />
         </aside>-->
-        <LocalNavbar />
 
         <main class="dashboard-main">
 
@@ -40,6 +38,10 @@ import { useHighlightWatchers } from '~/composables/highlightWatchers'
 import '~/assets/css/highlight.css'
 import { InformationSystem } from '~/model/InformationSystem'
 import { useSelectedSystemStore } from '~/stores/useSelectedSystemStore'
+
+definePageMeta({
+  layout: 'system'
+});
 
 /* 2. Stores */
 const store = useInformationSystemStore()

@@ -1,10 +1,11 @@
 <template>
-  <div v-if="!isOnSystemDetailPage" class="flex items-center w-full justify-between text-lg py-4 px-4 text-black"
+  <div class="flex items-center w-full justify-between text-lg py-4 px-4 text-black"
     style="border-bottom: 1px; border-color: #05df72; border-bottom-style: solid;">
     <!-- Navigation Menu on the left/center -->
     <UNavigationMenu :items="items" class="global-nav-menu flex-grow justify-start" style="z-index: 10000;" />
   </div>
 </template>
+
 
 <script setup lang="ts">
 /* 1. Imports */

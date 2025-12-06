@@ -1,6 +1,5 @@
 <template>
     <div>
-        <LocalNavbar />
         <!-- TODO: move to components -->
 
         <div class="container mx-auto px-4 py-8">
@@ -638,6 +637,10 @@ import SupervisorsCapacityCount from '~/components/infsys_components/supervisors
 import SupervisorsFilterReset from '~/components/infsys_components/supervisors/SupervisorsFilterReset.vue'
 import SupervisorsFilterInput from '~/components/infsys_components/supervisors/SupervisorsFilterInput.vue'
 import SupervisorAllergenCount from '~/components/infsys_components/supervisors/SupervisorAllergenCount.vue'
+
+definePageMeta({
+  layout: 'system'
+});
 
 const selectedSystemStore = useSelectedSystemStore()
 const informationSystemStore = useInformationSystemStore()

@@ -1,9 +1,4 @@
 <template>
-    <LocalNavbar>
-
-    </LocalNavbar>
-
-
     <div>
         <MealsPlanList></MealsPlanList>
     </div>
@@ -23,6 +18,9 @@ import { InformationSystem } from '~/model/InformationSystem'
 import { ComponentManager } from '#imports'
 import MealsPlanList from '~/components/infsys_components/meal-plan/MealsPlanList.vue'
 
+definePageMeta({
+  layout: 'system'
+});
 
 const route = useRoute()
 const { t } = useI18n()

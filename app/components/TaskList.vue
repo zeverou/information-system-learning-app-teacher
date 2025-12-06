@@ -7,9 +7,9 @@
           <!-- Empty left space to balance the layout -->
           <div class="w-20"></div>
           <!-- Centered Tasks title -->
-          <h2 class="text-3xl font-semibold text-center flex-1">{{ t('tasks') }}</h2>
+          <h2 class="text-3xl font-semibold text-center flex-1 mt-4">{{ t('tasks') }}</h2>
           <!-- Back button on the right -->
-          <UButton v-if="selectedTask" color="lime" @click="selectTask(selectedTask.id)" icon="i-heroicons-arrow-left" size="sm">
+          <UButton v-if="selectedTask" class="mt-4" color="lime" @click="selectTask(selectedTask.id)" icon="i-heroicons-arrow-left" size="md">
             {{ t('back_to_tasks') }}
           </UButton>
           <!-- Empty space when no back button to keep title centered -->

@@ -1,9 +1,5 @@
 <template>
     <div>
-        <LocalNavbar class="navbar-area" />
-
-
-
         <div class="container mx-auto px-4 py-8">
             <h1 class="text-4xl font-bold mb-4">{{ t('participants') }}</h1>
 
@@ -643,6 +639,10 @@ import ParticipantsCapacityCount from '~/components/infsys_components/participan
 import ParticipantsFilterReset from '~/components/infsys_components/participants/ParticipantsFilterReset.vue'
 import ParticipantsFilterInput from '~/components/infsys_components/participants/ParticipantsFilterInput.vue'
 import ParticipantAllergenCount from '~/components/infsys_components/participants/ParticipantAllergenCount.vue'
+
+definePageMeta({
+  layout: 'system'
+});
 
 const selectedSystemStore = useSelectedSystemStore()
 const informationSystemStore = useInformationSystemStore()

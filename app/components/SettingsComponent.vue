@@ -46,6 +46,31 @@
         </div>
       </UCard>
 
+      <!-- Appearance Settings -->
+      <UCard class="border-t-4 border-orange-500 shadow-lg dark:bg-gray-900/50">
+        <div class="space-y-4">
+          <div class="flex items-center space-x-3 mb-6">
+            <div class="p-2 bg-orange-500/10 rounded-lg">
+              <UIcon name="i-heroicons-swatch" class="w-6 h-6 text-orange-500" />
+            </div>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+              {{ t('appearance_settings') }}
+            </h2>
+          </div>
+
+          <div class="flex items-center justify-between">
+             <div class="flex flex-col">
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ t('task_menu_sidebar') }}</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">{{ t('task_menu_sidebar_description') }}</span>
+             </div>
+             <USwitch 
+                :model-value="taskMenuStore.taskMenuDisplayedAsSidebar" 
+                @update:model-value="taskMenuStore.toggleTaskMenuDisplay" 
+             />
+          </div>
+        </div>
+      </UCard>
+
       <!-- Keyboard Shortcuts -->
       <UCard class="border-t-4 border-violet-500 shadow-lg dark:bg-gray-900/50">
         <div class="space-y-4">
@@ -81,10 +106,11 @@
 /* 1. Imports */
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
-import { useSettingsStore } from "#imports"
+import { useSettingsStore, useTaskMenuStore } from "#imports"
 
 /* 2. Stores */
 const settingsStore = useSettingsStore()
+const taskMenuStore = useTaskMenuStore()
 
 /* 3. Context hooks */
 const { locale, availableLocales, setLocale } = useI18n()

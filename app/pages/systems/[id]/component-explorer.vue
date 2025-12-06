@@ -1,5 +1,4 @@
 <template>
-    <LocalNavbar />
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-4xl font-bold mb-6 text-gray-900">Component Explorer</h1>
         
@@ -109,6 +108,10 @@
 import { useSelectedSystemStore } from '#imports';
 import { useComponentCodeStore } from '#imports';
 import { ComponentManager } from '#imports';
+
+definePageMeta({
+  layout: 'system'
+});
 
 const selectedSystemStore = useSelectedSystemStore();
 const componentCodeStore = useComponentCodeStore();

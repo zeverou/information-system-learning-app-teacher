@@ -1,7 +1,8 @@
 <template>
   <UApp>
-    <GlobalNavbar />
-    <NuxtPage />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </UApp>
 </template>
 
