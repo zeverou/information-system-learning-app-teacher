@@ -112,7 +112,7 @@
 -->
           <div>
             <!-- Input for type-correct tasks -->
-            <div v-if="selectedTask.type === 'type-correct'">
+            <div v-if="selectedTask.activityType === ActivityType.TYPE_CORRECT">
               <UInput v-model="form.answer" placeholder="Enter your answer" class="mt-2 mb-4" />
             </div>
 
@@ -131,7 +131,7 @@
             <!-- Button container with flex layout -->
             <div class="flex items-center gap-2">
               <!-- Type of task: select -->
-              <template v-if="selectedTask.type === 'select' && !selectedTask.completed">
+              <template v-if="selectedTask.activityType === ActivityType.SELECT && !selectedTask.completed">
                 <UButton variant="outline" color="lime"
                   :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.size === 0"
                   @click="handleSubmit">
@@ -146,14 +146,14 @@
               </template>
 
               <!-- Type of task: type-correct -->
-              <template v-if="selectedTask.type === 'type-correct' && !selectedTask.completed">
+              <template v-if="selectedTask.activityType === ActivityType.TYPE_CORRECT && !selectedTask.completed">
                 <UButton variant="outline" :disabled="selectedTask.completed" color="lime" @click="handleSubmit">
                   {{ t('submit') }}
                 </UButton>
               </template>
 
               <!-- Type of task: repair -->
-              <template v-if="selectedTask.type === 'repair' && !selectedTask.completed">
+              <template v-if="selectedTask.activityType === ActivityType.REPAIR && !selectedTask.completed">
                 <UButton color="lime"
                   :disabled="selectedTask.completed || selectedTask.componentsRepaired || !highlightStore.selectedIds || highlightStore.selectedIds.size === 0"
                   variant="outline" @click="handleSubmit">
@@ -213,7 +213,7 @@ import { ComponentHandler, TaskAnswerEval, TaskQueue, useScoreStore } from '#imp
 import { useErrorComponentStore } from '#imports'
 import { useHighlightStore } from '#imports'
 import { Task } from '~/model/Task'
-import { sys } from 'typescript'
+import { ActivityType } from '~/model/Task/TaskType'
 import type { StepperItem } from '@nuxt/ui'
 import { useComponentCodeStore } from '#imports'
 
@@ -415,7 +415,7 @@ async function handleSubmit() {
 
   console.log("Error Components:", selectedTask.value.errorComponents)
 
-  if (selectedTask.value.type === 'select') {
+  if (selectedTask.value.activityType === ActivityType.SELECT) {
     const actual: Set<string> = highlightStore.selectedIds
     let match: boolean = false;
     console.log("EXPECTED:", expected)
@@ -440,14 +440,14 @@ async function handleSubmit() {
     if (isMatch) {
       await evaluate();
     }
-  } else if (selectedTask.value.type === 'type-correct') {
+  } else if (selectedTask.value.activityType === ActivityType.TYPE_CORRECT) {
     const expected = selectedTask.value.answer.trim()
     const actual = form.value.answer.trim()
     isMatch = expected === actual
     console.log("Expected:", expected)
     console.log("Actual:", actual)
     console.log("Task type: type-correct, isMatch:", isMatch)
-  } else if (selectedTask.value.type === 'repair') {
+  } else if (selectedTask.value.activityType === ActivityType.REPAIR) {
     isMatch = await TaskAnswerEval.evaluateTaskAnswer(selectedTask.value?.answer || '')
     if (system?.tasks && selectedTask.value) {
       const idx = system.tasks.findIndex(t => t.id === selectedTask.value!.id)
@@ -458,7 +458,7 @@ async function handleSubmit() {
         }
       }
     }
-  } else if (selectedTask.value.type === 'select-options') {
+  } else if (selectedTask.value.activityType === ActivityType.SELECT_OPTIONS) {
     if (isMatch) {
       await evaluate();
     }
@@ -513,7 +513,7 @@ async function evaluate() {
       }
 
       // Clean up error components and reset component code when task is completed
-      if (selectedTask.value.type === 'select' && highlightStore.selectedIds) {
+      if (selectedTask.value.activityType === ActivityType.SELECT && highlightStore.selectedIds) {
         for (let id of highlightStore.selectedIds) {
           errorComponentStore.removeErrorComponent(id)
 
@@ -545,7 +545,7 @@ async function evaluate() {
         system.tasks[idx].completed = true
 
         // Clean up error components and reset component code when task is completed
-        if (selectedTask.value.type === 'select' && highlightStore.selectedIds) {
+        if (selectedTask.value.activityType === ActivityType.SELECT && highlightStore.selectedIds) {
           for (let id of highlightStore.selectedIds) {
             errorComponentStore.removeErrorComponent(id)
 

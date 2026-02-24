@@ -76,7 +76,7 @@
             "title": "Ukázkový úkol č. 1",
             "description": "Zkontrolujte, zda se v nástěnce správně zobrazují jídla a účastníci. Pokud najdete nějakou chybu, tak chybu opravte.",
             "status": "pending",
-            "kind": "repair",
+            "type": "repair",
             "answer": "stats-participants-sql == SELECT COUNT(*) as count FROM účastníci && stats-meals-sql == SELECT COUNT(*) as count FROM jídla",
             "elementClass": [],
             "round": 1,
@@ -108,7 +108,7 @@
             "title": "Ukázkový úkol č. 2",
             "description": "Zkontrolujte, zda se v nástěnce správně zobrazují statistiky o počtu jídel. Pokud najdete nějakou chybu, tak vyberte komponentu, která je chybná.",
             "status": "pending",
-            "kind": "select",
+            "type": "select",
             "answer": "none",
             "elementClass": [
                 "stats-supervisors"
@@ -133,7 +133,7 @@
             "title": "Ukázkový úkol č. 3",
             "description": "Upravte účastníka: Tereza Nováková, tak aby měla i třetí jméno Svobodová, tedy její celé jméno bude Tereza Svobodová Nováková.",
             "status": "pending",
-            "kind": "repair",
+            "type": "repair",
             "answer": "tbl-účastníci == name:Tereza Svobodová Nováková",
             "elementClass": [
                 "table-form-účastníci-alergeny"
@@ -156,7 +156,7 @@
             "title": "Ukázkový úkol č. 4 - Není hotový!!",
             "description": "Přidejte vedoucímu Petr Novotný alergeny Lepek a Korýši. Pokud naleznete na nějakou chybu tak vyberte komponentu, která je chybná. Poté přidejte alergeny tomuto vedoucímu.",
             "status": "pending",
-            "kind": "select",
+            "type": "select",
             "answer": "tbl-účastníci == jméno:Petr Novotný;alergeny:Lepek,Koryši",
             "elementClass": "stats-supervisors",
             "is_editable": false,

@@ -1,3 +1,5 @@
+import { ActivityType, EvaluationType } from './Task/TaskType';
+
 export class Task {
   constructor(
     public id: number,
@@ -5,7 +7,8 @@ export class Task {
     public description: string,
     public componentsRepaired: boolean = false,
     public completed: boolean = false,
-    public type: string,
+    public activityType: ActivityType,
+    public evaluationType: EvaluationType = EvaluationType.AFTER_ACTIVITY,
     public elementClass: Set<string> = new Set(),
     public answer: string = '',
     public round: number = 1,
@@ -13,7 +16,7 @@ export class Task {
     public status: string = '',
     public errorComponents: any[] = [],
     public componentsIdsToFind: string[] = [],
-    public feedback: string,
+    public feedback: string = '',
     public pointsReward: number = 0,
     public failPenalty: number = 1
   ) { }
@@ -35,13 +38,18 @@ export class Task {
     // isEditable: support both keys
     const isEditable = json['is_editable'] ?? json.isEditable ?? false;
 
+    // Handle activityType and evaluationType from JSON
+    const activityType = json.activityType ?? json.type ?? ActivityType.REPAIR;
+    const evaluationType = json.evaluationType ?? EvaluationType.AFTER_ACTIVITY;
+
     return new Task(
       json.id,
       json.title,
       json.description,
       json.componentsRepaired ?? false,
       json.completed ?? false,
-      json.type,
+      activityType as ActivityType,
+      evaluationType as EvaluationType,
       elementClassSet,
       json.answer ?? '',
       json.round ?? 1,
@@ -49,7 +57,9 @@ export class Task {
       json.status ?? '',
       errorComponents,
       json.componentsIdsToFind ?? [],
-      json.feedback ?? ''
+      json.feedback ?? '',
+      json.pointsReward ?? 0,
+      json.failPenalty ?? 1
     );
   }
 

@@ -395,7 +395,7 @@
         "title",
         "description",
         "status",
-        "kind",
+        "type",
         "answer",
         "elementClass",
         "round"
@@ -425,7 +425,7 @@
           ],
           "description": "Stav úkolu"
         },
-        "kind": {
+        "type": {
           "type": "string",
           "enum": [
             "select",
