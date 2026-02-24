@@ -22,6 +22,8 @@
             </div>
         </main>
     </div>
+
+    <EditComponentModal v-if="highlightStore.isEditModeActive && highlightStore.selectedComponentId" />
 </template>
 
 <script lang="ts" setup>
@@ -40,7 +42,7 @@ import { InformationSystem } from '~/model/InformationSystem'
 import { useSelectedSystemStore } from '~/stores/useSelectedSystemStore'
 
 definePageMeta({
-  layout: 'system'
+    layout: 'system'
 });
 
 /* 2. Stores */
