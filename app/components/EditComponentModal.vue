@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-overlay" >
+  <div class="modal-overlay">
     <div class="modal">
       <div class="editor-container">
         <div v-for="section in availableSections" :key="section.key" class="editor-section">
@@ -8,12 +8,8 @@
 
             <!-- SQL specific buttons -->
             <div v-if="section.key === 'sql' && section.entries.length > 1" class="sql-buttons">
-              <button
-                v-for="(entry, index) in section.entries"
-                :key="entry.key"
-                @click="selectSqlEntry(entry.key)"
-                :class="['sql-button', { 'active': selectedSqlKey === entry.key }]"
-                :title="entry.key">
+              <button v-for="(entry, index) in section.entries" :key="entry.key" @click="selectSqlEntry(entry.key)"
+                :class="['sql-button', { 'active': selectedSqlKey === entry.key }]" :title="entry.key">
                 {{ index + 1 }}
               </button>
             </div>
@@ -29,43 +25,30 @@
 
           <!-- Show all entries for non-SQL sections -->
           <div v-if="section.key !== 'sql'" class="entries-container">
-            <div v-for="entry in section.entries" :key="entry.key" class="entry-section">
+            <div v-for="entry in section.entries" :key="entry.key" class="entry-wrapper">
               <div v-if="section.entries.length > 1" class="entry-title">{{ entry.key }}</div>
-              <textarea
-                :value="getEntryValue(section.key, entry.key)"
-                @input="(event) => onEntryInput(event, section.key, entry.key)"
-                class="code-editor"
-                :class="getSectionEditorClass(section.key)"
-                spellcheck="false"
-              />
+              <textarea :value="getEntryValue(section.key, entry.key)"
+                @input="(event) => onEntryInput(event, section.key, entry.key)" class="code-editor"
+                :class="getSectionEditorClass(section.key)" spellcheck="false" />
             </div>
           </div>
 
           <!-- Show selected SQL entry -->
           <div v-else-if="section.key === 'sql'" class="sql-editor-container">
-            <textarea
-              :value="getSelectedSqlValue()"
-              @input="(event) => onEntryInput(event, section.key, selectedSqlKey)"
-              class="code-editor"
-              :class="[getSectionEditorClass(section.key), { 'invalid-sql': !sqlValid }]"
-              spellcheck="false"
-            />
+            <textarea :value="getSelectedSqlValue()"
+              @input="(event) => onEntryInput(event, section.key, selectedSqlKey)" class="code-editor"
+              :class="[getSectionEditorClass(section.key), { 'invalid-sql': !sqlValid }]" spellcheck="false" />
           </div>
         </div>
       </div>
 
       <div class="modal-actions">
-        <UButton @click="onApplyChanges" :disabled="!sqlValid"
-          :style="getApplyButtonStyle()"
-          class="apply-button"
-          @mouseover="applyButtonHover = true"
-          @mouseleave="applyButtonHover = false">
+        <UButton @click="onApplyChanges" :disabled="!sqlValid" :style="getApplyButtonStyle()" class="apply-button"
+          @mouseover="applyButtonHover = true" @mouseleave="applyButtonHover = false">
           {{ t('apply') }}
         </UButton>
-        <UButton @click="closeModal" :style="getCloseButtonStyle()"
-          class="close-button"
-          @mouseover="closeButtonHover = true"
-          @mouseleave="closeButtonHover = false">
+        <UButton @click="closeModal" :style="getCloseButtonStyle()" class="close-button"
+          @mouseover="closeButtonHover = true" @mouseleave="closeButtonHover = false">
           {{ t('close') }}
         </UButton>
       </div>
@@ -120,9 +103,9 @@ const selectedSqlKey = ref<string>('')
 // Computed properties for each section and key using ComponentHandler pattern
 const sectionComputedValues = computed(() => {
   const result: Record<string, Record<string, string>> = {}
-  
+
   if (!editedComponent) return result
-  
+
   const sections = ['html', 'css', 'js', 'sql', 'additionals']
   sections.forEach(section => {
     const sectionData = editedComponent[section as keyof Component] as Record<string, string>
@@ -131,8 +114,8 @@ const sectionComputedValues = computed(() => {
       Object.keys(sectionData).forEach(key => {
         const baseValue = sectionData[key] || ''
         const actualValue = ComponentHandler.getComponentValue(
-          highlightStore.selectedComponentId ?? '', 
-          key, 
+          highlightStore.selectedComponentId ?? '',
+          key,
           baseValue
         )
         if (actualValue && actualValue.trim() !== '') {
@@ -141,7 +124,7 @@ const sectionComputedValues = computed(() => {
       })
     }
   })
-  
+
   return result
 })
 
@@ -170,7 +153,7 @@ const initializeSectionEntries = () => {
 
     sectionKeys.forEach(key => {
       const errorValue = isErrorComponent ? ComponentHandler.getVariableValue(highlightStore.selectedComponentId ?? '', section) : null
-      
+
       // If there's error value and this is the first key, use it
       if (errorValue && Object.keys(sectionEntries.value[section]).length === 0) {
         sectionEntries.value[section][key] = errorValue
@@ -181,8 +164,8 @@ const initializeSectionEntries = () => {
         if (componentValue && componentValue[key]) {
           const baseValue = componentValue[key]
           const actualValue = ComponentHandler.getComponentValue(
-            highlightStore.selectedComponentId ?? '', 
-            key, 
+            highlightStore.selectedComponentId ?? '',
+            key,
             baseValue
           )
           sectionEntries.value[section][key] = actualValue || baseValue
@@ -270,12 +253,12 @@ function getSectionEditorClass(section: string): string {
 
 function onEntryInput(event: Event, section: string, entryKey: string) {
   const value = (event.target as HTMLTextAreaElement)?.value || ''
-  
+
   // Ensure section exists in sectionEntries
   if (!sectionEntries.value[section]) {
     sectionEntries.value[section] = {}
   }
-  
+
   sectionEntries.value[section][entryKey] = value
   console.log(`Current ${section.toUpperCase()} ${entryKey}:`, value)
 
@@ -381,18 +364,18 @@ function onApplyChanges(event: MouseEvent) {
     }
 
 
-    
+
     console.log("Updated Component to be saved:", updatedComponent
-      
+
     )
     componentCodeStore.updateComponent(highlightStore.selectedComponentId ?? '', updatedComponent)
 
-     toast.add({
+    toast.add({
       title: t('changes_applied_successfully'),
       color: 'primary',
     })
   } else {
-     toast.add({
+    toast.add({
       title: t('changes_applied_successfully'),
       color: 'red',
     })
@@ -435,16 +418,23 @@ function closeModal() {
 }
 
 .modal {
-  background: #0f172b;
-  color: #fff;
+  background: #f3f4f6;
+  color: #1f2937;
   padding: 20px;
   width: 90%;
   max-width: 1200px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px black;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -6px rgba(0, 0, 0, 0.1);
   z-index: 5001;
   overflow-y: auto;
   max-height: 90%;
+  transition: all 0.3s ease;
+}
+
+.dark .modal {
+  background: #0f172b;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .editor-container {
@@ -461,10 +451,10 @@ function closeModal() {
 .editor-label {
   font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', monospace;
   font-size: 1rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.4rem;
   margin-top: 1.2rem;
   letter-spacing: 0.02em;
-  font-weight: 600;
+  font-weight: 700;
   padding-left: 2px;
 }
 
@@ -494,19 +484,31 @@ function closeModal() {
   margin-bottom: 10px;
   font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', monospace;
   font-size: 1rem;
-  background: #181f2a;
-  color: #e5e7eb;
-  border: 1px solid #334155;
-  border-radius: 6px;
+  background: #ffffff;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
   padding: 12px;
   resize: vertical;
   outline: none;
-  transition: border 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.dark .code-editor {
+  background: #181f2a;
+  color: #e5e7eb;
+  border: 1px solid #334155;
   box-shadow: 0 2px 8px #0002;
 }
 
 .code-editor:focus {
-  border: 1.5px solid #38bdf8;
+  border: 2px solid #38bdf8;
+  background: #ffffff;
+}
+
+.dark .code-editor:focus {
+  border: 2px solid #38bdf8;
   background: #1e293b;
 }
 
@@ -544,10 +546,20 @@ function closeModal() {
   gap: 15px;
 }
 
+.entry-wrapper {
+  margin-bottom: 12px;
+}
+
 .entry-section {
-  border: 1px solid #334155;
-  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
   padding: 10px;
+  background: #ffffff;
+  margin-bottom: 10px;
+}
+
+.dark .entry-section {
+  border: 1px solid #334155;
   background: #1e293b;
 }
 
@@ -604,10 +616,16 @@ function closeModal() {
   top: -25px;
   right: 10px;
   font-size: 0.8rem;
-  color: #94a3b8;
-  background: #1e293b;
+  color: #64748b;
+  background: #ffffff;
   padding: 2px 8px;
   border-radius: 4px;
+  border: 1px solid #d1d5db;
+}
+
+.dark .current-sql-key {
+  color: #94a3b8;
+  background: #1e293b;
   border: 1px solid #334155;
 }
 
@@ -646,16 +664,25 @@ function closeModal() {
 .tables-list {
   list-style-type: none;
   padding: 0;
-  background: #181f2a;
-  border: 1px solid #334155;
-  border-radius: 4px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
   max-height: 150px;
   overflow-y: auto;
   margin-bottom: 10px;
 }
 
+.dark .tables-list {
+  background: #181f2a;
+  border: 1px solid #334155;
+}
+
 .tables-list li {
-  padding: 4px 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dark .tables-list li {
   border-bottom: 1px solid #334155;
 }
 
