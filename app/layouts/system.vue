@@ -1,17 +1,19 @@
 <template>
   <div class="system-layout">
-    <div class="main-content"
-      :class="{ 'main-content-expanded': taskMenuStore.taskMenuDisplayedAsSidebar && taskMenuStore.sidebarCollapsed }">
-      <SystemNavbar class="system-navbar" />
-      <div class="slot-content">
-        <CustomScrollbar>
-          <slot />
-        </CustomScrollbar>
+    <SystemNavbar class="system-navbar" />
+    <div class="layout-body">
+      <div class="main-content"
+        :class="{ 'main-content-expanded': taskMenuStore.taskMenuDisplayedAsSidebar && taskMenuStore.sidebarCollapsed }">
+        <div class="slot-content">
+          <CustomScrollbar>
+            <slot />
+          </CustomScrollbar>
+        </div>
       </div>
-    </div>
-    <div v-if="taskMenuStore.taskMenuDisplayedAsSidebar" class="content-placeholder"
-      :class="{ 'content-placeholder-collapsed': taskMenuStore.sidebarCollapsed }">
-      <TaskList class="task-list-sidebar" />
+      <div v-if="taskMenuStore.taskMenuDisplayedAsSidebar" class="content-placeholder"
+        :class="{ 'content-placeholder-collapsed': taskMenuStore.sidebarCollapsed }">
+        <TaskList class="task-list-sidebar" />
+      </div>
     </div>
   </div>
 </template>
@@ -23,25 +25,29 @@ const taskMenuStore = useTaskMenuStore()
 <style scoped>
 .system-layout {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   height: 100vh;
+  overflow: hidden;
+}
+
+.layout-body {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
 }
 
 .main-content {
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 100vh;
-  width: 70vw;
+  overflow: hidden;
   transition: width 0.3s ease;
-}
-
-.main-content-expanded {
-  width: calc(100vw - 48px);
 }
 
 .system-navbar {
   flex-shrink: 0;
+  width: 100%;
 }
 
 .slot-content {
@@ -54,16 +60,17 @@ const taskMenuStore = useTaskMenuStore()
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  overflow-y: auto;
+  height: 100%;
+  border-left: 1px solid #e5e7eb;
   transition: width 0.3s ease;
+}
+
+.dark .content-placeholder {
+  border-left: 1px solid #1f2937;
 }
 
 .content-placeholder-collapsed {
   width: 48px;
-  overflow: hidden;
 }
 
 .task-list-sidebar {
