@@ -1,251 +1,172 @@
+import Dexie, { type Table } from 'dexie';
+
+class InformationSystemDatabase extends Dexie {
+    systems!: Table<any, any>;
+    databases!: Table<Uint8Array, string>;
+    components!: Table<any, string>;
+
+    constructor() {
+        super('InformationSystemDB');
+        // Define version and out-of-line stores
+        this.version(3).stores({
+            systems: '',
+            databases: '',
+            components: ''
+        });
+    }
+}
+
+const db = new InformationSystemDatabase();
+
+/**
+ * Handler for storing and retrieving information systems from IndexedDB using Dexie.js.
+ */
 export class IndexedDbHandler {
-    private static DB_NAME = 'InformationSystemDB';
-    private static SYSTEMS_STORE_NAME = 'systems';
-    private static DATABASES_STORE_NAME = 'databases';
-    private static COMPONENT_STORE_NAME = 'components';
-    private static VERSION = 3; // Increased version to add databases store
 
-    private static async openDB(): Promise<IDBDatabase> {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(this.DB_NAME, this.VERSION);
-
-            request.onerror = (event) => {
-                console.error("IndexedDB error:", event);
-                reject("IndexedDB error");
-            };
-
-            request.onsuccess = (event) => {
-                resolve((event.target as IDBOpenDBRequest).result);
-            };
-
-            request.onupgradeneeded = (event) => {
-                const db = (event.target as IDBOpenDBRequest).result;
-                if (!db.objectStoreNames.contains(this.SYSTEMS_STORE_NAME)) {
-                    db.createObjectStore(this.SYSTEMS_STORE_NAME);
-                }
-                if (!db.objectStoreNames.contains(this.DATABASES_STORE_NAME)) {
-                    db.createObjectStore(this.DATABASES_STORE_NAME);
-                }
-                if (!db.objectStoreNames.contains(this.COMPONENT_STORE_NAME)) {
-                    db.createObjectStore(this.COMPONENT_STORE_NAME);
-                }
-            };
-        });
-    }
-
+    /**
+     * Saves a legacy system database.
+     * @param systemId - The ID of the system
+     * @param data - The raw Uint8Array data of the database
+     */
     public static async saveSystemDB(systemId: number, data: Uint8Array): Promise<void> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.SYSTEMS_STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(this.SYSTEMS_STORE_NAME);
-            const request = store.put(data, systemId);
-
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
+        await db.systems.put(data, systemId);
     }
 
+    /**
+     * Loads a legacy system database.
+     * @param systemId - The ID of the system
+     * @returns The Uint8Array data if found, otherwise null
+     */
     public static async loadSystemDB(systemId: number): Promise<Uint8Array | null> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.SYSTEMS_STORE_NAME], 'readonly');
-            const store = transaction.objectStore(this.SYSTEMS_STORE_NAME);
-            const request = store.get(systemId);
-
-            request.onsuccess = () => {
-                resolve(request.result ? (request.result as Uint8Array) : null);
-            };
-            request.onerror = () => reject(request.error);
-        });
+        const result = await db.systems.get(systemId);
+        return result instanceof Uint8Array ? result : null;
     }
-    
+
+    /**
+     * Deletes a legacy system database.
+     * @param systemId - The ID of the system
+     */
     public static async deleteSystemDB(systemId: number): Promise<void> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.SYSTEMS_STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(this.SYSTEMS_STORE_NAME);
-            const request = store.delete(systemId);
-
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
+        await db.systems.delete(systemId);
     }
 
-    // Database storage methods
+    /**
+     * Saves a system's SQLite database binary to the databases store.
+     * @param systemId - The ID of the system
+     * @param data - The binary database export
+     */
     public static async saveDatabase(systemId: number, data: Uint8Array): Promise<void> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.DATABASES_STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(this.DATABASES_STORE_NAME);
-            const request = store.put(data, `system_${systemId}`);
-
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
+        await db.databases.put(data, `system_${systemId}`);
     }
 
+    /**
+     * Loads a system's SQLite database binary from the databases store.
+     * @param systemId - The ID of the system
+     * @returns The binary database export if found, otherwise null
+     */
     public static async loadDatabase(systemId: number): Promise<Uint8Array | null> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.DATABASES_STORE_NAME], 'readonly');
-            const store = transaction.objectStore(this.DATABASES_STORE_NAME);
-            const request = store.get(`system_${systemId}`);
-
-            request.onsuccess = () => {
-                resolve(request.result ? (request.result as Uint8Array) : null);
-            };
-            request.onerror = () => reject(request.error);
-        });
+        const result = await db.databases.get(`system_${systemId}`);
+        return result || null;
     }
 
+    /**
+     * Deletes a system's database from the databases store.
+     * @param systemId - The ID of the system
+     */
     public static async deleteDatabase(systemId: number): Promise<void> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.DATABASES_STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(this.DATABASES_STORE_NAME);
-            const request = store.delete(`system_${systemId}`);
-
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
+        await db.databases.delete(`system_${systemId}`);
     }
 
-    // Component Maps storage methods
+    /**
+     * Saves the default and actual component maps to the components store.
+     * @param defaultComponentMap - The default system component map
+     * @param actualComponentMap - The actual user component map
+     */
     public static async saveComponentMaps(defaultComponentMap: any[], actualComponentMap: any[]): Promise<void> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.COMPONENT_STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(this.COMPONENT_STORE_NAME);
-            
-            const data = {
-                defaultComponentMap: JSON.stringify(defaultComponentMap),
-                actualComponentMap: JSON.stringify(actualComponentMap),
-                timestamp: Date.now()
-            };
-            
-            const request = store.put(data, 'componentMaps');
-
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
+        const data = {
+            defaultComponentMap: JSON.stringify(defaultComponentMap),
+            actualComponentMap: JSON.stringify(actualComponentMap),
+            timestamp: Date.now()
+        };
+        await db.components.put(data, 'componentMaps');
     }
 
-    public static async loadComponentMaps(): Promise<{defaultComponentMap: any[], actualComponentMap: any[]} | null> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.COMPONENT_STORE_NAME], 'readonly');
-            const store = transaction.objectStore(this.COMPONENT_STORE_NAME);
-            const request = store.get('componentMaps');
-
-            request.onsuccess = () => {
-                if (request.result) {
-                    try {
-                        const data = request.result;
-                        resolve({
-                            defaultComponentMap: JSON.parse(data.defaultComponentMap || '[]'),
-                            actualComponentMap: JSON.parse(data.actualComponentMap || '[]')
-                        });
-                    } catch (e) {
-                        console.error('Error parsing component maps from IndexedDB:', e);
-                        resolve(null);
-                    }
-                } else {
-                    resolve(null);
-                }
-            };
-            request.onerror = () => reject(request.error);
-        });
+    /**
+     * Loads the stored component maps from IndexedDB.
+     * @returns The default and actual component maps object if found, otherwise null
+     */
+    public static async loadComponentMaps(): Promise<{ defaultComponentMap: any[], actualComponentMap: any[] } | null> {
+        const data = await db.components.get('componentMaps');
+        if (data) {
+            try {
+                return {
+                    defaultComponentMap: JSON.parse(data.defaultComponentMap || '[]'),
+                    actualComponentMap: JSON.parse(data.actualComponentMap || '[]')
+                };
+            } catch (e) {
+                console.error('Error parsing component maps from Dexie:', e);
+                return null;
+            }
+        }
+        return null;
     }
 
+    /**
+     * Deletes the stored component maps.
+     */
     public static async deleteComponentMaps(): Promise<void> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.COMPONENT_STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(this.COMPONENT_STORE_NAME);
-            const request = store.delete('componentMaps');
-
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
+        await db.components.delete('componentMaps');
     }
 
-    // Save entire InformationSystem object
+    /**
+     * Saves the metadata for an object of the InformationSystem class, excluding the database instance.
+     * @param system - The InformationSystem instance
+     */
     public static async saveInformationSystem(system: any): Promise<void> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.SYSTEMS_STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(this.SYSTEMS_STORE_NAME);
-            
-            // Convert system to JSON for storage, excluding db
-            const systemCopy = { ...system, db: null };
-            const systemData = JSON.stringify(systemCopy);
-            const request = store.put(systemData, `system_${system.id}`);
-
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
+        const systemCopy = { ...system, db: null };
+        const systemData = JSON.stringify(systemCopy);
+        await db.systems.put(systemData, `system_${system.id}`);
     }
 
-    // Load entire InformationSystem object
+    /**
+     * Retrieves the JSON configuration data for a saved InformationSystem.
+     * @param systemId - The ID of the system
+     * @returns The parsed InformationSystem config data if found, otherwise null
+     */
     public static async loadInformationSystem(systemId: number): Promise<any | null> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.SYSTEMS_STORE_NAME], 'readonly');
-            const store = transaction.objectStore(this.SYSTEMS_STORE_NAME);
-            const request = store.get(`system_${systemId}`);
-
-            request.onsuccess = () => {
-                if (request.result) {
-                    try {
-                        const systemData = JSON.parse(request.result);
-                        resolve(systemData);
-                    } catch (e) {
-                        console.error('Error parsing InformationSystem from IndexedDB:', e);
-                        resolve(null);
-                    }
-                } else {
-                    resolve(null);
-                }
-            };
-            request.onerror = () => reject(request.error);
-        });
+        const result = await db.systems.get(`system_${systemId}`);
+        if (result) {
+            try {
+                return JSON.parse(result as string);
+            } catch (e) {
+                console.error('Error parsing InformationSystem from Dexie:', e);
+                return null;
+            }
+        }
+        return null;
     }
 
-    // Delete entire InformationSystem object
+    /**
+     * Deletes the metadata configuration for a specific InformationSystem.
+     * @param systemId - The ID of the system
+     */
     public static async deleteInformationSystem(systemId: number): Promise<void> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.SYSTEMS_STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(this.SYSTEMS_STORE_NAME);
-            const request = store.delete(`system_${systemId}`);
-
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
+        await db.systems.delete(`system_${systemId}`);
     }
 
-    // Get all system IDs stored in IndexedDB
+    /**
+     * Utility method to fetch all valid system identifiers managed by the handler.
+     * @returns An array of existing system IDs
+     */
     public static async getAllSystemIds(): Promise<number[]> {
-        const db = await this.openDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.SYSTEMS_STORE_NAME], 'readonly');
-            const store = transaction.objectStore(this.SYSTEMS_STORE_NAME);
-            const request = store.getAllKeys();
-
-            request.onsuccess = () => {
-                const keys = request.result as string[];
-                // Filter keys that start with 'system_' and extract IDs
-                const systemIds = keys
-                    .filter(key => typeof key === 'string' && key.startsWith('system_'))
-                    .map(key => {
-                        const idStr = (key as string).replace('system_', '');
-                        const id = parseInt(idStr, 10);
-                        return isNaN(id) ? null : id;
-                    })
-                    .filter(id => id !== null) as number[];
-                resolve(systemIds);
-            };
-            request.onerror = () => reject(request.error);
-        });
+        const keys = await db.systems.toCollection().keys();
+        return keys
+            .filter(key => typeof key === 'string' && key.startsWith('system_'))
+            .map(key => {
+                const idStr = (key as string).replace('system_', '');
+                const id = parseInt(idStr, 10);
+                return isNaN(id) ? null : id;
+            })
+            .filter(id => id !== null) as number[];
     }
 }
