@@ -1,5 +1,5 @@
 import DbHandler from "~/composables/DbHandler";
-import { Participant } from "./Participant";
+import { Participant } from "./SystemDatabase/Participant";
 import { Task } from "./Task";
 import { Component } from "./Component";
 import { IndexedDbHandler } from "~/utils/IndexedDbHandler";

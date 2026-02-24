@@ -122,7 +122,7 @@ const sectionComputedValues = computed(() => {
 
   if (!editedComponent) return result
 
-  const sections = ['html', 'css', 'js', 'sql', 'additionals']
+  const sections = ['html', 'css', 'js', 'sql']
   sections.forEach(section => {
     if (!editedComponent) return
     const sectionData = editedComponent[section as keyof Component] as Record<string, string> | undefined
@@ -148,7 +148,7 @@ const sectionComputedValues = computed(() => {
 // Get all available sections dynamically from the component
 const getComponentSections = (): string[] => {
   if (!editedComponent) return []
-  return (['html', 'css', 'js', 'sql', 'additionals'] as const).filter(section => {
+  return (['html', 'css', 'js', 'sql'] as const).filter(section => {
     const sectionData = editedComponent[section] as Record<string, string> | undefined
     return sectionData && Object.keys(sectionData).length > 0
   })
@@ -240,8 +240,7 @@ function getSectionLabel(section: string): string {
     html: t('html_template'),
     css: t('css_styles') || 'CSS Styles',
     js: t('js_code'),
-    sql: t('sql_query'),
-    additionals: t('additionals') || 'Additional Code'
+    sql: t('sql_query')
   }
   return labels[section] || section.toUpperCase()
 }
@@ -251,8 +250,7 @@ function getSectionLabelClass(section: string): string {
     html: 'html-label',
     css: 'css-label',
     js: 'js-label',
-    sql: 'sql-label',
-    additionals: 'additionals-label'
+    sql: 'sql-label'
   }
   return classes[section] || 'default-label'
 }
@@ -262,8 +260,7 @@ function getSectionEditorClass(section: string): string {
     html: 'html-editor',
     css: 'css-editor',
     js: 'js-editor',
-    sql: 'sql-editor',
-    additionals: 'additionals-editor'
+    sql: 'sql-editor'
   }
   return classes[section] || 'default-editor'
 }
@@ -272,8 +269,7 @@ function getMonacoLanguage(section: string): string {
   switch (section) {
     case 'html': return 'html'
     case 'css': return 'css'
-    case 'js':
-    case 'additionals': return 'javascript'
+    case 'js': return 'javascript'
     case 'sql': return 'sql'
     default: return 'plaintext'
   }
@@ -389,7 +385,6 @@ function onApplyChanges(event: MouseEvent) {
       css: updateSection(currentComponent.css, sectionEntries.value.css || {}),
       js: updateSection(currentComponent.js, sectionEntries.value.js || {}),
       sql: updateSection(currentComponent.sql, sectionEntries.value.sql || {}),
-      additionals: updateSection(currentComponent.additionals, sectionEntries.value.additionals || {}),
       edited: true
     }
 
@@ -504,9 +499,6 @@ function closeModal() {
   color: #10b981;
 }
 
-.additionals-label {
-  color: #a855f7;
-}
 
 .code-editor {
   width: 100%;
@@ -558,9 +550,6 @@ function closeModal() {
   border-color: #10b981;
 }
 
-.additionals-editor:focus {
-  border-color: #a855f7;
-}
 
 .modal-actions {
   display: flex;

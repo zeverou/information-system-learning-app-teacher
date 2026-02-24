@@ -83,7 +83,7 @@ import { useSelectedSystemStore, useToast } from '#imports'
 import { useHighlightStore } from '#imports'
 import EditComponentModalOpenButton from '~/components/EditComponentModalOpenButton.vue'
 import { useComponentCodeStore } from '~/stores/useComponentCodeStore'
-import { Session } from '~/model/Session'
+import { Session } from '~/model/SystemDatabase/Session'
 
 const props = defineProps<{
     session: Session | null

@@ -41,24 +41,30 @@ const items = computed<NavigationMenuItem[]>(() => {
   void locale.value
 
   return [
-  {
-    label: t('home'),
-    icon: 'i-heroicons-home',
-    to: '/',
-    data_target: 'home',
-  },
-  {
-    label: t('systems'),
-    icon: 'i-heroicons-computer-desktop',
-    to: '/systems',
-    data_target: 'systems',
-  },
-  {
-    label: t('settings'),
-    icon: 'i-heroicons-cog',
-    to: '/settings',
-    data_target: 'settings',
-  },
+    {
+      label: t('home'),
+      icon: 'i-heroicons-home',
+      to: '/',
+      data_target: 'home',
+    },
+    {
+      label: t('systems'),
+      icon: 'i-heroicons-computer-desktop',
+      to: '/systems',
+      data_target: 'systems',
+    },
+    {
+      label: t('settings'),
+      icon: 'i-heroicons-cog',
+      to: '/settings',
+      data_target: 'settings',
+    },
+    {
+      label: t('teacher'),
+      icon: 'i-heroicons-user-group',
+      to: '/teacher',
+      data_target: 'teacher',
+    }
 
   ]
 })

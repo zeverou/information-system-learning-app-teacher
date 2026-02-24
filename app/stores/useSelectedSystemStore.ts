@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import { InformationSystem } from '~/model/InformationSystem'
 import { ComponentHandler } from '~/composables/ComponentHandler'
 import { useSelectedTaskStore } from './useSelectedTaskStore'
-import { Session } from '~/model/Session'
-import { Participant } from '~/model/Participant'
-import { Supervisor } from '~/model/Supervisor'
+import { Session } from '~/model/SystemDatabase/Session'
+import { Participant } from '~/model/SystemDatabase/Participant'
+import { Supervisor } from '~/model/SystemDatabase/Supervisor'
 
 export const useSelectedSystemStore = defineStore('selectedSystem', () => {
   // State

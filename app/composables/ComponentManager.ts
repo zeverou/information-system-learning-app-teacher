@@ -40,8 +40,7 @@ navigateTo({
   path: \`/systems/\${systemId}/meals\`,
 });
 ` },
-      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}` },
-      additionals: {}
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}` }
     });
 
     const statsParticipantsComponent = new Component({
@@ -66,8 +65,7 @@ navigateTo({
   path: \`/systems/\${systemId}/participants\`,
 });
 ` },
-      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}` },
-      additionals: {}
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}` }
     });
 
     const statsSessionsComponent = new Component({
@@ -92,8 +90,7 @@ navigateTo({
   path: \`/systems/\${systemId}/sessions\`,
 });
 ` },
-      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')}` },
-      additionals: {}
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')}` }
     });
 
     console.log("XXXXXX_:", statsSessionsComponent);
@@ -120,8 +117,7 @@ navigateTo({
   path: \`/systems/\${systemId}/supervisors\`,
 });
 ` },
-      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')}` },
-      additionals: {}
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')}` }
     });
 
     // participants.vue participants-capacity-count
@@ -139,8 +135,7 @@ navigateTo({
             FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} p
             JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} sp ON p.participant_id = sp.participant_id
         `
-      },
-      additionals: {}
+      }
     });
 
     const tableCountBadgeComponent = new Component({
@@ -181,8 +176,7 @@ navigateTo({
       js: { "js": `` },
       sql: {
         "sql": `SELECT COUNT(*) as count FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';`,
-      },
-      additionals: {}
+      }
     });
 
     const sessionDayCountBadgeComponent = new Component({
@@ -237,8 +231,7 @@ navigateTo({
       },
       sql: {
         "sql": `SELECT from_date, to_date FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')} WHERE session_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const mealCountBadgeComponent = new Component({
@@ -255,8 +248,7 @@ navigateTo({
       sql: {
         "sql-1": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}`,
         "sql-2": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} WHERE when_served = ?`,
-      },
-      additionals: {}
+      }
     });
 
 
@@ -295,8 +287,7 @@ navigateTo({
       js: { "js": `` },
       sql: {
         "sql": `SELECT from_date, to_date FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')} WHERE session_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const sessionCapacitySectionComponent = new Component({
@@ -339,8 +330,7 @@ navigateTo({
       sql: {
         "sql-1": `SELECT capacity FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')} WHERE session_id = ?;`,
         "sql-2": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} WHERE session_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const sessionParticipantsSectionComponent = new Component({
@@ -357,8 +347,7 @@ navigateTo({
       sql: {
         "sql-1": `SELECT p.* FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} p JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} sp ON p.participant_id = sp.participant_id WHERE sp.session_id = ?`,
         "sql-2": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} p JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} sp ON p.participant_id = sp.participant_id WHERE sp.session_id = ?`
-      },
-      additionals: {}
+      }
     });
 
     const sessionParticipantsListComponent = new Component({
@@ -374,8 +363,7 @@ navigateTo({
       js: { "js": `` },
       sql: {
         "sql-1": `SELECT p.* FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} p JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} sp ON p.participant_id = sp.participant_id WHERE sp.session_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const sessionParticipantsCountComponent = new Component({
@@ -391,8 +379,7 @@ navigateTo({
       js: { "js": `` },
       sql: {
         "sql-1": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} p JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} sp ON p.participant_id = sp.participant_id WHERE sp.session_id = ?`
-      },
-      additionals: {}
+      }
     });
 
     const sessionSupervisorsSectionComponent = new Component({
@@ -409,8 +396,7 @@ navigateTo({
       sql: {
         "sql-1": `SELECT s.* FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} s JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} ss ON s.supervisor_id = ss.supervisor_id WHERE ss.session_id = ?`,
         "sql-2": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} s JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} ss ON s.supervisor_id = ss.supervisor_id WHERE ss.session_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const sessionSupervisorsListComponent = new Component({
@@ -426,8 +412,7 @@ navigateTo({
       js: { "js": `` },
       sql: {
         "sql-1": `SELECT s.* FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} s JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} ss ON s.supervisor_id = ss.supervisor_id WHERE ss.session_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const sessionSupervisorsCountComponent = new Component({
@@ -443,8 +428,7 @@ navigateTo({
       js: { "js": `` },
       sql: {
         "sql-1": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} s JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} ss ON s.supervisor_id = ss.supervisor_id WHERE ss.session_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const sessionDeleteButtonComponent = new Component({
@@ -491,8 +475,7 @@ navigateTo({
         "sql-1": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} WHERE session_id = ?`,
         "sql-2": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} WHERE session_id = ?`,
         "sql-3": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')} WHERE session_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const sessionStatusBadgeComponent = new Component({
@@ -549,8 +532,7 @@ navigateTo({
       sql: {
         "sql-1": `SELECT capacity FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')} WHERE session_id = ?;`,
         "sql-2": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} WHERE session_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     /*
@@ -569,8 +551,7 @@ navigateTo({
             JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} sp ON p.participant_id = sp.participant_id
             WHERE sp.session_id = ?
         `
-      },
-      additionals: {}
+      }
     });
     */
 
@@ -596,8 +577,7 @@ navigateTo({
             JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} sp ON p.participant_id = sp.participant_id
             WHERE sp.session_id = ?
         `
-      },
-      additionals: {}
+      }
     });
 
     const participantsCapacityPercentageComponent = new Component({
@@ -607,8 +587,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "Math.round(currentCount / totalCapacity * 100)" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsPageCount1Component = new Component({
@@ -618,8 +597,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "Math.ceil(totalItems / itemsPerPage)" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsPageCount2Component = new Component({
@@ -629,8 +607,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsFilterResetComponent = new Component({
@@ -640,8 +617,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsFilterInputComponent = new Component({
@@ -656,8 +632,7 @@ navigateTo({
                (p.phone && p.phone.toLowerCase().includes(text)) ||
                (p.address && p.address.toLowerCase().includes(text))`
       },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsAddNameComponent = new Component({
@@ -667,8 +642,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsAddEmailComponent = new Component({
@@ -678,8 +652,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsAddPersonalNumberComponent = new Component({
@@ -689,8 +662,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsAddPhoneComponent = new Component({
@@ -700,8 +672,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsAddAddressComponent = new Component({
@@ -711,8 +682,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsAddAgeComponent = new Component({
@@ -722,8 +692,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsAddSessionComponent = new Component({
@@ -733,8 +702,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsAddAllergensComponent = new Component({
@@ -744,8 +712,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsCardComponent = new Component({
@@ -755,8 +722,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsDeleteButtonComponent = new Component({
@@ -766,8 +732,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsEditNameComponent = new Component({
@@ -777,8 +742,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsEditEmailComponent = new Component({
@@ -788,8 +752,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsEditPersonalNumberComponent = new Component({
@@ -799,8 +762,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsEditPhoneComponent = new Component({
@@ -810,8 +772,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsEditAddressComponent = new Component({
@@ -821,8 +782,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsEditAgeComponent = new Component({
@@ -832,8 +792,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsEditAllergensComponent = new Component({
@@ -843,8 +802,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsEditSessionsComponent = new Component({
@@ -854,8 +812,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const participantsSessionMenuComponent = new Component({
@@ -865,8 +822,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     // SQL Components for participants.vue
@@ -877,8 +833,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT allergen_id, name from ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')}` },
-      additionals: {}
+      sql: { "sql": `SELECT allergen_id, name from ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')}` }
     });
 
     const participantsCountComponent = new Component({
@@ -888,8 +843,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}` },
-      additionals: {}
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}` }
     });
 
     const sessionsCountComponent = new Component({
@@ -899,8 +853,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')}` },
-      additionals: {}
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')}` }
     });
 
     const participantsSampleComponent = new Component({
@@ -910,8 +863,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT participant_id, name, email FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} ORDER BY participant_id DESC LIMIT 3` },
-      additionals: {}
+      sql: { "sql": `SELECT participant_id, name, email FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} ORDER BY participant_id DESC LIMIT 3` }
     });
 
     const participantsListComponent = new Component({
@@ -926,8 +878,7 @@ navigateTo({
             SELECT participant_id, name, email, personal_number, phone, address, age
             FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}
             ORDER BY participant_id
-        ` },
-      additionals: {}
+        ` }
     });
 
     const participantsAllergensComponent = new Component({
@@ -942,8 +893,7 @@ navigateTo({
             SELECT pa.participant_id, a.allergen_id
             FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants_allergens')} pa
             JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')} a ON pa.allergen_id = a.allergen_id
-        ` },
-      additionals: {}
+        ` }
     });
 
     const participantAllergenCountComponent = new Component({
@@ -953,8 +903,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants_allergens')} WHERE participant_id = ?` },
-      additionals: {}
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants_allergens')} WHERE participant_id = ?` }
     });
 
     const participantsSessionsComponent = new Component({
@@ -969,8 +918,7 @@ navigateTo({
             SELECT ps.participant_id, s.session_id
             FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} ps
             JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')} s ON ps.session_id = s.session_id
-        ` },
-      additionals: {}
+        ` }
     });
 
     const sessionsListComponent = new Component({
@@ -985,8 +933,7 @@ navigateTo({
             SELECT session_id, from_date, to_date, capacity
             FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')}
             ORDER BY session_id
-        ` },
-      additionals: {}
+        ` }
     });
 
     const participantInsertComponent = new Component({
@@ -1000,8 +947,7 @@ navigateTo({
         "sql": `
             INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} (name, email, personal_number, phone, address, age)
             VALUES (?, ?, ?, ?, ?, ?)
-        ` },
-      additionals: {}
+        ` }
     });
 
     const participantGetIdComponent = new Component({
@@ -1016,8 +962,7 @@ navigateTo({
             SELECT participant_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}
             WHERE name = ? AND email = ?
             ORDER BY participant_id DESC LIMIT 1
-        ` },
-      additionals: {}
+        ` }
     });
 
     const participantUpdateComponent = new Component({
@@ -1032,8 +977,7 @@ navigateTo({
             UPDATE ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')}
             SET name = ?, email = ?, personal_number = ?, phone = ?, address = ?, age = ?
             WHERE participant_id = ?
-        ` },
-      additionals: {}
+        ` }
     });
 
     const participantDeleteComponent = new Component({
@@ -1043,8 +987,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} WHERE participant_id = ?` },
-      additionals: {}
+      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} WHERE participant_id = ?` }
     });
 
     const sessionParticipantInsertComponent = new Component({
@@ -1054,8 +997,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} (session_id, participant_id) VALUES (?, ?)` },
-      additionals: {}
+      sql: { "sql": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} (session_id, participant_id) VALUES (?, ?)` }
     });
 
     const sessionParticipantDeleteComponent = new Component({
@@ -1065,8 +1007,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} WHERE session_id = ? AND participant_id = ?` },
-      additionals: {}
+      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_participants')} WHERE session_id = ? AND participant_id = ?` }
     });
 
     const participantAllergenIdsComponent = new Component({
@@ -1076,8 +1017,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT allergen_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants_allergens')} WHERE participant_id = ?` },
-      additionals: {}
+      sql: { "sql": `SELECT allergen_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants_allergens')} WHERE participant_id = ?` }
     });
 
     const participantAllergenInsertComponent = new Component({
@@ -1087,8 +1027,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('participants_allergens')} (participant_id, allergen_id) VALUES (?, ?)` },
-      additionals: {}
+      sql: { "sql": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('participants_allergens')} (participant_id, allergen_id) VALUES (?, ?)` }
     });
 
     const participantAllergenDeleteComponent = new Component({
@@ -1098,8 +1037,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants_allergens')} WHERE participant_id = ? AND allergen_id = ?` },
-      additionals: {}
+      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants_allergens')} WHERE participant_id = ? AND allergen_id = ?` }
     });
 
     const validationNameComponent = new Component({
@@ -1115,8 +1053,7 @@ navigateTo({
     return name.trim().split(' ').length >= 2
 }`
       },
-      sql: { "sql": `` },
-      additionals: {}
+      sql: { "sql": `` }
     });
 
     const validationEmailComponent = new Component({
@@ -1132,8 +1069,7 @@ navigateTo({
     return emailRegex.test(email.trim())
 }`
       },
-      sql: { "sql": `` },
-      additionals: {}
+      sql: { "sql": `` }
     });
 
     const validationPersonalNumberComponent = new Component({
@@ -1150,8 +1086,7 @@ navigateTo({
     return personalNumberRegex.test(personalNumber.trim())
 }`
       },
-      sql: { "sql": `` },
-      additionals: {}
+      sql: { "sql": `` }
     });
 
     const validationPhoneComponent = new Component({
@@ -1170,8 +1105,7 @@ navigateTo({
     return phoneRegex.test(cleanPhone)
 }`
       },
-      sql: { "sql": `` },
-      additionals: {}
+      sql: { "sql": `` }
     });
 
     const validationDateRangeComponent = new Component({
@@ -1188,8 +1122,7 @@ navigateTo({
     return to >= from
 }`
       },
-      sql: { "sql": `` },
-      additionals: {}
+      sql: { "sql": `` }
     });
 
 
@@ -1216,8 +1149,7 @@ navigateTo({
             JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} ss ON s.supervisor_id = ss.supervisor_id
             WHERE ss.session_id = ?
         `
-      },
-      additionals: {}
+      }
     });
 
     const supervisorsCapacityPercentageComponent = new Component({
@@ -1227,8 +1159,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "Math.round(currentCount / totalCapacity * 100)" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const supervisorsPageCount1Component = new Component({
@@ -1238,8 +1169,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "Math.ceil(totalItems / itemsPerPage)" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const supervisorsPageCount2Component = new Component({
@@ -1249,8 +1179,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const supervisorsFilterResetComponent = new Component({
@@ -1260,8 +1189,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const supervisorsFilterInputComponent = new Component({
@@ -1276,8 +1204,7 @@ navigateTo({
                (p.phone && p.phone.toLowerCase().includes(text)) ||
                (p.address && p.address.toLowerCase().includes(text))`
       },
-      sql: { "sql": "" },
-      additionals: {}
+      sql: { "sql": "" }
     });
 
     const supervisorsSessionMenuComponent = new Component({
@@ -1287,8 +1214,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": "SELECT *" },
-      additionals: {}
+      sql: { "sql": "SELECT *" }
     });
 
     const supervisorAllergenCountComponent = new Component({
@@ -1298,8 +1224,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors_allergens')} WHERE supervisor_id = ?` },
-      additionals: {}
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors_allergens')} WHERE supervisor_id = ?` }
     });
 
     const supervisorsAllergenOptionsComponent = new Component({
@@ -1309,8 +1234,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT allergen_id, name from ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')}` },
-      additionals: {}
+      sql: { "sql": `SELECT allergen_id, name from ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')}` }
     });
 
     const supervisorsCountComponent = new Component({
@@ -1320,8 +1244,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')}` },
-      additionals: {}
+      sql: { "sql": `SELECT COUNT(*) as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')}` }
     });
 
     const supervisorsSampleComponent = new Component({
@@ -1331,8 +1254,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT supervisor_id, name, email FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} ORDER BY supervisor_id DESC LIMIT 3` },
-      additionals: {}
+      sql: { "sql": `SELECT supervisor_id, name, email FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} ORDER BY supervisor_id DESC LIMIT 3` }
     });
 
     const supervisorsListComponent = new Component({
@@ -1347,8 +1269,7 @@ navigateTo({
             SELECT supervisor_id, name, email, personal_number, phone, address, age
             FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')}
             ORDER BY supervisor_id
-        ` },
-      additionals: {}
+        ` }
     });
 
     const supervisorsAllergensComponent = new Component({
@@ -1363,8 +1284,7 @@ navigateTo({
             SELECT sa.supervisor_id, a.allergen_id
             FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors_allergens')} sa
             JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')} a ON sa.allergen_id = a.allergen_id
-        ` },
-      additionals: {}
+        ` }
     });
 
     const supervisorsSessionsComponent = new Component({
@@ -1379,8 +1299,7 @@ navigateTo({
             SELECT ss.supervisor_id, s.session_id
             FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} ss
             JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')} s ON ss.session_id = s.session_id
-        ` },
-      additionals: {}
+        ` }
     });
 
     const supervisorInsertComponent = new Component({
@@ -1394,8 +1313,7 @@ navigateTo({
         "sql": `
             INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} (name, email, personal_number, phone, address, age)
             VALUES (?, ?, ?, ?, ?, ?)
-        ` },
-      additionals: {}
+        ` }
     });
 
     const supervisorGetIdComponent = new Component({
@@ -1410,8 +1328,7 @@ navigateTo({
             SELECT supervisor_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')}
             WHERE name = ? AND email = ?
             ORDER BY supervisor_id DESC LIMIT 1
-        ` },
-      additionals: {}
+        ` }
     });
 
     const supervisorUpdateComponent = new Component({
@@ -1426,8 +1343,7 @@ navigateTo({
             UPDATE ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')}
             SET name = ?, email = ?, personal_number = ?, phone = ?, address = ?, age = ?
             WHERE supervisor_id = ?
-        ` },
-      additionals: {}
+        ` }
     });
 
     const supervisorDeleteComponent = new Component({
@@ -1437,8 +1353,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} WHERE supervisor_id = ?` },
-      additionals: {}
+      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} WHERE supervisor_id = ?` }
     });
 
     const sessionSupervisorInsertComponent = new Component({
@@ -1448,8 +1363,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} (session_id, supervisor_id) VALUES (?, ?)` },
-      additionals: {}
+      sql: { "sql": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} (session_id, supervisor_id) VALUES (?, ?)` }
     });
 
     const sessionSupervisorDeleteComponent = new Component({
@@ -1459,8 +1373,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} WHERE session_id = ? AND supervisor_id = ?` },
-      additionals: {}
+      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} WHERE session_id = ? AND supervisor_id = ?` }
     });
 
     const supervisorAllergenIdsComponent = new Component({
@@ -1470,8 +1383,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT allergen_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors_allergens')} WHERE supervisor_id = ?` },
-      additionals: {}
+      sql: { "sql": `SELECT allergen_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors_allergens')} WHERE supervisor_id = ?` }
     });
 
     const supervisorAllergenInsertComponent = new Component({
@@ -1481,8 +1393,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors_allergens')} (supervisor_id, allergen_id) VALUES (?, ?)` },
-      additionals: {}
+      sql: { "sql": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors_allergens')} (supervisor_id, allergen_id) VALUES (?, ?)` }
     });
 
     const supervisorAllergenDeleteComponent = new Component({
@@ -1492,8 +1403,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors_allergens')} WHERE supervisor_id = ? AND allergen_id = ?` },
-      additionals: {}
+      sql: { "sql": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors_allergens')} WHERE supervisor_id = ? AND allergen_id = ?` }
     });
 
     const mealsComponent = new Component({
@@ -1503,8 +1413,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql": `SELECT * FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}` },
-      additionals: {}
+      sql: { "sql": `SELECT * FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}` }
     });
 
     const mealsAllergensComponent = new Component({
@@ -1520,8 +1429,7 @@ navigateTo({
             JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')} a ON ma.allergen_id = a.allergen_id
             WHERE meal_id = ?`,
         "sql-2": `SELECT name from ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')} WHERE allergen_id = ?`
-      },
-      additionals: {}
+      }
     });
 
     const deleteMealButtonComponent = new Component({
@@ -1536,8 +1444,7 @@ navigateTo({
         "sql-2": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} WHERE meal_id = ?`,
         "sql-3": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} WHERE meal_id = ?`,
         "sql-4": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_supervisors')} WHERE meal_id = ?`
-      },
-      additionals: {}
+      }
     });
 
     const addMealComponent = new Component({
@@ -1550,8 +1457,7 @@ navigateTo({
       sql: {
         "sql-1": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} (name, when_served) VALUES (?, ?)`,
         "sql-2": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} (meal_id, allergen_id) VALUES (?, ?)`
-      },
-      additionals: {}
+      }
     });
 
     const editMealComponent = new Component({
@@ -1567,8 +1473,7 @@ navigateTo({
         "sql-3": `SELECT * from ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')}`,
         "sql-4": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} WHERE meal_id = ?`,
         "sql-5": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} (meal_id, allergen_id) VALUES (?, ?)`,
-      },
-      additionals: {}
+      }
     });
 
     const whenServedComponent = new Component({
@@ -1580,8 +1485,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql": `SELECT DISTINCT when_served FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} ORDER BY when_served`
-      },
-      additionals: {}
+      }
     });
 
 
@@ -1600,8 +1504,7 @@ navigateTo({
         "sql-4": `SELECT allergen_id, name FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} ON ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')}.meal_id = ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')}.meal_id WHERE ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')}.meal_id = ?`,
 
 
-      },
-      additionals: {}
+      }
     });
 
     const mealListComponent = new Component({
@@ -1613,8 +1516,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `SELECT am.allergen_id, a.name, am.meal_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} AS am JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} AS m ON am.meal_id = m.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')} AS a ON a.allergen_id = am.allergen_id WHERE am.meal_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const mealPlanParticipantAllergensComponent = new Component({
@@ -1626,8 +1528,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `SELECT a.name, mp.participant_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} AS am JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} AS m ON am.meal_id = m.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')} AS a ON a.allergen_id = am.allergen_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} AS mp ON mp.meal_id = m.meal_id WHERE am.meal_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const mealPlanSupervisorAllergensComponent = new Component({
@@ -1639,8 +1540,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `SELECT a.name, ms.supervisor_id FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens_meals')} AS am JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} AS m ON am.meal_id = m.meal_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('allergens')} AS a ON a.allergen_id = am.allergen_id JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_supervisors')} AS ms ON ms.meal_id = m.meal_id WHERE am.meal_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const mealParticipantDeleteComponent = new Component({
@@ -1652,8 +1552,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} WHERE meal_id = ? AND participant_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     const mealSupervisorDeleteComponent = new Component({
@@ -1665,8 +1564,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `DELETE FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_supervisors')} WHERE meal_id = ? AND supervisor_id = ?`,
-      },
-      additionals: {}
+      }
     });
 
     // Add Participant to Meal Components
@@ -1679,8 +1577,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `SELECT participant_id as id, name FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('participants')} ORDER BY name`,
-      },
-      additionals: {}
+      }
     });
 
     const addParticipantToMealMealsComponent = new Component({
@@ -1692,8 +1589,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `SELECT meal_id as id, name, when_served FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} ORDER BY when_served, name`,
-      },
-      additionals: {}
+      }
     });
 
     const addParticipantToMealInsertComponent = new Component({
@@ -1705,8 +1601,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_participants')} (meal_id, participant_id, date_served) VALUES (?, ?, ?)`,
-      },
-      additionals: {}
+      }
     });
 
     // Add Supervisor to Meal Components
@@ -1719,8 +1614,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `SELECT supervisor_id as id, name FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} ORDER BY name`,
-      },
-      additionals: {}
+      }
     });
 
     const addSupervisorToMealMealsComponent = new Component({
@@ -1732,8 +1626,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `SELECT meal_id as id, name, when_served FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('meals')} ORDER BY when_served, name`,
-      },
-      additionals: {}
+      }
     });
 
     const addSupervisorToMealInsertComponent = new Component({
@@ -1745,8 +1638,7 @@ navigateTo({
       js: { "js": "" },
       sql: {
         "sql-1": `INSERT INTO ${selectedSystemStore.selectedSystem?.db?.getTableName('meals_supervisors')} (meal_id, supervisor_id, date_served) VALUES (?, ?, ?)`,
-      },
-      additionals: {}
+      }
     });
 
     // Date components for meal assignments
@@ -1757,8 +1649,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql-1": "" },
-      additionals: {}
+      sql: { "sql-1": "" }
     });
 
     const addSupervisorToMealDateComponent = new Component({
@@ -1768,8 +1659,7 @@ navigateTo({
       html: { "html": "" },
       css: { "css": "" },
       js: { "js": "" },
-      sql: { "sql-1": "" },
-      additionals: {}
+      sql: { "sql-1": "" }
     });
 
 
