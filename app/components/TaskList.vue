@@ -213,9 +213,9 @@ import { ComponentHandler, TaskAnswerEval, TaskQueue, useScoreStore } from '#imp
 import { useErrorComponentStore } from '#imports'
 import { useHighlightStore } from '#imports'
 import { Task } from '~/model/Task'
-import { ActivityType } from '~/model/Task/TaskType'
 import type { StepperItem } from '@nuxt/ui'
 import { useComponentCodeStore } from '#imports'
+import { ActivityType } from '~/model/Task/ActivityType'
 
 /* 2. Stores */
 const selectedSystemStore = useSelectedSystemStore()

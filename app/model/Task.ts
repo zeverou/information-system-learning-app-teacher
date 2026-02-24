@@ -1,4 +1,5 @@
-import { ActivityType, EvaluationType } from './Task/TaskType';
+import { ActivityType } from "./Task/ActivityType";
+import { EvaluationType } from "./Task/EvaluationType";
 
 export class Task {
   constructor(
@@ -7,7 +8,9 @@ export class Task {
     public description: string,
     public componentsRepaired: boolean = false,
     public completed: boolean = false,
+    public activityDescription: string = '',
     public activityType: ActivityType,
+    public evaluationDescription: string = '',
     public evaluationType: EvaluationType = EvaluationType.AFTER_ACTIVITY,
     public elementClass: Set<string> = new Set(),
     public answer: string = '',
@@ -42,13 +45,19 @@ export class Task {
     const activityType = json.activityType ?? json.type ?? ActivityType.REPAIR;
     const evaluationType = json.evaluationType ?? EvaluationType.AFTER_ACTIVITY;
 
+    // Handle descriptions
+    const activityDescription = json.activityDescription ?? '';
+    const evaluationDescription = json.evaluationDescription ?? '';
+
     return new Task(
       json.id,
       json.title,
       json.description,
       json.componentsRepaired ?? false,
       json.completed ?? false,
+      activityDescription,
       activityType as ActivityType,
+      evaluationDescription,
       evaluationType as EvaluationType,
       elementClassSet,
       json.answer ?? '',
