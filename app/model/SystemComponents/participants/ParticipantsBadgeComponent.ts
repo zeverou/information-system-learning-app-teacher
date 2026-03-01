@@ -6,9 +6,22 @@ export const participantsBadgeComponent = (selectedSystemStore: any) => new Comp
     tags: ["participants"],
     description: `SQL for getting all participants.`,
     html: {
-        "html": `<div style="display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; font-size: 0.875rem; font-weight: 600; border-radius: 9px; background-color: #f0f9ff; color: #0284c7; border: 1px solid rgba(2, 132, 199, 0.1); white-space: nowrap;">{{age}}</div>`
+        "html": `<div class="participants-badge">{{age}}</div>`
     },
-    css: { "css": "" },
+    css: {
+        "css": `.participants-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 9px;
+            background-color: #f0f9ff;
+            color: #0284c7;
+            border: 1px solid rgba(2, 132, 199, 0.1);
+            white-space: nowrap;
+        }`
+    },
     js: { "js": "" },
     sql: {
         "sql": `

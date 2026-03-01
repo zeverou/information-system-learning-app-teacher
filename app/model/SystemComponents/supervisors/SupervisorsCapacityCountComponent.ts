@@ -4,7 +4,7 @@ export const supervisorsCapacityCountComponent = (selectedSystemStore: any) => n
     id: "supervisors-capacity-count",
     name: "Supervisors Capacity Count",
     tags: ["supervisors"],
-    description: `Component for displaying supervisors count vs capacity.`,
+    description: `Component for displaying supervisors count vs capacity for all sessions.`,
     html: { "html": "" },
     css: { "css": "" },
     js: { "js": "" },
@@ -14,13 +14,6 @@ export const supervisorsCapacityCountComponent = (selectedSystemStore: any) => n
             SELECT COUNT(*) as count
             FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} s
             JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} ss ON s.supervisor_id = ss.supervisor_id
-        `,
-        "sql-total-session": `SELECT capacity as count FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions')} WHERE session_id = ?`,
-        "sql-current-session": `
-            SELECT COUNT(*) as count
-            FROM ${selectedSystemStore.selectedSystem?.db?.getTableName('supervisors')} s
-            JOIN ${selectedSystemStore.selectedSystem?.db?.getTableName('sessions_supervisors')} ss ON s.supervisor_id = ss.supervisor_id
-            WHERE ss.session_id = ?
         `
     }
 });

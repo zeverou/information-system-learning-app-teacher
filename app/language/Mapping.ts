@@ -1,5 +1,7 @@
+import type { Language } from "./Language";
+
 export interface Mapping {
-    language: string;
+    language: Language;
 
     participants: string;
     meals: string;

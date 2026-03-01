@@ -6,12 +6,12 @@
                 <div
                     class="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl min-w-[240px] space-y-2">
                     <UButton block @click="printTableData" variant="soft" color="neutral"
-                        icon="i-heroicons-command-line">
+                        icon="i-heroicons-command-line" class="justify-start">
                         Print table names</UButton>
                     <UButton block @click="IsDbNull" variant="soft" color="neutral"
-                        icon="i-heroicons-question-mark-circle">Check DB Status</UButton>
+                        icon="i-heroicons-question-mark-circle" class="justify-start">Check DB Status</UButton>
                     <UButton block @click="openComponentExplorer" variant="soft" color="neutral"
-                        icon="i-heroicons-magnifying-glass-circle">Component Explorer</UButton>
+                        icon="i-heroicons-magnifying-glass-circle" class="justify-start">Component Explorer</UButton>
                 </div>
             </template>
         </UPopover>
@@ -67,12 +67,12 @@
             </UButton>
             <template #content>
                 <div class="p-2 flex flex-col gap-1">
-                    <UButton :label="$t('refresh_components')" color="primary" variant="ghost"
-                        icon="i-heroicons-squares-2x2" @click="refreshComponents" />
-                    <UButton :label="$t('refresh_tasks')" color="sky" variant="ghost"
-                        icon="i-heroicons-clipboard-document-check" @click="refreshTasks" />
-                    <UButton :label="$t('refresh_database')" color="orange" variant="ghost"
-                        icon="i-heroicons-circle-stack" @click="refreshDatabase" />
+                    <UButton block :label="$t('refresh_components')" color="primary" variant="ghost"
+                        icon="i-heroicons-squares-2x2" @click="refreshComponents" class="justify-start" />
+                    <UButton block :label="$t('refresh_tasks')" color="sky" variant="ghost"
+                        icon="i-heroicons-clipboard-document-check" @click="refreshTasks" class="justify-start" />
+                    <UButton block :label="$t('refresh_database')" color="orange" variant="ghost"
+                        icon="i-heroicons-circle-stack" @click="refreshDatabase" class="justify-start" />
                 </div>
             </template>
         </UPopover>
@@ -84,11 +84,11 @@
             <template #content>
                 <div class="p-3 flex flex-col gap-2 min-w-[200px]">
                     <UButton block :label="$t('leave_system')" color="red" variant="soft"
-                        icon="i-heroicons-arrow-left-on-rectangle" @click="leaveSystem" />
+                        icon="i-heroicons-arrow-left-on-rectangle" @click="leaveSystem" class="justify-start" />
                     <UButton block :label="$t('leave_and_save')" color="yellow" variant="soft"
-                        icon="i-heroicons-document-check" @click="leaveAndSave" />
+                        icon="i-heroicons-document-check" @click="leaveAndSave" class="justify-start" />
                     <UButton block :label="$t('stay_in_system')" color="neutral" variant="ghost"
-                        icon="i-heroicons-x-mark" @click="stayInSystem" />
+                        icon="i-heroicons-x-mark" @click="stayInSystem" class="justify-start" />
                 </div>
             </template>
         </UPopover>

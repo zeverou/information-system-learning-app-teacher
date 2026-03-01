@@ -29,6 +29,7 @@ import { sessionSupervisorDeleteComponent as createSessionSupervisorDeleteCompon
 
 // Participants Components
 import { participantsCapacityCountComponent as createParticipantsCapacityCountComponent } from "~/model/SystemComponents/participants/ParticipantsCapacityCountComponent";
+import { participantsCapacityCountSessionComponent as createParticipantsCapacityCountSessionComponent } from "~/model/SystemComponents/participants/ParticipantsCapacityCountSessionComponent";
 import { participantsCapacityPercentageComponent as participantsCapacityPercentageComponentDefinition } from "~/model/SystemComponents/participants/ParticipantsCapacityPercentageComponent";
 import { participantsPageCount1Component as participantsPageCount1ComponentDefinition } from "~/model/SystemComponents/participants/ParticipantsPageCount1Component";
 import { participantsPageCount2Component as participantsPageCount2ComponentDefinition } from "~/model/SystemComponents/participants/ParticipantsPageCount2Component";
@@ -71,6 +72,7 @@ import { participantAllergenDeleteComponent as createParticipantAllergenDeleteCo
 
 // Supervisors Components
 import { supervisorsCapacityCountComponent as createSupervisorsCapacityCountComponent } from "~/model/SystemComponents/supervisors/SupervisorsCapacityCountComponent";
+import { supervisorsCapacityCountSessionComponent as createSupervisorsCapacityCountSessionComponent } from "~/model/SystemComponents/supervisors/SupervisorsCapacityCountSessionComponent";
 import { supervisorsCapacityPercentageComponent as supervisorsCapacityPercentageComponentDefinition } from "~/model/SystemComponents/supervisors/SupervisorsCapacityPercentageComponent";
 import { supervisorsPageCount1Component as supervisorsPageCount1ComponentDefinition } from "~/model/SystemComponents/supervisors/SupervisorsPageCount1Component";
 import { supervisorsPageCount2Component as supervisorsPageCount2ComponentDefinition } from "~/model/SystemComponents/supervisors/SupervisorsPageCount2Component";
@@ -168,6 +170,7 @@ export class ComponentManager {
 
     // Participants page components
     const participantsCapacityCountComponent = createParticipantsCapacityCountComponent(selectedSystemStore);
+    const participantsCapacityCountSessionComponent = createParticipantsCapacityCountSessionComponent(selectedSystemStore);
     const participantsCapacityPercentageComponent = participantsCapacityPercentageComponentDefinition;
     const participantsPageCount1Component = participantsPageCount1ComponentDefinition;
     const participantsPageCount2Component = participantsPageCount2ComponentDefinition;
@@ -222,6 +225,7 @@ export class ComponentManager {
 
     // Supervisors page components
     const supervisorsCapacityCountComponent = createSupervisorsCapacityCountComponent(selectedSystemStore);
+    const supervisorsCapacityCountSessionComponent = createSupervisorsCapacityCountSessionComponent(selectedSystemStore);
     const supervisorsCapacityPercentageComponent = supervisorsCapacityPercentageComponentDefinition;
     const supervisorsPageCount1Component = supervisorsPageCount1ComponentDefinition;
     const supervisorsPageCount2Component = supervisorsPageCount2ComponentDefinition;
@@ -288,6 +292,7 @@ export class ComponentManager {
     componentCodeStore.updateDefaultComponent(sessionDeleteButtonComponent);
     componentCodeStore.updateDefaultComponent(sessionStatusBadgeComponent);
     componentCodeStore.updateDefaultComponent(participantsCapacityCountComponent);
+    componentCodeStore.updateDefaultComponent(participantsCapacityCountSessionComponent);
     componentCodeStore.updateDefaultComponent(participantsCapacityPercentageComponent);
     componentCodeStore.updateDefaultComponent(participantsPageCount1Component);
     componentCodeStore.updateDefaultComponent(participantsPageCount2Component);
@@ -341,6 +346,7 @@ export class ComponentManager {
 
     // Register defaults for supervisors
     componentCodeStore.updateDefaultComponent(supervisorsCapacityCountComponent);
+    componentCodeStore.updateDefaultComponent(supervisorsCapacityCountSessionComponent);
     componentCodeStore.updateDefaultComponent(supervisorsCapacityPercentageComponent);
     componentCodeStore.updateDefaultComponent(supervisorsPageCount1Component);
     componentCodeStore.updateDefaultComponent(supervisorsPageCount2Component);
@@ -392,6 +398,7 @@ export class ComponentManager {
 
     // Reset to defaults so they are available
     componentCodeStore.resetComponent("supervisors-capacity-count");
+    componentCodeStore.resetComponent("supervisors-capacity-count-session");
     componentCodeStore.resetComponent("supervisors-capacity-percentage");
     componentCodeStore.resetComponent("supervisors-page-count-1");
     componentCodeStore.resetComponent("supervisors-page-count-2");
@@ -421,6 +428,7 @@ export class ComponentManager {
     componentCodeStore.resetComponent("stats-supervisors");
     componentCodeStore.resetComponent("participants-capacity-count-all");
     componentCodeStore.resetComponent("participants-capacity-count");
+    componentCodeStore.resetComponent("participants-capacity-count-session");
     componentCodeStore.resetComponent("dashboard-table-count-badge");
     componentCodeStore.resetComponent("session-day-count-badge");
     componentCodeStore.resetComponent("meals-count-badge");

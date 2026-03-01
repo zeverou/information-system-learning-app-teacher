@@ -1,7 +1,7 @@
 <template>
     <div v-if="selectedSessionInfo" class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg">
         <UIcon name="i-heroicons-user-group" class="w-4 h-4 text-gray-600" />
-        <div class="highlightable" :id="'supervisors-capacity-count'"
+        <div v-if="value === 'all'" class="highlightable" :id="'supervisors-capacity-count'"
             @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('supervisors-capacity-count', $event)">
             <div class="component-wrapper">
                 <span class="text-sm font-medium text-gray-700">
@@ -9,6 +9,16 @@
                 </span>
                 <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive"
                     :componentId="'supervisors-capacity-count'" class="edit-button" />
+            </div>
+        </div>
+        <div v-else class="highlightable" :id="'supervisors-capacity-count-session'"
+            @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('supervisors-capacity-count-session', $event)">
+            <div class="component-wrapper">
+                <span class="text-sm font-medium text-gray-700">
+                    {{ t('supervisors') }}: {{ selectedSessionInfo.currentCount }}
+                </span>
+                <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive"
+                    :componentId="'supervisors-capacity-count-session'" class="edit-button" />
             </div>
         </div>
     </div>
@@ -30,17 +40,19 @@ const selectedSystemStore = useSelectedSystemStore()
 const value = defineModel<string>({ default: 'all' })
 
 const participantsCapacityCountComponent = computed(() => componentCodeStore.getComponentById('supervisors-capacity-count') || componentCodeStore.getDefaultComponent('supervisors-capacity-count'))
+const participantsCapacityCountSessionComponent = computed(() => componentCodeStore.getComponentById('supervisors-capacity-count-session') || componentCodeStore.getDefaultComponent('supervisors-capacity-count-session'))
 
 const correctParticipantsCapacityCountSqlTotalAll = computed(() => participantsCapacityCountComponent.value?.sql?.['sql-total-all'] || '')
-const correctParticipantsCapacityCountSqlTotalSession = computed(() => participantsCapacityCountComponent.value?.sql?.['sql-total-session'] || '')
 const correctParticipantsCapacityCountSqlCurrentAll = computed(() => participantsCapacityCountComponent.value?.sql?.['sql-current-all'] || '')
-const correctParticipantsCapacityCountSqlCurrentSession = computed(() => participantsCapacityCountComponent.value?.sql?.['sql-current-session'] || '')
+
+const correctParticipantsCapacityCountSqlTotalSession = computed(() => participantsCapacityCountSessionComponent.value?.sql?.['sql-total-session'] || '')
+const correctParticipantsCapacityCountSqlCurrentSession = computed(() => participantsCapacityCountSessionComponent.value?.sql?.['sql-current-session'] || '')
 
 const participantsCapacityCountSqlTotal = computed(() => {
     if (value.value === 'all') {
         return ComponentHandler.getComponentValue('supervisors-capacity-count', 'sql-total-all', correctParticipantsCapacityCountSqlTotalAll.value)
     } else {
-        return ComponentHandler.getComponentValue('supervisors-capacity-count', 'sql-total-session', correctParticipantsCapacityCountSqlTotalSession.value)
+        return ComponentHandler.getComponentValue('supervisors-capacity-count-session', 'sql-total-session', correctParticipantsCapacityCountSqlTotalSession.value)
     }
 })
 
@@ -48,7 +60,7 @@ const participantsCapacityCountSqlCurrent = computed(() => {
     if (value.value === 'all') {
         return ComponentHandler.getComponentValue('supervisors-capacity-count', 'sql-current-all', correctParticipantsCapacityCountSqlCurrentAll.value)
     } else {
-        return ComponentHandler.getComponentValue('supervisors-capacity-count', 'sql-current-session', correctParticipantsCapacityCountSqlCurrentSession.value)
+        return ComponentHandler.getComponentValue('supervisors-capacity-count-session', 'sql-current-session', correctParticipantsCapacityCountSqlCurrentSession.value)
     }
 })
 

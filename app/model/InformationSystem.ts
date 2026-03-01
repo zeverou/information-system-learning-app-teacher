@@ -1,40 +1,145 @@
 import DbHandler from "~/composables/DbHandler";
-import { Participant } from "./SystemDatabase/Participant";
 import { Task } from "./Task/Task";
 import { Component } from "./Component";
 import { IndexedDbHandler } from "~/utils/IndexedDbHandler";
+import type { Table } from "./Table";
+import type { Mapping } from "~/language/Mapping";
+import type JSZip from "jszip";
 
-export interface Table<T = any> {
-  id?: string;
-  name: string;
-  data: T[];
-}
-
+/**
+ * Represents an information system, encapsulating its configuration, data tables, tasks, and component mappings.
+ */
 export class InformationSystem {
+  /**
+   * Unique identifier for the system.
+   */
+  public id: string;
 
-  // TODO: use db attribute for IS
+  /**
+   * The language mapping used for the system. It contains how table names, columns and other elements are mapped to the system's internal 
+   * representation. This is crucial for correctly interpreting the configuration and data, especially when dealing with different languages.
+   */
+  public mapping: Mapping;
+
+  /**
+   * The language code of the system (e.g. "cs", "en").
+   */
+  public language: string;
+
+  /**
+   * The name of the system.
+   */
+  public name: string;
+
+  /**
+   * Description of the system, providing additional context or information about its purpose and contents.
+   */
+  public description: string;
+
+  /**
+   * The tables contained in the information system. Eg. the supervisors table, etc.
+   */
+  public tables: Table[];
+
+  /**
+   * The tasks defined for the information system.
+   */
+  public tasks: Task[];
+
+  /**
+   * The special sync number used for forcing reactivity updates when the database is initialized or updated. 
+   * Incrementing this number can be used to trigger reactivity in Vue components that depend on the database state.
+   */
+  public dbNumber: number;
+
   public db: DbHandler | null;
+  public configData: any;
+
+  public dbInitialized: boolean;
   public defaultComponentMap: Component[] = [];
   public actualComponentMap: Component[] = [];
 
-  constructor(
-    public id: number,
-    public directory: string,
-    public name: string,
-    public description: string,
-    public tables: Table[],
-    public tasks: Task[] = [],
-    public configData: any,
-    public dbNumber: number = 0,
-    public dbInitialized: boolean = false,
-    defaultComponentMap: Component[] = [],
-    actualComponentMap: Component[] = []
-  ) {
-    // Don't initialize db here - it will be set later during hydration
-    this.db = null as any;
+  constructor({
+    id,
+    name,
+    language,
+    description,
+    tables,
+    tasks = [],
+    configData,
+    dbNumber = 0,
+    dbInitialized = false,
+    defaultComponentMap = [],
+    actualComponentMap = [],
+    mapping
+  }: {
+    id: string;
+    name: string;
+    language: string;
+    description: string;
+    tables: Table[];
+    tasks?: Task[];
+    configData: any;
+    dbNumber?: number;
+    dbInitialized?: boolean;
+    defaultComponentMap?: Component[];
+    actualComponentMap?: Component[];
+    mapping: Mapping;
+  }) {
+    this.id = id;
+    this.name = name;
+    this.language = language;
+    this.description = description;
+    this.tables = tables;
+    this.tasks = tasks;
+    this.configData = configData;
+    this.dbNumber = dbNumber;
+    this.dbInitialized = dbInitialized;
     this.defaultComponentMap = defaultComponentMap;
     this.actualComponentMap = actualComponentMap;
+
+    // Don't initialize db here - it will be set later during hydration
+    this.db = null;
+
+    this.mapping = mapping;
   }
+
+  // TODO: Write comments
+  public static async loadSystem(filesContents: Record<string, string>, mapping: Mapping,): Promise<Operation<InformationSystem | null>> {
+    const configEntry = Object.entries(filesContents).find(([path]) => path.endsWith('config.json'));
+    if (!configEntry) {
+      return new Operation(OperationResultType.ERROR, "Config file not found.", null);
+    }
+    const [configPath, configContent] = configEntry;
+
+    try {
+      const configData = JSON.parse(configContent);
+      const system = new InformationSystem({
+        id: configData.id,
+        name: configData.name,
+        language: configData.language,
+        description: configData.description,
+        tables: configData.tables,
+        tasks: (configData.tasks || []).map((task: any) => Task.fromJSON(task)),
+        configData,
+        mapping,
+      });
+
+      // Initialize the database with the config data and CSV contents
+      // TODO
+
+      return new Operation(OperationResultType.SUCCESS, "System loaded successfully.", system);
+
+      /* TODO: the saving into IndexedDB shall happen after upload button click. There shall be no saving to pinia store. But after upload of the system, the pinia stores shall
+      look into indexed db and update itself.
+       */
+    } catch (error) {
+      return new Operation(OperationResultType.ERROR, "Failed to load system: " + (error instanceof Error ? error.message : String(error)), null);
+    }
+
+  }
+
+  /*
 
   public static async databaseInitStatic(json: any) {
     // Try to load complete system from IndexedDB first
@@ -74,7 +179,8 @@ export class InformationSystem {
   public async databaseInit(json: any): Promise<void> {
     console.log("Initializing database for Information System:", this.name);
     if (!this.db) {
-      this.db = new DbHandler();
+      const mappingToUse = this.mapping || json.mapping || json.configData?.mapping;
+      this.db = new DbHandler(mappingToUse);
     }
     await this.db.init(json);
     this.dbInitialized = true;
@@ -84,7 +190,8 @@ export class InformationSystem {
   public async databaseInitNew(json: any, csvData: Record<string, string>): Promise<void> {
     console.log("Initializing database for Information System (new):", this.name);
     if (!this.db) {
-      this.db = new DbHandler();
+      const mappingToUse = this.mapping || json.mapping || json.configData?.mapping;
+      this.db = new DbHandler(mappingToUse);
     }
     await this.db.init(json, csvData);
     this.dbInitialized = true;
@@ -201,4 +308,8 @@ export class InformationSystem {
       console.error(`Failed to delete InformationSystem ${systemId} from IndexedDB:`, error);
     }
   }
+
+  */
+
+
 }

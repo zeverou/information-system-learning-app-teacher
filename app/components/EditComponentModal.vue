@@ -1,6 +1,11 @@
 <template>
   <div class="modal-overlay">
-    <div class="modal">
+    <div class="modal" id="component-edit-modal">
+      <div class="modal-header">
+        <h2 class="component-title">{{ componentName }}</h2>
+        <div class="component-id" v-if="editedComponent && editedComponent.id">#{{ editedComponent.id }}</div>
+      </div>
+
       <div class="editor-container">
         <div v-for="section in availableSections" :key="section.key" class="editor-section">
           <div class="title-row">
@@ -106,6 +111,7 @@ const editorOptions = {
 const editedComponent: Component | null = componentCodeStore.getComponentById(highlightStore.selectedComponentId ?? '') ?? null;
 console.log("Edited Component:", editedComponent, "for ID:", highlightStore.selectedComponentId);
 console.log("Edited Component JSON:", JSON.stringify(editedComponent, null, 2));
+const componentName = computed(() => editedComponent?.name || highlightStore.selectedComponentId || 'Unnamed Component')
 const sqlValid = ref(true)
 
 // Check if component is in error components and load error code if available
@@ -707,5 +713,32 @@ function closeModal() {
 
 .tables-list li:last-child {
   border-bottom: none;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.component-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0;
+  color: #0f172b;
+}
+
+.dark .component-title {
+  color: #e5e7eb;
+}
+
+.component-id {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.dark .component-id {
+  color: #94a3b8;
 }
 </style>

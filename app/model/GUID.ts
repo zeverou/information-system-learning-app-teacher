@@ -1,0 +1,1 @@
+export type GUID = string & { __brand: "GUID" };

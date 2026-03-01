@@ -1,8 +1,9 @@
+import { CsLanguage } from "./CsLangauge";
 import { type Mapping } from "./Mapping";
 
 export class MappingCs implements Mapping {
 
-    language = "cs";
+    language = new CsLanguage();
 
     participants = "účastníci";
     meals = "jídla";

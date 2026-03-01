@@ -3,7 +3,7 @@
         <UIcon name="i-heroicons-users" class="w-4 h-4 text-gray-600" />
 
         <!-- Session Capacity Count -->
-        <div class="highlightable" :id="'participants-capacity-count'"
+        <div v-if="value === 'all'" class="highlightable" :id="'participants-capacity-count'"
             @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('participants-capacity-count', $event)">
             <div class="component-wrapper">
                 <span class="text-sm font-medium text-gray-700">
@@ -11,6 +11,16 @@
                 </span>
                 <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive"
                     :componentId="'participants-capacity-count'" class="edit-button" />
+            </div>
+        </div>
+        <div v-else class="highlightable" :id="'participants-capacity-count-session'"
+            @click="highlightStore.isHighlightMode && highlightStore.highlightHandler.selectElement('participants-capacity-count-session', $event)">
+            <div class="component-wrapper">
+                <span class="text-sm font-medium text-gray-700">
+                    {{ t('capacity') }}: {{ currentCount }}/{{ totalCapacity }}
+                </span>
+                <EditComponentModalOpenButton v-if="highlightStore.isEditModeActive"
+                    :componentId="'participants-capacity-count-session'" class="edit-button" />
             </div>
         </div>
 
@@ -51,17 +61,19 @@ const selectedSystemStore = useSelectedSystemStore()
 const value = defineModel<string>({ default: 'all' })
 
 const participantsCapacityCountComponent = computed(() => componentCodeStore.getComponentById('participants-capacity-count') || componentCodeStore.getDefaultComponent('participants-capacity-count'))
+const participantsCapacityCountSessionComponent = computed(() => componentCodeStore.getComponentById('participants-capacity-count-session') || componentCodeStore.getDefaultComponent('participants-capacity-count-session'))
 
 const correctParticipantsCapacityCountSqlTotalAll = computed(() => participantsCapacityCountComponent.value?.sql?.['sql-total-all'] || '')
-const correctParticipantsCapacityCountSqlTotalSession = computed(() => participantsCapacityCountComponent.value?.sql?.['sql-total-session'] || '')
 const correctParticipantsCapacityCountSqlCurrentAll = computed(() => participantsCapacityCountComponent.value?.sql?.['sql-current-all'] || '')
-const correctParticipantsCapacityCountSqlCurrentSession = computed(() => participantsCapacityCountComponent.value?.sql?.['sql-current-session'] || '')
+
+const correctParticipantsCapacityCountSqlTotalSession = computed(() => participantsCapacityCountSessionComponent.value?.sql?.['sql-total-session'] || '')
+const correctParticipantsCapacityCountSqlCurrentSession = computed(() => participantsCapacityCountSessionComponent.value?.sql?.['sql-current-session'] || '')
 
 const participantsCapacityCountSqlTotal = computed(() => {
     if (value.value === 'all') {
         return ComponentHandler.getComponentValue('participants-capacity-count', 'sql-total-all', correctParticipantsCapacityCountSqlTotalAll.value)
     } else {
-        return ComponentHandler.getComponentValue('participants-capacity-count', 'sql-total-session', correctParticipantsCapacityCountSqlTotalSession.value)
+        return ComponentHandler.getComponentValue('participants-capacity-count-session', 'sql-total-session', correctParticipantsCapacityCountSqlTotalSession.value)
     }
 })
 
@@ -69,7 +81,7 @@ const participantsCapacityCountSqlCurrent = computed(() => {
     if (value.value === 'all') {
         return ComponentHandler.getComponentValue('participants-capacity-count', 'sql-current-all', correctParticipantsCapacityCountSqlCurrentAll.value)
     } else {
-        return ComponentHandler.getComponentValue('participants-capacity-count', 'sql-current-session', correctParticipantsCapacityCountSqlCurrentSession.value)
+        return ComponentHandler.getComponentValue('participants-capacity-count-session', 'sql-current-session', correctParticipantsCapacityCountSqlCurrentSession.value)
     }
 })
 
@@ -158,7 +170,7 @@ function lightenColor(color: string, percent: number): string {
         'green': '#00ff00'
     };
     if (colorMap[color]) {
-        color = colorMap[color];
+        color = colorMap[color] as string;
     }
     let r: number, g: number, b: number;
 
@@ -185,7 +197,7 @@ function darkenColor(color: string, percent: number): string {
         'green': '#00ff00'
     };
     if (colorMap[color]) {
-        color = colorMap[color];
+        color = colorMap[color] as string;
     }
     let r: number, g: number, b: number;
 

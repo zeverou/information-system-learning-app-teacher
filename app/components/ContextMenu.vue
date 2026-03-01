@@ -1,13 +1,17 @@
 <template>
-    <div class="context-menu-footer w-full py-2 px-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+    <div
+        class="context-menu-footer w-full py-2 px-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
         <div class="flex items-center gap-2 justify-center flex-nowrap">
             <UPopover>
                 <!-- <UButton label="Helper" color="neutral" variant="subtle" /> -->
                 <template #content>
                     <div style="min-width: 300px; border: 1px transparent; border-radius: 8px; padding: 10px;">
-                        <UButton class="mb-2" @click="printTableData" variant="soft" style="width: 100%;">Print database table names</UButton>
-                        <UButton class="mb-2" @click="IsDbNull" variant="soft" style="width: 100%;">Check if db is null</UButton>
-                        <UButton class="mb-2" @click="openComponentExplorer" variant="soft" style="width: 100%;">Open Component Explorer</UButton>
+                        <UButton block class="mb-2 justify-start" @click="printTableData" variant="soft">Print database
+                            table names</UButton>
+                        <UButton block class="mb-2 justify-start" @click="IsDbNull" variant="soft">Check if db is null
+                        </UButton>
+                        <UButton block class="mb-2 justify-start" @click="openComponentExplorer" variant="soft">Open
+                            Component Explorer</UButton>
                     </div>
                 </template>
             </UPopover>
@@ -21,12 +25,12 @@
             </UBadge>
 
             <UButton :icon="highlightStore.isHighlightMode ? 'i-lucide-lightbulb' : 'i-lucide-lightbulb-off'"
-                :label="highlightStore.isHighlightMode ? $t('disable_highlight') : $t('enable_highlight')"
-                color="lime" :variant="highlightStore.isHighlightMode ? 'solid' : 'subtle'" size="md"
+                :label="highlightStore.isHighlightMode ? $t('disable_highlight') : $t('enable_highlight')" color="lime"
+                :variant="highlightStore.isHighlightMode ? 'solid' : 'subtle'" size="md"
                 @click="highlightStore.toggleHighlight">
                 <span class="mobile-hidden">{{ highlightStore.isHighlightMode ? $t('disable_highlight') :
                     $t('enable_highlight')
-                }}</span>
+                    }}</span>
             </UButton>
 
             <UButton :icon="highlightStore.isEditModeActive ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
@@ -35,12 +39,12 @@
                 @click="highlightStore.toggleEdit">
                 <span class="mobile-hidden">{{ highlightStore.isEditModeActive ? $t('disable_edit') :
                     $t('enable_edit')
-                }}</span>
+                    }}</span>
             </UButton>
 
             <UDrawer v-model:open="studentDrawerOpen" direction="right">
-                <UButton color="sky" variant="outline" @click="studentDrawerOpen = true"
-                    icon="i-lucide-graduation-cap" size="md">
+                <UButton color="sky" variant="outline" @click="studentDrawerOpen = true" icon="i-lucide-graduation-cap"
+                    size="md">
                     <span class="mobile-hidden">{{ $t('student') }}</span>
                 </UButton>
                 <template #content>
@@ -59,17 +63,17 @@
             <SettingsDrawer />
 
             <UPopover v-model:open="resetPopoverOpen" arrow>
-                <UButton icon="i-heroicons-arrow-path" :label="$t('refresh_system')" color="primary"
-                    variant="subtle" size="md">
+                <UButton icon="i-heroicons-arrow-path" :label="$t('refresh_system')" color="primary" variant="subtle"
+                    size="md">
                     <span class="mobile-hidden">{{ $t('refresh_system') }}</span>
                 </UButton>
                 <template #content>
                     <UCard>
                         <div class="flex flex-col gap-2">
-                            <UButton :label="$t('refresh_components')" color="primary" variant="outline"
-                                icon="i-heroicons-arrow-path" @click="refreshComponents" />
-                            <UButton :label="$t('refresh_tasks')" color="sky" variant="outline"
-                                icon="i-heroicons-arrow-path" @click="refreshTasks" />
+                            <UButton block :label="$t('refresh_components')" color="primary" variant="outline"
+                                icon="i-heroicons-arrow-path" @click="refreshComponents" class="justify-start" />
+                            <UButton block :label="$t('refresh_tasks')" color="sky" variant="outline"
+                                icon="i-heroicons-arrow-path" @click="refreshTasks" class="justify-start" />
                         </div>
                     </UCard>
                 </template>
@@ -83,12 +87,13 @@
                 <template #content>
                     <UCard>
                         <div class="flex flex-col gap-2">
-                            <UButton size="md" :label="$t('leave_system')" color="red" variant="outline"
-                                icon="i-heroicons-arrow-right-on-rectangle" @click="leaveSystem" />
-                            <UButton size="md" :label="$t('leave_and_save')" color="yellow"
-                                variant="outline" icon="i-heroicons-document-check" @click="leaveAndSave" />
-                            <UButton size="md" :label="$t('stay_in_system')" color="neutral" variant="outline"
-                                icon="i-heroicons-x-mark" @click="stayInSystem" />
+                            <UButton block size="md" :label="$t('leave_system')" color="red" variant="outline"
+                                icon="i-heroicons-arrow-right-on-rectangle" @click="leaveSystem"
+                                class="justify-start" />
+                            <UButton block size="md" :label="$t('leave_and_save')" color="yellow" variant="outline"
+                                icon="i-heroicons-document-check" @click="leaveAndSave" class="justify-start" />
+                            <UButton block size="md" :label="$t('stay_in_system')" color="neutral" variant="outline"
+                                icon="i-heroicons-x-mark" @click="stayInSystem" class="justify-start" />
                         </div>
                     </UCard>
                 </template>

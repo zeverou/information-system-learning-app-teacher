@@ -1,17 +1,7 @@
 import initSqlJs from 'sql.js';
 import Papa from "papaparse";
-
-// Simple CSV parser (assumes no quoted commas, first row is header)
-function parseCSV(csv: string): any[] {
-    const lines = csv.trim().split('\n');
-    const headers = lines[0].split(',');
-    return lines.slice(1).map(line => {
-        const values = line.split(',');
-        const obj: any = {};
-        headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim());
-        return obj;
-    });
-}
+import type { Mapping } from '~/language/Mapping';
+import { MappingCs } from '~/language/MappingCs';
 
 export default class DbHandler {
 
@@ -19,7 +9,7 @@ export default class DbHandler {
 
     private tableNameMap: Map<string, string> = new Map();
 
-    constructor() {
+    constructor(public mapping: Mapping = new MappingCs()) {
         this.db = null;
     }
 
@@ -32,7 +22,8 @@ export default class DbHandler {
             locateFile: () => '/information-system-learning-app/sql-wasm.wasm'
         });
 
-        const dbHandler: DbHandler = new DbHandler();
+        const mappingToUse = json.mapping || json.configData?.mapping || new MappingCs();
+        const dbHandler: DbHandler = new DbHandler(mappingToUse);
         dbHandler.db = new SQL.Database();
 
         console.log("JSON 1", json);
@@ -48,7 +39,8 @@ export default class DbHandler {
     }
 
     public static async fromBuffer(buffer: Uint8Array, json: any): Promise<DbHandler> {
-        const dbHandler = new DbHandler();
+        const mappingToUse = json.mapping || json.configData?.mapping || new MappingCs();
+        const dbHandler = new DbHandler(mappingToUse);
         await dbHandler.initFromBuffer(buffer, json);
         return dbHandler;
     }
@@ -700,7 +692,7 @@ export default class DbHandler {
             const stmt = this.db.prepare(sql);
 
             // if there are more ?'s than params, fill the param array with the last param to match count of ?'s
-            
+
 
             stmt.run(params);
             stmt.free();
@@ -761,7 +753,7 @@ export default class DbHandler {
         const sql = "SELECT name FROM sqlite_master WHERE type='table'";
         const result = this.query(sql);
         if (result.success) {
-        console.log("Tables: ", this.tableNameMap );    
+            console.log("Tables: ", this.tableNameMap);
 
             return result.results.map((row: any) => row.name as string);
         }

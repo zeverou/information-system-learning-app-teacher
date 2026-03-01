@@ -6,9 +6,22 @@ export const supervisorsBadgeComponent = (selectedSystemStore: any) => new Compo
     tags: ["supervisors"],
     description: `SQL for getting all supervisors.`,
     html: {
-        "html": `<div style="display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; font-size: 0.875rem; font-weight: 600; border-radius: 9px; background-color: #f5f3ff; color: #7c3aed; border: 1px solid rgba(124, 58, 237, 0.1); white-space: nowrap;">{{age}}</div>`
+        "html": `<div class="supervisors-badge">{{age}}</div>`
     },
-    css: { "css": "" },
+    css: {
+        "css": `.supervisors-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 9px;
+            background-color: #f5f3ff;
+            color: #7c3aed;
+            border: 1px solid rgba(124, 58, 237, 0.1);
+            white-space: nowrap;
+        }`
+    },
     js: { "js": "" },
     sql: {
         "sql": `

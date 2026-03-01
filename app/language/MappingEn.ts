@@ -1,10 +1,11 @@
+import { EnLanguage } from "./EnLanguage";
 import { type Mapping } from "./Mapping";
 
 export class MappingEn implements Mapping {
 
-    language = "en";
+    language = new EnLanguage();
 
-    participants = "participants";
+participants = "participants";
     meals = "meals";
     sessions = "sessions";
     allergens = "allergens";

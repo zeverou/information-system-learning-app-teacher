@@ -37,7 +37,7 @@
               {{ t('select_language') }}
             </label>
             <USelect v-model="locale" color="sky" :items="localeOptions"
-              class="settings-language-select w-full max-w-xs" @update:model-value="onLocaleChange" />
+              class="settings-language-select w-full max-w-xs"/>
           </div>
         </div>
       </UCard>
@@ -58,8 +58,7 @@
               <span class="text-sm font-medium text-gray-900 dark:text-white">{{ t('task_menu_sidebar') }}</span>
               <span class="text-sm text-gray-500 dark:text-gray-400">{{ t('task_menu_sidebar_description') }}</span>
             </div>
-            <USwitch color="orange" :model-value="taskMenuStore.taskMenuDisplayedAsSidebar"
-              :disabled="taskMenuStore.isSmallScreen" @update:model-value="taskMenuStore.toggleTaskMenuDisplay" />
+            <USwitch color="orange" :model-value="globalSettingsStore.taskMenuDisplayedAsSidebar" />
           </div>
           <!-- Dark Mode Switch -->
           <div class="flex items-center justify-between mt-4">
@@ -71,31 +70,6 @@
           </div>
         </div>
       </UCard>
-
-      <!-- Keyboard Shortcuts -->
-      <UCard class="border-t-4 border-violet-500 shadow-lg dark:bg-gray-900/50">
-        <div class="space-y-4">
-          <div class="flex items-center space-x-3 mb-6">
-            <div class="p-2 bg-violet-500/10 rounded-lg">
-              <UIcon name="i-heroicons-command-line" class="w-6 h-6 text-violet-500" />
-            </div>
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-              {{ t('keyboard_shortcuts') }}
-            </h2>
-          </div>
-
-          <div class="grid gap-4">
-            <div v-for="[action, shortcut] in settingsStore.shortcuts" :key="action"
-              class="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
-              <span class="text-base font-medium text-gray-900 dark:text-white">{{ t(action) }}</span>
-              <UKbd size="lg" variant="solid" class="bg-teacher-500 border-teacher-500 text-white">
-                {{ shortcut }}
-              </UKbd>
-            </div>
-          </div>
-        </div>
-      </UCard>
-
     </div>
   </div>
 </template>
@@ -104,12 +78,10 @@
 /* 1. Imports */
 import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
-import { useSettingsStore, useTaskMenuStore } from "#imports"
 
 
 /* 2. Stores */
-const settingsStore = useSettingsStore()
-const taskMenuStore = useTaskMenuStore()
+const globalSettingsStore = useGlobalSettingsStore()
 
 /* 3. Context hooks */
 const { locale, availableLocales, setLocale } = useI18n()
@@ -131,34 +103,14 @@ const { t } = useI18n()
 
 /* 9. Computed */
 const localeOptions = computed(() =>
-  availableLocales.map(locale => ({
-    value: locale,
-    label: locale === 'cs' ? 'Čeština' : 'English',
-    icon: locale === 'cs' ? 'i-flag-cz-4x3' : 'i-flag-us-4x3'
-  }))
+  globalSettingsStore.languages.map(lang => ({ label: lang.name, value: lang.code }))
 )
-
-const shortcutRows = computed(() => {
-  // Defensive: fallback if shortcuts is not set
-  if (!settingsStore.shortcuts || !(settingsStore.shortcuts instanceof Map)) return []
-  return Array.from(settingsStore.shortcuts.entries()).map(([action, shortcut]) => ({
-    action,
-    shortcut
-  }))
-})
-
-const shortcutColumns = [
-  { id: 'action', label: 'Action / Akce' },
-  { id: 'shortcut', label: 'Shortcut / Zkratka' }
-]
 
 /* 10. Watchers */
 // none
 
 /* 11. Methods */
-function onLocaleChange(newLocale: 'cs' | 'en') {
-  setLocale(newLocale)
-}
+// none
 
 /* 12. Lifecycle */
 // none
