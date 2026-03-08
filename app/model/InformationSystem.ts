@@ -1,10 +1,9 @@
-import DbHandler from "~/composables/DbHandler";
 import { Task } from "./Task/Task";
 import { Component } from "./Component";
-import { IndexedDbHandler } from "~/utils/IndexedDbHandler";
+import { DatabaseWrapper } from "~/utils/DatabaseWrapper";
+import type { GUID } from "./GUID";
 import type { Table } from "./Table";
 import type { Mapping } from "~/language/Mapping";
-import type JSZip from "jszip";
 
 /**
  * Represents an information system, encapsulating its configuration, data tables, tasks, and component mappings.
@@ -13,13 +12,7 @@ export class InformationSystem {
   /**
    * Unique identifier for the system.
    */
-  public id: string;
-
-  /**
-   * The language mapping used for the system. It contains how table names, columns and other elements are mapped to the system's internal 
-   * representation. This is crucial for correctly interpreting the configuration and data, especially when dealing with different languages.
-   */
-  public mapping: Mapping;
+  public id: GUID;
 
   /**
    * The language code of the system (e.g. "cs", "en").
@@ -37,71 +30,78 @@ export class InformationSystem {
   public description: string;
 
   /**
-   * The tables contained in the information system. Eg. the supervisors table, etc.
-   */
-  public tables: Table[];
-
-  /**
    * The tasks defined for the information system.
    */
   public tasks: Task[];
 
   /**
-   * The special sync number used for forcing reactivity updates when the database is initialized or updated. 
-   * Incrementing this number can be used to trigger reactivity in Vue components that depend on the database state.
+   * The user-customised component overrides for this system.
    */
-  public dbNumber: number;
+  public actualComponents: Component[];
 
-  public db: DbHandler | null;
-  public configData: any;
+  /**
+   * The SQLite database for this system, loaded lazily via DatabaseWrapper.
+   */
+  public database: DatabaseWrapper | null;
 
-  public dbInitialized: boolean;
-  public defaultComponentMap: Component[] = [];
-  public actualComponentMap: Component[] = [];
+  /**
+   * The raw config JSON. Present only after loading from a zip/config.
+   */
+  public configData?: any;
+
+  /**
+   * The language mapping used when the system was loaded from config.
+   */
+  public mapping?: Mapping;
 
   constructor({
     id,
     name,
     language,
     description,
-    tables,
     tasks = [],
+    actualComponents = [],
+    database = null,
+    tables,
     configData,
-    dbNumber = 0,
-    dbInitialized = false,
-    defaultComponentMap = [],
-    actualComponentMap = [],
-    mapping
+    mapping,
   }: {
-    id: string;
+    id: GUID;
     name: string;
     language: string;
     description: string;
-    tables: Table[];
     tasks?: Task[];
-    configData: any;
-    dbNumber?: number;
-    dbInitialized?: boolean;
-    defaultComponentMap?: Component[];
-    actualComponentMap?: Component[];
-    mapping: Mapping;
+    actualComponents?: Component[];
+    database?: DatabaseWrapper | null;
+    tables?: Table[];
+    configData?: any;
+    mapping?: Mapping;
   }) {
     this.id = id;
     this.name = name;
     this.language = language;
     this.description = description;
-    this.tables = tables;
     this.tasks = tasks;
+    this.actualComponents = actualComponents;
+    this.database = database;
+    this.tables = tables;
     this.configData = configData;
-    this.dbNumber = dbNumber;
-    this.dbInitialized = dbInitialized;
-    this.defaultComponentMap = defaultComponentMap;
-    this.actualComponentMap = actualComponentMap;
-
-    // Don't initialize db here - it will be set later during hydration
-    this.db = null;
-
     this.mapping = mapping;
+  }
+
+  /**
+   * Creates an InformationSystem from a raw config JSON string.
+   * Throws SyntaxError if the JSON is invalid.
+   */
+  public static fromConfig(configJson: string): InformationSystem {
+    const configData = JSON.parse(configJson);
+    return new InformationSystem({
+      id: String(configData.id) as GUID,
+      name: configData.name,
+      language: configData.language,
+      description: configData.description,
+      configData,
+    });
   }
 
   // TODO: Write comments
@@ -115,7 +115,7 @@ export class InformationSystem {
     try {
       const configData = JSON.parse(configContent);
       const system = new InformationSystem({
-        id: configData.id,
+        id: configData.id as GUID,
         name: configData.name,
         language: configData.language,
         description: configData.description,
@@ -138,178 +138,6 @@ export class InformationSystem {
     }
 
   }
-
-  /*
-
-  public static async databaseInitStatic(json: any) {
-    // Try to load complete system from IndexedDB first
-    if (json.id) {
-      try {
-        const system = await InformationSystem.loadFromIndexedDB(json.id);
-        if (system && system.db) {
-          console.log("Loading complete system from IndexedDB for system:", json.name);
-          return system.db;
-        }
-      } catch (e) {
-        console.error("Failed to load complete system from IndexedDB", e);
-      }
-    }
-
-    // Fallback to loading database separately
-    const dbHandler = await DbHandler.fromJSON(json);
-    console.log("Database initialized for Information System (static):", json.name);
-
-    // Save to IndexedDB for next time
-    if (json.id) {
-      try {
-        const exported = dbHandler.exportDatabase();
-        await IndexedDbHandler.saveSystemDB(json.id, exported);
-        // Also save component maps if they exist
-        if (json.defaultComponentMap || json.actualComponentMap) {
-          await IndexedDbHandler.saveComponentMaps(json.defaultComponentMap || [], json.actualComponentMap || []);
-        }
-      } catch (e) {
-        console.error("Failed to save to IndexedDB", e);
-      }
-    }
-
-    return dbHandler;
-  }
-
-  public async databaseInit(json: any): Promise<void> {
-    console.log("Initializing database for Information System:", this.name);
-    if (!this.db) {
-      const mappingToUse = this.mapping || json.mapping || json.configData?.mapping;
-      this.db = new DbHandler(mappingToUse);
-    }
-    await this.db.init(json);
-    this.dbInitialized = true;
-    console.log("Database initialized for Information System:", this.name);
-  }
-
-  public async databaseInitNew(json: any, csvData: Record<string, string>): Promise<void> {
-    console.log("Initializing database for Information System (new):", this.name);
-    if (!this.db) {
-      const mappingToUse = this.mapping || json.mapping || json.configData?.mapping;
-      this.db = new DbHandler(mappingToUse);
-    }
-    await this.db.init(json, csvData);
-    this.dbInitialized = true;
-    console.log("Database initialized for Information System (new):", this.name);
-
-    // Save complete system to IndexedDB
-    try {
-      await this.saveToIndexedDB();
-    } catch (e) {
-      console.error("Failed to save complete system to IndexedDB", e);
-    }
-  }
-
-  static async fromBinary(systemId: number, json: any, dbData: Uint8Array): Promise<InformationSystem> {
-    // Create system from JSON first
-    const system = InformationSystem.fromJSON(json);
-    // Initialize db from binary data
-    system.db = await DbHandler.fromBuffer(dbData, json);
-    system.dbInitialized = true;
-    return system;
-  }
-
-  static fromJSON(json: any): InformationSystem {
-    // Parse tables
-    const tables: Table[] = (json.tables || []).map((table: any) => ({
-      id: table.id,
-      name: table.name,
-      data: table.data,
-    }));
-
-    // Parse tasks
-    const tasks: Task[] = (json.tasks || []).map((task: any) =>
-      Task.fromJSON(task)
-    );
-
-    // Parse component maps
-    const defaultComponentMap: Component[] = (json.defaultComponentMap || []).map((comp: any) =>
-      new Component(comp)
-    );
-    const actualComponentMap: Component[] = (json.actualComponentMap || []).map((comp: any) =>
-      new Component(comp)
-    );
-
-    return new InformationSystem(
-      json.id,
-      json.directory,
-      json.name,
-      json.description,
-      tables,
-      tasks,
-      json.configData,
-      json.dbNumber || 0,
-      json.dbInitialized || false,
-      defaultComponentMap,
-      actualComponentMap
-    );
-  }
-
-  public async saveComponentMaps(): Promise<void> {
-    try {
-      await IndexedDbHandler.saveComponentMaps(this.defaultComponentMap, this.actualComponentMap);
-      console.log(`Saved component maps for system ${this.name}`);
-    } catch (error) {
-      console.error(`Failed to save component maps for system ${this.name}:`, error);
-    }
-  }
-
-  // Save entire InformationSystem object to IndexedDB
-  public async saveToIndexedDB(): Promise<void> {
-    try {
-      // Save database separately if it exists
-      if (this.db) {
-        const dbData = this.db.exportDatabase();
-        await IndexedDbHandler.saveDatabase(this.id, dbData);
-      }
-      await IndexedDbHandler.saveInformationSystem(this);
-      console.log(`Saved complete InformationSystem ${this.name} to IndexedDB`);
-    } catch (error) {
-      console.error(`Failed to save InformationSystem ${this.name} to IndexedDB:`, error);
-    }
-  }
-
-  // Load entire InformationSystem object from IndexedDB
-  public static async loadFromIndexedDB(systemId: number): Promise<InformationSystem | null> {
-    try {
-      const systemData = await IndexedDbHandler.loadInformationSystem(systemId);
-      if (systemData) {
-        const dbData = await IndexedDbHandler.loadDatabase(systemId);
-        let system: InformationSystem;
-        if (dbData) {
-          // Load from saved database binary data
-          system = await InformationSystem.fromBinary(systemId, systemData, dbData);
-        } else {
-          // Fallback to creating from JSON config
-          system = InformationSystem.fromJSON(systemData);
-        }
-        console.log(`Loaded complete InformationSystem ${system.name} from IndexedDB`);
-        return system;
-      }
-      return null;
-    } catch (error) {
-      console.error(`Failed to load InformationSystem ${systemId} from IndexedDB:`, error);
-      return null;
-    }
-  }
-
-  // Delete entire InformationSystem object from IndexedDB
-  public static async deleteFromIndexedDB(systemId: number): Promise<void> {
-    try {
-      await IndexedDbHandler.deleteInformationSystem(systemId);
-      await IndexedDbHandler.deleteDatabase(systemId);
-      console.log(`Deleted InformationSystem ${systemId} from IndexedDB`);
-    } catch (error) {
-      console.error(`Failed to delete InformationSystem ${systemId} from IndexedDB:`, error);
-    }
-  }
-
-  */
 
 
 }

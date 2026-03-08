@@ -1,4 +1,4 @@
-import { ComponentVariables } from "~/model/ComponentVariables";
+import type { ComponentVariables } from "~/model/ComponentVariables";
 
 export class HtmlHandler {
     public static ReplaceHtmlForVariables(variables: ComponentVariables, html: string): string {

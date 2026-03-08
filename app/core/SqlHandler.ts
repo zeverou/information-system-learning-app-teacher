@@ -2,6 +2,7 @@ import type { QueryExecResult } from "sql.js";
 import type { ColumnDefinition } from "~/utils/ColumnDefinition";
 import { TableMap } from "./TableMap";
 import { ColumnType } from "~/utils/ColumnType";
+import type { ComponentVariables } from "~/model/ComponentVariables";
 
 
 export class SqlHandler {

@@ -1,5 +1,3 @@
-import type { VariableType } from "~/model/types/VariableType";
-
 export class TableMap {
     constructor(public tableName: string | null, public columnName: string | null, public variableAsName: string, public columnType: ColumnType, public tableAlias?: string) { }
 
