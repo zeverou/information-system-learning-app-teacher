@@ -1,4 +1,3 @@
-import type { Table } from '~/model/Table';
 import { ColumnType } from './ColumnType';
 import { Operation } from './Operation';
 import { OperationResultType } from './OperationResultType';

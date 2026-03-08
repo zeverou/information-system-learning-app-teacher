@@ -3,6 +3,7 @@ import { InformationSystem } from "~/model/InformationSystem";
 import { DatabaseWrapper } from './DatabaseWrapper';
 import { Operation } from './Operation';
 import { OperationResultType } from './OperationResultType';
+import { Score } from '~/model/Score';
 
 interface StoredSystem {
     id: string;
@@ -12,6 +13,7 @@ interface StoredSystem {
     tasks: any[];
     actualComponents: any[];
     databaseBinary: Uint8Array | null;
+    score: { mistakesCount: number; score: number } | null;
 }
 
 class AppDatabase extends Dexie {
@@ -66,6 +68,7 @@ export class IndexedDbStorage {
                 tasks: JSON.parse(JSON.stringify(system.tasks)),
                 actualComponents: JSON.parse(JSON.stringify(system.actualComponents)),
                 databaseBinary,
+                score: { mistakesCount: system.score.mistakesCount, score: system.score.score },
             };
             await db.systems.put(record);
             return new Operation(OperationResultType.SUCCESS, 'System saved successfully', null);
@@ -108,6 +111,7 @@ export class IndexedDbStorage {
                 tasks: JSON.parse(JSON.stringify(system.tasks)),
                 actualComponents: JSON.parse(JSON.stringify(system.actualComponents)),
                 databaseBinary,
+                score: { mistakesCount: system.score.mistakesCount, score: system.score.score },
             };
             await db.systems.put(updatedRecord);
             return new Operation(OperationResultType.SUCCESS, 'System updated successfully', null);
@@ -126,6 +130,9 @@ export class IndexedDbStorage {
     }
 
     private static toInformationSystem(record: StoredSystem): InformationSystem {
+        const score = record.score
+            ? new Score(record.score.mistakesCount, record.score.score)
+            : new Score();
         const system = new InformationSystem({
             id: record.id,
             name: record.name,
@@ -133,6 +140,7 @@ export class IndexedDbStorage {
             description: record.description,
             tasks: record.tasks ?? [],
             actualComponents: record.actualComponents ?? [],
+            score,
         });
         if (record.databaseBinary) {
             system.database = DatabaseWrapper.fromBinary(record.databaseBinary);

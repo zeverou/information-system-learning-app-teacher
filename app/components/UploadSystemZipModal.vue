@@ -7,10 +7,16 @@
         <template #body>
             <UFileUpload v-model="selectedFile" accept=".zip" :label="t('upload_system_zip')" icon="i-lucide-upload"
                 class="w-full min-h-48" />
+            <div v-if="systemPreview" class="mt-4 space-y-1">
+                <p class="font-semibold text-lg">{{ systemPreview.name }}</p>
+                <p class="text-sm text-muted">{{ systemPreview.description }}</p>
+            </div>
+            <UAlert v-if="systemAlreadyExists" color="red" icon="i-lucide-alert-triangle"
+                :title="t('system_already_exists')" class="mt-3" />
         </template>
 
         <template #footer="{ close }">
-            <UButton color="teacher" icon="i-lucide-upload" :disabled="!selectedFile" :loading="loading"
+            <UButton color="teacher" icon="i-lucide-upload" :disabled="!selectedFile || systemAlreadyExists" :loading="loading"
                 @click="onUpload(close)">
                 {{ t('upload_system') }}
             </UButton>
@@ -23,35 +29,47 @@
 /* 1. Imports */
 import { ref, watch } from 'vue'
 import { SystemZipLoader } from '~/utils/SystemZipLoader'
+import { InformationSystem } from '~/model/InformationSystem'
+import { useSystemsStore } from '~/stores/systemsStore'
 
 /* 3. Context hooks */
 const { t } = useI18n()
+const systemsStore = useSystemsStore()
+const componentStore = useComponentStore()
 
 /* 8. Local state */
 const selectedFile = ref<File | null>(null)
 const loader = ref<SystemZipLoader | null>(null)
 const loading = ref(false)
+const systemPreview = ref<{ name: string; description: string } | null>(null)
+const systemAlreadyExists = ref(false)
 
 /* 10. Watchers */
 watch(selectedFile, async (file) => {
     if (!file) {
         loader.value = null
+        systemPreview.value = null
+        systemAlreadyExists.value = false
         return
     }
-    const result: Operation<SystemZipLoader | null> = await SystemZipLoader.create(file)
+    const result: Operation<SystemZipLoader | null> = await SystemZipLoader.create(file);
+    console.log("ZIP OP STATUS: " +  result.toString())
     if (result.result === OperationResultType.SUCCESS && result.data) {
+        console.log(":)")
         loader.value = result.data
+        try {
+            const config = JSON.parse(result.data.jsonConfigFileContent ?? '{}')
+            systemPreview.value = { name: config.name ?? '', description: config.description ?? '' }
+            systemAlreadyExists.value = systemsStore.systems.some(s => String(s.id) === String(config.id))
+        } catch {
+            systemPreview.value = null
+            systemAlreadyExists.value = false
+        }
     } else {
         console.error(result.message)
         loader.value = null
-    }
-})
-
-watch(loader, () => {
-    if (!loader.value) {
-        console.error('Failed to load ZIP file.')
-    } else {
-        loader.value.printDebugInfo()
+        systemPreview.value = null
+        systemAlreadyExists.value = false
     }
 })
 
@@ -64,6 +82,17 @@ async function onUpload(close: () => void) {
     if (!selectedFile.value || !loader.value) return
     loading.value = true
     try {
+        const filesContents: Record<string, string> = {
+            'config.json': loader.value.jsonConfigFileContent ?? '',
+            ...loader.value.csvFilesContent,
+        }
+        const loadResult = await InformationSystem.loadSystem(filesContents)
+        if (loadResult.result === OperationResultType.SUCCESS && loadResult.data) {
+            loadResult.data.actualComponents = JSON.parse(JSON.stringify(componentStore.defaultComponents))
+            await systemsStore.addSystem(loadResult.data)
+        } else {
+            console.error(loadResult.message)
+        }
         selectedFile.value = null
         close()
     } finally {

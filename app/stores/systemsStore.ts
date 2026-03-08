@@ -10,7 +10,7 @@ export const useSystemsStore = defineStore('systems', () => {
     const selectedSystemId = ref<string | null>(null)
 
     const selectedSystem = computed(() => {
-        return systems.value.find(system => system.id === selectedSystemId.value)
+        return systems.value.find(system => String(system.id) === String(selectedSystemId.value))
     })
 
     const getComponentById = (componentId: string) => {
@@ -20,13 +20,13 @@ export const useSystemsStore = defineStore('systems', () => {
     const systems = ref<InformationSystem[]>([])
 
     const getSystemById = (id: string): InformationSystem | undefined => {
-        return systems.value.find(system => system.id === id)
+        return systems.value.find(system => String(system.id) === String(id))
     }
 
     async function deleteSystemById(id: string): Promise<Operation<null>> {
         const result = await IndexedDbStorage.DeleteInformationSystem(id)
         if (result.result === OperationResultType.SUCCESS) {
-            systems.value = systems.value.filter(system => system.id !== id)
+            systems.value = systems.value.filter(system => String(system.id) !== String(id))
         }
         return result
     }

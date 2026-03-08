@@ -11,6 +11,12 @@
                 <span>No HTML content to preview</span>
             </div>
         </div>
+        <div v-if="component" class="preview-card__code-blocks">
+            <CodeBlock v-if="htmlContent" :code="htmlContent" language="html" label="HTML" :read-only="true" height="150px" />
+            <CodeBlock v-if="cssContent" :code="cssContent" language="css" label="CSS" :read-only="true" height="150px" />
+            <CodeBlock v-if="jsContent" :code="jsContent" language="javascript" label="JS" :read-only="true" height="150px" />
+            <CodeBlock v-if="sqlContent" :code="sqlContent" language="sql" label="SQL" :read-only="true" height="150px" />
+        </div>
     </div>
 </template>
 
@@ -25,14 +31,10 @@ const props = defineProps<{
 
 const showHeader = computed(() => props.showHeader !== false);
 
-/** Merge all values from a Record<string, string> into a single string */
-function mergeRecord(record: Record<string, string> | undefined): string {
-    if (!record) return '';
-    return Object.values(record).join('\n');
-}
-
-const htmlContent = computed(() => mergeRecord(props.component?.html));
-const cssContent = computed(() => mergeRecord(props.component?.css));
+const htmlContent = computed(() => props.component?.html ?? '');
+const cssContent = computed(() => props.component?.css ?? '');
+const jsContent = computed(() => props.component?.js ?? '');
+const sqlContent = computed(() => props.component?.sql ?? '');
 
 const srcdoc = computed(() => {
     const html = htmlContent.value.trim();
@@ -114,5 +116,13 @@ const srcdoc = computed(() => {
     height: 160px;
     color: var(--color-text-muted, #6c7086);
     font-size: 0.8rem;
+}
+
+.preview-card__code-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
 }
 </style>

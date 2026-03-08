@@ -1,7 +1,8 @@
 <template>
     <div class="flex items-center gap-2">
+        <DebugButton />
         <UPopover>
-            <UButton icon="i-heroicons-beaker" color="neutral" variant="ghost" size="md" />
+            <!-- <UButton icon="i-heroicons-beaker" color="neutral" variant="ghost" size="md" /> -->
             <template #content>
                 <div
                     class="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl min-w-[240px] space-y-2">
@@ -17,25 +18,25 @@
         </UPopover>
 
         <UButton icon="i-heroicons-table-cells" variant="outline" color="neutral"
-            @click="navigateTo(`/systems/${selectedSystemStore.selectedId}/database`)" size="md">
+            @click="navigateTo(`/systems/${systemsStore.selectedSystemId}/database`)" size="md">
             <span class="mobile-hidden">{{ t('database') }}</span>
         </UButton>
 
         <UBadge color="red" variant="subtle" size="lg" class="font-bold px-3">
-            {{ $t('score') }}: {{ scoreStore.score }}
+            {{ $t('score') }}: {{ systemsStore.selectedSystem?.score.score ?? 0 }}
         </UBadge>
 
-        <UButton :icon="highlightStore.isHighlightMode ? 'i-lucide-lightbulb' : 'i-lucide-lightbulb-off'" color="lime"
-            :variant="highlightStore.isHighlightMode ? 'solid' : 'subtle'" size="md"
+        <UButton :icon="highlightStore.isHighlightActive ? 'i-lucide-lightbulb' : 'i-lucide-lightbulb-off'" color="lime"
+            :variant="highlightStore.isHighlightActive ? 'solid' : 'subtle'" size="md"
             @click="highlightStore.toggleHighlight">
-            <span class="mobile-hidden">{{ highlightStore.isHighlightMode ? $t('disable_highlight') :
+            <span class="mobile-hidden">{{ highlightStore.isHighlightActive ? $t('disable_highlight') :
                 $t('enable_highlight')
                 }}</span>
         </UButton>
 
         <UButton :icon="highlightStore.isEditModeActive ? 'i-lucide-pencil' : 'i-lucide-pencil-off'" color="yellow"
             :variant="highlightStore.isEditModeActive ? 'solid' : 'subtle'" size="md"
-            @click="highlightStore.toggleEdit">
+            @click="highlightStore.toggleEditMode">
             <span class="mobile-hidden">{{ highlightStore.isEditModeActive ? $t('disable_edit') :
                 $t('enable_edit') }}</span>
         </UButton>
@@ -97,17 +98,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useHighlightStore } from '~/stores/useHighlightStore'
-import { SystemReset, useScoreStore, useSelectedSystemStore, useSelectedTaskStore, useTaskMenuStore } from '#imports'
 import SettingsDrawer from '~/components/SettingsDrawer.vue'
 import StudentComponent from '~/components/StudentComponent.vue'
 import { IndexedDbHandler } from '~/utils/IndexedDbHandler'
 
 const highlightStore = useHighlightStore()
-const scoreStore = useScoreStore()
-const selectedSystemStore = useSelectedSystemStore()
-const selectedTaskStore = useSelectedTaskStore()
-const taskMenuStore = useTaskMenuStore()
+const systemsStore = useSystemsStore()
+const componentStore = useComponentStore()
+
 
 const { t } = useI18n()
 const toast = useToast()
@@ -117,94 +115,53 @@ const exitPopoverOpen = ref(false)
 const studentDrawerOpen = ref(false)
 
 async function printTableData() {
-    if (selectedSystemStore.selectedSystem && selectedSystemStore.selectedSystem.db) {
-        const tableNames: string[] = selectedSystemStore.selectedSystem.db.getAllTableNames();
-        for (const tableName of tableNames) {
-            const data = await selectedSystemStore.selectedSystem.db.query(`SELECT * FROM ${tableName} LIMIT 5`);
-            console.log(`Table: ${tableName}`, data);
-        }
-    }
+
 }
 
 async function IsDbNull() {
-    if (selectedSystemStore.selectedSystem) {
-        console.log(selectedSystemStore.selectedSystem.db === null ? "Database is null." : "Database is not null.");
+    const system = systemsStore.selectedSystem;
+    if (system) {
+        console.log(system.database === null ? "Database is null." : "Database is not null.");
     } else {
         console.log("No system selected.");
     }
 }
 
 function openComponentExplorer() {
-    navigateTo(`/systems/${selectedSystemStore.selectedId}/component-explorer`);
+    navigateTo(`/systems/${systemsStore.selectedSystemId}/component-explorer`);
 }
 
 async function refreshComponents() {
-    try {
-        await SystemReset.refreshComponentsCore();
-        toast.add({
-            title: t('component_refresh_success') || 'Component refresh successful',
-            color: 'primary',
-            icon: 'i-lucide-check-circle'
-        })
-    } catch {
-        toast.add({
-            title: t('component_refresh_error') || 'Component refresh error',
-            color: 'red',
-            icon: 'i-lucide-alert-triangle'
-        })
-    }
+    const system = systemsStore.selectedSystem;
+    if (!system) return;
+    system.actualComponents = JSON.parse(JSON.stringify(componentStore.defaultComponents));
+    await systemsStore.updateSystem(system);
+    toast.add({ title: t('component_refresh_success') || 'Components refreshed', color: 'primary', icon: 'i-lucide-check-circle' });
 }
 
 async function refreshTasks() {
-    try {
-        await SystemReset.refreshTasksCore();
-        toast.add({
-            title: t('refresh_tasks_success') || 'Tasks refreshed successfully',
-            color: 'primary',
-            icon: 'i-lucide-check-circle'
-        })
-    } catch {
-        toast.add({
-            title: t('refresh_tasks_error') || 'Tasks refresh error',
-            color: 'red',
-            icon: 'i-lucide-alert-triangle'
-        })
-    }
+
 }
 
 async function refreshDatabase() {
-    try {
-        await SystemReset.refreshDatabaseCore();
-        toast.add({
-            title: t('refresh_database_success') || 'Database refreshed successfully',
-            color: 'primary',
-            icon: 'i-lucide-check-circle'
-        })
-    } catch {
-        toast.add({
-            title: t('refresh_database_error') || 'Database refresh error',
-            color: 'red',
-            icon: 'i-lucide-alert-triangle'
-        })
-    }
+
 }
 
 async function leaveSystem() {
     await navigateTo('/systems');
-    await SystemReset.refreshComponentsCore();
-    await SystemReset.refreshDatabaseCore();
-    await SystemReset.refreshTasksCore();
+    // await SystemReset.refreshComponentsCore();
+    // await SystemReset.refreshDatabaseCore();
+    // await SystemReset.refreshTasksCore();
     exitPopoverOpen.value = false;
 }
 
 async function leaveAndSave() {
     try {
-        const system = selectedSystemStore.selectedSystem;
+        const system = systemsStore.selectedSystem;
         if (!system) throw new Error("No system selected");
-        await IndexedDbHandler.saveInformationSystem(system);
-        if (system.db) {
-            const dbData = system.db.exportDatabase();
-            await IndexedDbHandler.saveSystemDB(system.id, dbData);
+        await systemsStore.updateSystem(system);
+        if (system.database?.sqlJsDatabase) {
+            // database is persisted as part of updateSystem via IndexedDbStorage
         }
         toast.add({
             title: t('save_success') || 'Results saved successfully',
@@ -212,9 +169,9 @@ async function leaveAndSave() {
             icon: 'i-lucide-check-circle'
         });
         await navigateTo('/systems');
-        await SystemReset.refreshComponentsCore();
-        await SystemReset.refreshDatabaseCore();
-        await SystemReset.refreshTasksCore();
+        // await SystemReset.refreshComponentsCore();
+        // await SystemReset.refreshDatabaseCore();
+        // await SystemReset.refreshTasksCore();
         exitPopoverOpen.value = false;
     } catch (error) {
         console.error("Save failed:", error);

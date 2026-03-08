@@ -4,29 +4,35 @@ export const useHighlightStore = defineStore('highlight', () => {
     const isHighlightActive = ref(false);
     const isEditModeActive = ref(false);
 
-    const highlightedComponentsIds = ref<Set<string>>(new Set());
+    const selectedHighlightedComponentsIds = ref<Set<string>>(new Set());
 
-    function toggleHighlight(componentId: string) {
-        const next = new Set(highlightedComponentsIds.value);
+    function selectHighlightedComponent(componentId: string) {
+        const next = new Set(selectedHighlightedComponentsIds.value);
         if (next.has(componentId)) {
             next.delete(componentId);
         } else {
             next.add(componentId);
         }
-        highlightedComponentsIds.value = next;
+        selectedHighlightedComponentsIds.value = next;
     }
+
+    function toggleHighlight() {
+        isHighlightActive.value = !isHighlightActive.value;
+    }
+
 
     function toggleEditMode() {
         isEditModeActive.value = !isEditModeActive.value;
     }
 
     function clearHighlights() {
-        highlightedComponentsIds.value = new Set();
+        selectedHighlightedComponentsIds.value = new Set();
     }
     return {
         isHighlightActive,
         isEditModeActive,
-        highlightedComponentsIds,
+        selectedHighlightedComponentsIds,
+        selectHighlightedComponent,
         toggleHighlight,
         toggleEditMode,
         clearHighlights
@@ -35,9 +41,9 @@ export const useHighlightStore = defineStore('highlight', () => {
     {
         persist: {
             afterHydrate: (ctx) => {
-                const ids = ctx.store.highlightedComponentsIds;
+                const ids = ctx.store.selectedHighlightedComponentsIds;
                 if (!(ids instanceof Set)) {
-                    ctx.store.highlightedComponentsIds = new Set(Array.isArray(ids) ? ids : []);
+                    ctx.store.selectedHighlightedComponentsIds = new Set(Array.isArray(ids) ? ids : []);
                 }
             }
         }

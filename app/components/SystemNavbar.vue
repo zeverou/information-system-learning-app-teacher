@@ -30,33 +30,17 @@
         </div>
     </div>
 
-    <!-- Floating Button -->
-    <UPopover v-if="!taskMenuStore.taskMenuDisplayedAsSidebar" v-model:open="tasksPopoverOpen" arrow
-        style="z-index: 10001;">
-        <UButton style="z-index: 10001;" icon="i-lucide-list-todo"
-            :label="selectedTaskStore.selectedTask?.title || $t('tasks')" color="lime" variant="solid" size="xl"
-            :class="['fixed bottom-15 right-15 rounded-full shadow-lg', { 'task-button-animation': selectedTaskStore.selectedTask }]">
-            <span class="mobile-hidden">{{ selectedTaskStore.selectedTask?.title || $t('tasks') }}</span>
-        </UButton>
-        <template #content>
-            <TaskList />
-        </template>
-    </UPopover>
 </template>
 
 <script setup lang="ts">
 /* 1. Imports */
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type { NavigationMenuItem } from '@nuxt/ui'
-import { useHighlightStore } from '~/stores/useHighlightStore'
-import { useSelectedTaskStore, useSelectedSystemStore, useTaskMenuStore } from '#imports'
 import SystemToolbar from '~/components/SystemToolbar.vue'
 
 /* 2. Stores */
 const highlightStore = useHighlightStore()
-const selectedTaskStore = useSelectedTaskStore()
-const selectedSystemStore = useSelectedSystemStore()
-const taskMenuStore = useTaskMenuStore()
+const systemsStore = useSystemsStore()
 
 /* 3. Context hooks */
 const { t, locale } = useI18n()
@@ -72,37 +56,37 @@ const localItems = computed<NavigationMenuItem[]>(() => {
         {
             label: t('dashboard'),
             icon: 'i-heroicons-chart-bar-20-solid',
-            to: `/systems/${selectedSystemStore.selectedId}/dashboard`,
+            to: `/systems/${systemsStore.selectedSystemId}/dashboard`,
             data_target: 'system-dashboard',
         },
         {
             label: t('sessions'),
             icon: 'i-heroicons-calendar-date-range',
-            to: `/systems/${selectedSystemStore.selectedId}/sessions`,
+            to: `/systems/${systemsStore.selectedSystemId}/sessions`,
             data_target: 'system-sessions',
         },
         {
             label: t('participants'),
             icon: 'i-heroicons-users',
-            to: `/systems/${selectedSystemStore.selectedId}/participants`,
+            to: `/systems/${systemsStore.selectedSystemId}/participants`,
             data_target: 'system-participants',
         },
         {
             label: t('supervisors'),
             icon: 'i-heroicons-user-group',
-            to: `/systems/${selectedSystemStore.selectedId}/supervisors`,
+            to: `/systems/${systemsStore.selectedSystemId}/supervisors`,
             data_target: 'system-supervisors',
         },
         {
             label: t('meals'),
             icon: 'i-lucide-utensils',
-            to: `/systems/${selectedSystemStore.selectedId}/meals`,
+            to: `/systems/${systemsStore.selectedSystemId}/meals`,
             data_target: 'system-meals',
         },
         {
             label: t('meal_plan'),
             icon: 'i-lucide-square-menu',
-            to: `/systems/${selectedSystemStore.selectedId}/meal-plan`,
+            to: `/systems/${systemsStore.selectedSystemId}/meal-plan`,
             data_target: 'system-meal-plan',
         },
     ]
@@ -110,12 +94,13 @@ const localItems = computed<NavigationMenuItem[]>(() => {
 
 /* 10. Watchers */
 onMounted(() => {
+    // TODO:
     const handleKeydown = (event: KeyboardEvent) => {
         if (event.key === 'q' && event.altKey) {
-            highlightStore.toggleHighlight()
+            //highlightStore.toggleHighlight()
         }
         if (event.key === 'w' && event.altKey) {
-            highlightStore.toggleEdit()
+            //highlightStore.toggleEdit()
         }
         if (event.key === 't' && event.altKey) {
             event.preventDefault()

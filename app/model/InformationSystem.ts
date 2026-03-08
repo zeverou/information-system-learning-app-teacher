@@ -2,8 +2,7 @@ import { Task } from "./Task/Task";
 import { Component } from "./Component";
 import { DatabaseWrapper } from "~/utils/DatabaseWrapper";
 import type { GUID } from "./GUID";
-import type { Table } from "./Table";
-import type { Mapping } from "~/language/Mapping";
+import { Score } from "./Score";
 
 /**
  * Represents an information system, encapsulating its configuration, data tables, tasks, and component mappings.
@@ -50,9 +49,9 @@ export class InformationSystem {
   public configData?: any;
 
   /**
-   * The language mapping used when the system was loaded from config.
+   * The student's score for this system.
    */
-  public mapping?: Mapping;
+  public score: Score;
 
   constructor({
     id,
@@ -62,9 +61,8 @@ export class InformationSystem {
     tasks = [],
     actualComponents = [],
     database = null,
-    tables,
     configData,
-    mapping,
+    score,
   }: {
     id: GUID;
     name: string;
@@ -73,9 +71,8 @@ export class InformationSystem {
     tasks?: Task[];
     actualComponents?: Component[];
     database?: DatabaseWrapper | null;
-    tables?: Table[];
     configData?: any;
-    mapping?: Mapping;
+    score?: Score;
   }) {
     this.id = id;
     this.name = name;
@@ -84,9 +81,8 @@ export class InformationSystem {
     this.tasks = tasks;
     this.actualComponents = actualComponents;
     this.database = database;
-    this.tables = tables;
     this.configData = configData;
-    this.mapping = mapping;
+    this.score = score ?? new Score();
   }
 
   /**
@@ -105,7 +101,7 @@ export class InformationSystem {
   }
 
   // TODO: Write comments
-  public static async loadSystem(filesContents: Record<string, string>, mapping: Mapping,): Promise<Operation<InformationSystem | null>> {
+  public static async loadSystem(filesContents: Record<string, string>): Promise<Operation<InformationSystem | null>> {
     const configEntry = Object.entries(filesContents).find(([path]) => path.endsWith('config.json'));
     if (!configEntry) {
       return new Operation(OperationResultType.ERROR, "Config file not found.", null);
@@ -119,10 +115,8 @@ export class InformationSystem {
         name: configData.name,
         language: configData.language,
         description: configData.description,
-        tables: configData.tables,
         tasks: (configData.tasks || []).map((task: any) => Task.fromJSON(task)),
         configData,
-        mapping,
       });
 
       // Initialize the database with the config data and CSV contents

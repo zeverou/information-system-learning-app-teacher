@@ -7,6 +7,8 @@
           <span class="nav-label">{{ item.label }}</span>
         </NuxtLink>
       </li>
+      <DebugButton />
+
     </ul>
   </nav>
 </template>

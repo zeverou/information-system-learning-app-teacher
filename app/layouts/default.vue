@@ -1,6 +1,12 @@
+<script setup lang="ts">
+const route = useRoute()
+const isSystemRoute = computed(() => /^\/systems\/[^/]+\//.test(route.path))
+</script>
+
 <template>
   <div class="default-layout flex flex-col overflow-hidden bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-    <GlobalNavbar class="default-navbar" />
+    <SystemNavbar v-if="isSystemRoute" class="default-navbar" />
+    <GlobalNavbar v-else class="default-navbar" />
     <main class="default-main">
       <CustomScrollbar>
         <slot />
