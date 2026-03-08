@@ -3,4 +3,5 @@ export enum ColumnType {
     REAL = 'REAL',
     TEXT = 'TEXT',
     DATE = 'DATE',
+    INVALID = 'INVALID',
 }
