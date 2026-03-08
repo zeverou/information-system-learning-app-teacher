@@ -78,6 +78,7 @@
 import { SqlHandler } from '~/core/SqlHandler'
 import { useSystemsStore } from '~/stores/systemsStore'
 import { DatabaseHandler } from '~/utils/DatabaseHandler'
+import { DatabaseWrapper } from '~/utils/DatabaseWrapper'
 import { OperationResultType } from '~/utils/OperationResultType'
 
 const route = useRoute()
@@ -195,7 +196,7 @@ const loadDatabaseInfo = async () => {
     const system = systemsStore.selectedSystem
     if (system && system.database) {
         // Use the databaseWrapper method to check if ready
-        isDbReady.value = await system.database.isDatabaseInitialized()
+        isDbReady.value = await DatabaseWrapper.isDatabaseInitialized(system.database)
 
         if (isDbReady.value && system.database.sqlJsDatabase) {
             const result = await DatabaseHandler.getTableNames(system.database.sqlJsDatabase)

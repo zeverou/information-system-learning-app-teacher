@@ -2,6 +2,7 @@ import type { Database } from "sql.js";
 import { Operation } from "./Operation";
 import { OperationResultType } from "./OperationResultType";
 import { ColumnType } from "./ColumnType";
+import { ColumnDefinition } from "./ColumnDefinition";
 
 // TODO: Write unit & integration tests
 
@@ -116,7 +117,7 @@ export class DatabaseHandler {
     public static async getColumnTypes(db: Database, tableName: string): Promise<Operation<Record<string, ColumnType>>> {
         try {
             const result = db.exec(`PRAGMA table_info(${tableName})`);
-            if (!result || result.length === 0) {
+            if (!result || result.length === 0 || !result[0]) {
                 return new Operation<Record<string, ColumnType>>(OperationResultType.ERROR, `No table info found for "${tableName}"`, null);
             }
             const rows = result[0].values;
@@ -133,6 +134,26 @@ export class DatabaseHandler {
         } catch (error) {
             return new Operation<Record<string, ColumnType>>(OperationResultType.ERROR, `Error retrieving column types: ${error}`, null);
         }
+    }
+
+    public static async getTableColumnMap(db: Database): Promise<Operation<Record<string, ColumnDefinition[]>>> {
+        const tableNamesResult = await this.getTableNames(db);
+        if (tableNamesResult.result !== OperationResultType.SUCCESS) {
+            return new Operation<Record<string, ColumnDefinition[]>>(OperationResultType.ERROR, `Error retrieving table names: ${tableNamesResult.message}`, null);
+        }
+        const map: Record<string, ColumnDefinition[]> = {};
+        for (const tableName of tableNamesResult.data!) {
+            const typesResult = await this.getColumnTypes(db, tableName);
+            if (typesResult.result !== OperationResultType.SUCCESS) {
+                return new Operation<Record<string, ColumnDefinition[]>>(OperationResultType.ERROR, `Error retrieving column types for table "${tableName}": ${typesResult.message}`, null);
+            }
+            const defs: ColumnDefinition[] = [];
+            for (const [colName, colType] of Object.entries(typesResult.data!)) {
+                defs.push(new ColumnDefinition(colName, colType));
+            }
+            map[tableName] = defs;
+        }
+        return new Operation<Record<string, ColumnDefinition[]>>(OperationResultType.SUCCESS, 'Table column map retrieved successfully', map);
     }
 
 }

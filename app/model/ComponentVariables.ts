@@ -1,8 +1,7 @@
-export class ComponentVariables {
-    constructor(
-        public generalVariables: Record<string, ColumnType | ColumnType[]>,
-        public sqlVariables: Record<string, ColumnType | ColumnType[]>,
-        public jsVariables: Record<string, ColumnType | ColumnType[]>
-    ) { }
+import type { VariableType } from "./types/VariableType";
 
+export class ComponentVariables {
+    public generalVariables: Record<string, VariableType | VariableType[]> | undefined;
+    public sqlVariables: Record<string, VariableType | VariableType[]> | undefined;
+    public jsVariables: Record<string, VariableType | VariableType[]> | undefined;
 }

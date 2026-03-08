@@ -1,3 +1,5 @@
+import { DatabaseWrapper } from '~/utils/DatabaseWrapper'
+
 export default defineNuxtRouteMiddleware(async (to, from) => {
 
     // 1) Load systems from IndexedDB
@@ -14,7 +16,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     // 3) Check if system is initialized
     const system = systemsStore.getSystemById(systemsStore.selectedSystemId!)
     if (system && system.database) {
-        if (!await system.database.isDatabaseInitialized()) {
+        if (!await DatabaseWrapper.isDatabaseInitialized(system.database)) {
             console.log("Initializing DB for system " + systemsStore.selectedSystemId)
             await system.database.initializeDatabase()
         }

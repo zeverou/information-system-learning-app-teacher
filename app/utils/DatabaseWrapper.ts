@@ -11,10 +11,10 @@ export class DatabaseWrapper {
     /**
      * Whether is the database for this information system initialized.
      */
-    public async isDatabaseInitialized(): Promise<boolean> {
+    static async isDatabaseInitialized(wrapper: DatabaseWrapper | null | undefined): Promise<boolean> {
         console.log("Checking if database is initialized");
-        if (this.sqlJsDatabase === null) return false;
-        const result = await DatabaseHandler.getTableNames(this.sqlJsDatabase);
+        if (!wrapper || wrapper.sqlJsDatabase === null) return false;
+        const result = await DatabaseHandler.getTableNames(wrapper.sqlJsDatabase);
         return result.result === OperationResultType.SUCCESS;
     }
 

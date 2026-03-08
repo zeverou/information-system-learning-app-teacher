@@ -17,6 +17,7 @@ import { computed } from 'vue';
 import ComponentWrapper from '~/components/ComponentWrapper.vue';
 import { useSystemsStore } from '~/stores/systemsStore';
 import { useRoute } from 'vue-router';
+import { DatabaseWrapper } from '~/utils/DatabaseWrapper';
 
 const route = useRoute();
 const systemsStore = useSystemsStore();
@@ -26,7 +27,7 @@ const systemId = route.params.id as string;
 systemsStore.selectedSystemId = systemId;
 
 // check if db is initialized, if not, initialize it and load systems
-if (await systemsStore.selectedSystem?.database?.isDatabaseInitialized() === false) {
+if (await DatabaseWrapper.isDatabaseInitialized(systemsStore.selectedSystem?.database) === false) {
     console.error("Initializing database for system " + systemId)
 } else {
     console.log("Database for system " + systemId + " is already initialized")

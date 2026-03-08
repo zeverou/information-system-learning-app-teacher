@@ -78,6 +78,7 @@
 
 <script setup lang="ts">
 /* 1. Imports */
+import { DatabaseWrapper } from '~/utils/DatabaseWrapper'
 
 /* 2. Stores */
 const globalSettingsStore = useGlobalSettingsStore()
@@ -97,7 +98,7 @@ onMounted(async () => {
     if (result.result === OperationResultType.SUCCESS && result.data) {
         systemsStore.systems.splice(0, systemsStore.systems.length, ...result.data)
         for (const sys of result.data) {
-            dbReadyMap[sys.id] = sys.database ? await sys.database.isDatabaseInitialized() : false
+            dbReadyMap[sys.id] = await DatabaseWrapper.isDatabaseInitialized(sys.database)
         }
     }
 })
@@ -108,11 +109,18 @@ async function navigateToSystem(id: string) {
     systemsStore.selectedSystemId = id
 
     const system = systemsStore.getSystemById(id)
-    if (system && system.database) {
-        if (!await system.database.isDatabaseInitialized()) {
-            console.log("Initializing DB for system " + id)
-            await system.database.initializeDatabase()
-        }
+    if (!system) {
+        console.error("System not found for system " + id)
+        return
+    }
+
+
+    if (!await DatabaseWrapper.isDatabaseInitialized(system.database)) {
+        console.log("Initializing DB for system " + id)
+        await system.database.initializeDatabase()
+    }
+    else {
+        console.error("System or database not found for system " + id)
     }
 
     console.log("Navigating to dashboard...")

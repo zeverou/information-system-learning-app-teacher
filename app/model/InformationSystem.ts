@@ -1,6 +1,7 @@
 import { Task } from "./Task/Task";
 import { Component } from "./Component";
 import { DatabaseWrapper } from "~/utils/DatabaseWrapper";
+import { SqljsDatabaseFactory } from "~/utils/SqljsDatabaseFactory";
 import type { GUID } from "./GUID";
 import { Score } from "./Score";
 
@@ -120,7 +121,17 @@ export class InformationSystem {
       });
 
       // Initialize the database with the config data and CSV contents
-      // TODO
+      const csvEntries = Object.fromEntries(
+        Object.entries(filesContents).filter(([path]) => !path.endsWith('config.json'))
+      );
+      if (Object.keys(csvEntries).length > 0) {
+        const dbResult = await SqljsDatabaseFactory.createDatabase(csvEntries);
+        if (dbResult.result === OperationResultType.SUCCESS && dbResult.data) {
+          system.database = DatabaseWrapper.fromInstance(dbResult.data);
+        } else {
+          return new Operation(OperationResultType.ERROR, "Failed to build database: " + dbResult.message, null);
+        }
+      }
 
       return new Operation(OperationResultType.SUCCESS, "System loaded successfully.", system);
 

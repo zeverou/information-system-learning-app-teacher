@@ -45,7 +45,7 @@ export class SystemZipLoader {
                     zipEntry.async('text').then(content => {
                         if (relativePath.endsWith('config.json')) {
                             this.jsonConfigFileContent = content;
-                        } else {
+                        } else if (relativePath.endsWith('.csv')) {
                             const filename = relativePath.split('/').pop()!.replace(/\.[^/.]+$/, '');
                             this.csvFilesContent[filename] = content;
                         }
