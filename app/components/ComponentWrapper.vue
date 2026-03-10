@@ -286,6 +286,12 @@ async function populateSqlVariables(sqlRecord: Record<string, string>) {
 
     console.log("VALUES:", values)
 
+    const pushIfUnique = (variable: Variable) => {
+      if (!componentVariables.value.sqlVariables.some(v => v.name === variable.name)) {
+        componentVariables.value.sqlVariables.push(variable);
+      }
+    };
+
     if (values.length == 1) {
       for (let i = 0; i < vars.length; i++) {
         const varType: VariableType = TableMap.getVariableTypeFromColumnType(vars[i].columnType) || 'unknown';
@@ -293,7 +299,7 @@ async function populateSqlVariables(sqlRecord: Record<string, string>) {
         const value: VariableType = varType instanceof Date && rawValue !== null
           ? new Date(rawValue as string)
           : (rawValue as VariableType) ?? varType;
-        componentVariables.value.sqlVariables.push(new Variable(vars[i].variableAsName, value));
+        pushIfUnique(new Variable(vars[i].variableAsName, value));
       }
     } else if (values.length > 1) {
       for (let i = 0; i < vars.length; i++) {
@@ -304,7 +310,7 @@ async function populateSqlVariables(sqlRecord: Record<string, string>) {
             ? new Date(rawValue as string)
             : (rawValue as VariableType) ?? varType;
         });
-        componentVariables.value.sqlVariables.push(new Variable(vars[i].variableAsName, columnValues));
+        pushIfUnique(new Variable(vars[i].variableAsName, columnValues));
       }
     }
   }
