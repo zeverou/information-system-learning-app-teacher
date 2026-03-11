@@ -15,18 +15,18 @@ export class Component {
     edited: boolean = false;
 
     constructor({
-        id,
-        name,
-        description,
-        html,
-        css,
-        js,
-        js_click = "",
-        sql,
-        sql_click = {},
-        tags = [],
-        edited
-    }: {
+                    id,
+                    name,
+                    description,
+                    html,
+                    css,
+                    js,
+                    js_click = "",
+                    sql,
+                    sql_click = {},
+                    tags = [],
+                    edited
+                }: {
         id: string;
         name: string;
         description: string;
@@ -61,4 +61,29 @@ export class Component {
 
         this.tags = [...new Set([...tags, ...techTags])];
     }
+
+    public static fromJSON(data: any): Component {
+        return new Component(data)
+    }
+
+    public static arrayFromJSON(data: any[]): Component[] {
+        return data.map(c => new Component(c))
+    }
+
+    public toJSON() {
+        return {
+            id: this.id,
+            name: this.name,
+            description: this.description,
+            html: this.html,
+            css: this.css,
+            js: this.js,
+            js_click: this.js_click,
+            sql: this.sql,
+            sql_click: this.sql_click,
+            tags: this.tags,
+            edited: this.edited
+        }
+    }
+
 }
