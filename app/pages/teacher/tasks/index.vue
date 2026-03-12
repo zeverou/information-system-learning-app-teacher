@@ -8,15 +8,11 @@
                     </div>
                     <div class="flex-1">
                         <h1 class="systems-page-title text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                            {{ t('task_creation') }}
+                            {{ t('tasks') }}
                         </h1>
-
-                        <div class="flex flex-col lg:flex-row lg:items-center gap-6">
-                            <p
-                                class="systems-page-description text-lg text-gray-600 dark:text-gray-300 max-w-prose leading-relaxed flex-1">
-                                {{ t('task_creation_description') }}
-                            </p>
-                        </div>
+                        <p class="systems-page-description text-lg text-gray-600 dark:text-gray-300 max-w-prose leading-relaxed flex-1">
+                            {{ t('tasks_description') }}
+                        </p>
                     </div>
                 </div>
             </UCard>
@@ -43,7 +39,7 @@
                 </div>
             </UCard>
 
-            <UButton @click="navigateTo('./tasks/designer')" class="go-to-designer-button w-full relative" icon="i-lucide-pencil-ruler" size="xl" color="teacher" variant="subtle">
+            <UButton @click="navigateTo('/teacher/tasks/designer')" class="go-to-designer-button w-full relative" icon="i-lucide-pencil-ruler" size="xl" color="teacher" variant="subtle">
                 {{ t('go_to_designer') }}
                 <UIcon name="i-lucide-arrow-right" class="absolute right-4 top-1/2 -translate-y-1/2" />
             </UButton>
