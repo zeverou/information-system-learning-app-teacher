@@ -1,8 +1,6 @@
 <template>
     <div class="p-6 flex flex-col gap-8 max-w-7xl mx-auto">
-
-        <SystemHeroCard class="mt-6" />
-
+        <ComponentWrapper :component="dashboardHeroCard" class="mt-6" />
         <div class="flex flex-row gap-4">
             <ComponentWrapper :component="participantsStat" />
             <ComponentWrapper :component="sessionsStat" />
@@ -34,7 +32,7 @@ if (await DatabaseWrapper.isDatabaseInitialized(systemsStore.selectedSystem?.dat
 }
 
 
-
+const dashboardHeroCard = computed(() => systemsStore.getComponentById('system-hero-card'));
 const participantsStat = computed(() => systemsStore.getComponentById('stats-participants'));
 const sessionsStat = computed(() => systemsStore.getComponentById('stats-sessions'));
 const supervisorsStat = computed(() => systemsStore.getComponentById('stats-supervisors'));
