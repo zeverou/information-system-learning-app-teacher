@@ -1,0 +1,151 @@
+{
+    "id": 2,
+    "directory": "information_system_2",
+    "name": "Školní tábor Pálava",
+    "language": "cs",
+    "description": "Školní tábor v Pálavě, zaměřený na výuku a zábavu pro děti.",
+    "pages": [
+        {
+            "name": "Nástěnka",
+            "route": "/nastenka",
+            "description": "Hlavní přehled o táboře, zobrazující důležité informace a statistiky.",
+            "vueFile": "nastenka.vue"
+        },
+        {
+            "name": "Turnusy",
+            "route": "/turnusy",
+            "description": "Přehled dostupných turnusů pro účastníky.",
+            "vueFile": "turnusy.vue"
+        },
+        {
+            "name": "Účastníci",
+            "route": "/ucastnici",
+            "description": "Seznam všech účastníků tábora s možností správy jejich údajů.",
+            "vueFile": "ucastnici.vue"
+        },
+        {
+             "name": "Vedoucí",
+             "route": "/vedouci",
+            "description": "Seznam vedoucích tábora s možností správy jejich údajů.",
+            "vueFile": "vedouci.vue"
+        },
+        {
+            "name": "Jídla",
+            "route": "/jidla",
+            "description": "Přehled jídel, která budou na táboře podávána, včetně informací o alergenech.",
+            "vueFile": "jidla.vue"
+        },
+        {
+            "name": "Kniha jídel",
+            "route": "/kniha-jidel",
+            "description": "Podrobný přehled o tom, kdy se budou podávat jednotlivá jídla, včetně informací o alergenech.",
+            "vueFile": "kniha-jidel.vue"
+        }
+        
+    ],
+    "tasks": [
+        {
+            "id": 1,
+            "title": "Ukázkový úkol č. 1",
+            "description": "Zkontrolujte, zda se v nástěnce správně zobrazují jídla a účastníci. Pokud najdete nějakou chybu, tak chybu opravte.",
+            "status": "pending",
+            "kind": "repair",
+            "answer": "stats-participants-sql == SELECT COUNT(*) as count FROM účastníci && stats-meals-sql == SELECT COUNT(*) as count FROM jídla",
+            "elementClass": [],
+            "round": 1,
+            "is_editable": false,
+            "error-components": [
+                {
+                    "id": "stats-participants",
+                    "variables": {
+                        "html": "",
+                        "sql": "SELECT COUNT(*) as count FROM vedoucí",
+                        "js": ""
+                    },
+                    "error-component-name": ""
+                },
+                {
+                    "id": "stats-meals",
+                    "variables": {
+                        "html": "",
+                        "sql": "SELECT COUNT(*) as count FROM turnusy",
+                        "js": ""
+                    },
+                    "error-component-name": ""
+                }
+            ],
+            "feedback": "Správně jsi opravil/a SQL dotazy dvou komponent. Komponenta, která měla zobrazovat počet účastníku chybně zobrazovala počet vedoucích a komponenta, která měla zobrazovat počet jídel, zobrazovala počet turnusů. Opravil/a jsi to tak, že jsi změnil/a SQL dotazy na správné."
+        },
+        {
+            "id": 2,
+            "title": "Ukázkový úkol č. 2",
+            "description": "Zkontrolujte, zda se v nástěnce správně zobrazují statistiky o počtu jídel. Pokud najdete nějakou chybu, tak vyberte komponentu, která je chybná.",
+            "status": "pending",
+            "kind": "select",
+            "answer": "none",
+            "elementClass": [
+                "stats-supervisors"
+            ],
+            "round": 1,
+            "is_editable": false,
+            "error-components": [
+                {
+                    "id": "stats-supervisors",
+                    "variables": {
+                        "html": "",
+                        "sql": "SELECT COUNT(*) as count FROM jídla",
+                        "js": ""
+                    },
+                    "error-component-name": ""
+                }
+            ],
+            "feedback": "Správně jsi zvolil/a komponentu, která zobrazovala chybně počet vedoucích."
+        },
+        {
+            "id": 3,
+            "title": "Ukázkový úkol č. 3",
+            "description": "Upravte účastníka: Tereza Nováková, tak aby měla i třetí jméno Svobodová, tedy její celé jméno bude Tereza Svobodová Nováková.",
+            "status": "pending",
+            "kind": "repair",
+            "answer": "tbl-účastníci == name:Tereza Svobodová Nováková",
+            "elementClass": [
+                "table-form-účastníci-alergeny"
+            ],
+            "is_editable": false,
+            "round": 1,
+            "error-components": [
+                {
+                    "id": "validation-name",
+                    "variables": {
+                        "isValidName": "const isValidName = (name) => {\n    if (!name || name.trim().length === 0) return false;\n    // Must have at least one space (first and last name)\n    return name.trim().split(' ').length == 2;\n}"
+                    },
+                    "error-component-name": ""
+                }
+            ],
+            "feedback": "Správně jsi opravil/a JS kód, tak aby povoloval více mezer ve jménu než jedna. Šlo to vyřešit různě např. pomocí `length >= 2` místo `length == 2` nebo `length > 1`. apod."
+        },
+        {
+            "id": 4,
+            "title": "Ukázkový úkol č. 4 - Není hotový!!",
+            "description": "Přidejte vedoucímu Petr Novotný alergeny Lepek a Korýši. Pokud naleznete na nějakou chybu tak vyberte komponentu, která je chybná. Poté přidejte alergeny tomuto vedoucímu.",
+            "status": "pending",
+            "kind": "select",
+            "answer": "tbl-účastníci == jméno:Petr Novotný;alergeny:Lepek,Koryši",
+            "elementClass": "stats-supervisors",
+            "is_editable": false,
+            "round": 1111111,
+            "error-components": [
+                {
+                    "id": "supervisors-edit-allergens",
+                    "variables": {
+                        "html": "",
+                        "sql": "SELECT COUNT(*) as count FROM alergeny",
+                        "js": ""
+                    },
+                    "error-component-name": ""
+                }
+            ],
+            "feedback": "Správně jsi odpověděl, že komponenta využívala špatný SQL dotaz."
+        }
+    ]
+}

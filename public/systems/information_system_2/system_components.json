@@ -1,0 +1,112 @@
+[
+  {
+    "id": "stats-meals",
+    "name": "Stats Meals",
+    "description": "Component for meals stats. SQL: SELECT COUNT(*) as count FROM jidla",
+    "html": "\n  <div id=\"meals-stat-card\">\n  <div id=\"meals-stat-icon\">🍽️</div>\n  <div id=\"meals-stat-content\">\n    <div id=\"meals-stat-number\">pocet_jidel</div>\n    <div id=\"meals-stat-label\">jídel</div>\n  </div>\n</div>\n",
+    "css": "\n#meals-stat-card {\n  background-color: #ffffff;\n  border: 1px solid #cccccc;\n  border-radius: 8px;\n  padding: 16px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  width: 100%;\n  max-width:400px;\n}\n\n#meals-stat-icon {\n  font-size: 32px;\n}\n\n#meals-stat-number {\n  font-size: 28px;\n  font-weight: bold;\n  color: #111111;\n}\n\n#meals-stat-label {\n  font-size: 13px;\n  color: #666666;\n  margin-top: 4px;\n}\n",
+    "js": "",
+    "js_click": "",
+    "sql": {
+      "stats-meals": "SELECT COUNT(*) as pocet_jidel FROM jidla"
+    },
+    "sql_click": {},
+    "tags": [
+      "dashboard",
+      "html",
+      "css",
+      "sql"
+    ],
+    "edited": false
+  },
+  {
+    "id": "stats-participants",
+    "name": "Stats Participants",
+    "description": "Component for participants stats. SQL: SELECT COUNT(*) as pocet_ucastniku FROM ucastnici",
+    "html": "\n  <div id=\"participants-stat-card\">\n    <div id=\"participants-stat-icon\">👥</div>\n    <div id=\"participants-stat-content\">\n      <div id=\"participants-stat-number\">pocet_ucastniku</div>\n      <div id=\"participants-stat-label\">účastníků</div>\n    </div>\n  </div>\n",
+    "css": "\n#participants-stat-card {\n  background-color: #ffffff;\n  border: 1px solid #cccccc;\n  border-radius: 8px;\n  padding: 16px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  width: 100%;\n  max-width:400px;\n}\n\n#participants-stat-icon {\n  font-size: 32px;\n}\n\n#participants-stat-number {\n  font-size: 28px;\n  font-weight: bold;\n  color: #111111;\n}\n\n#participants-stat-label {\n  font-size: 13px;\n  color: #666666;\n  margin-top: 4px;\n}\n",
+    "js": "",
+    "js_click": "",
+    "sql": {
+      "stats-participants": "SELECT COUNT(*) as pocet_ucastniku FROM ucastnici"
+    },
+    "sql_click": {},
+    "tags": [
+      "dashboard",
+      "html",
+      "css",
+      "sql"
+    ],
+    "edited": false
+  },
+  {
+    "id": "stats-sessions",
+    "name": "Stats Sessions",
+    "description": "Component for sessions stats. SQL: SELECT COUNT(*) as pocet_turnusu FROM turnusy",
+    "html": "\n  <div id=\"sessions-stat-card\">\n    <div id=\"sessions-stat-icon\">📅</div>\n    <div id=\"sessions-stat-content\">\n      <div id=\"sessions-stat-number\">pocet_turnusu</div>\n      <div id=\"sessions-stat-label\">turnusů</div>\n    </div>\n  </div>\n",
+    "css": "\n#sessions-stat-card {\n  background-color: #ffffff;\n  border: 1px solid #cccccc;\n  border-radius: 8px;\n  padding: 16px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  width: 100%;\n  max-width:400px;\n}\n\n#sessions-stat-icon {\n  font-size: 32px;\n}\n\n#sessions-stat-number {\n  font-size: 28px;\n  font-weight: bold;\n  color: #111111;\n}\n\n#sessions-stat-label {\n  font-size: 13px;\n  color: #666666;\n  margin-top: 4px;\n}\n",
+    "js": "",
+    "js_click": "",
+    "sql": {
+      "stats-sessions": "SELECT COUNT(*) as pocet_turnusu FROM turnusy"
+    },
+    "sql_click": {},
+    "tags": [
+      "dashboard",
+      "html",
+      "css",
+      "sql"
+    ],
+    "edited": false
+  },
+  {
+    "id": "stats-supervisors",
+    "name": "Stats Supervisors",
+    "description": "Component for supervisors stats. SQL: SELECT COUNT(*) as pocet_vedoucich FROM vedouci",
+    "html": "\n  <div id=\"supervisors-stat-card\">\n    <div id=\"supervisors-stat-icon\">👨‍🏫</div>\n    <div id=\"supervisors-stat-content\">\n      <div id=\"supervisors-stat-number\">pocet_vedoucich</div>\n      <div id=\"supervisors-stat-label\">vedoucích</div>\n    </div>\n  </div>\n",
+    "css": "\n#supervisors-stat-card {\n  background-color: #ffffff;\n  border: 1px solid #cccccc;\n  border-radius: 8px;\n  padding: 16px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  width: 100%;\n  max-width:400px;\n}\n\n#supervisors-stat-icon {\n  font-size: 32px;\n}\n\n#supervisors-stat-number {\n  font-size: 28px;\n  font-weight: bold;\n  color: #111111;\n}\n\n#supervisors-stat-label {\n  font-size: 13px;\n  color: #666666;\n  margin-top: 4px;\n}\n",
+    "js": "",
+    "js_click": "",
+    "sql": {
+      "stats-supervisors": "SELECT COUNT(*) as pocet_vedoucich FROM vedouci"
+    },
+    "sql_click": {},
+    "tags": [
+      "dashboard",
+      "html",
+      "css",
+      "sql"
+    ],
+    "edited": false
+  },
+  {
+    "id": "system-hero-card",
+    "name": "System Hero Card",
+    "description": "Hero card displaying the system name, description and language.",
+    "html": "\n<div id=\"hero-card\">\n  <div id=\"hero-background-top\"></div>\n  <div id=\"hero-background-bottom\"></div>\n\n  <div id=\"hero-content\">\n    <div id=\"hero-badge\">System Dashboard</div>\n\n    <h1 id=\"hero-title\">Školní tábor Pálava</h1>\n\n    <p id=\"hero-description\">\n      Školní tábor v Pálavě, zaměřený na výuku a zábavu pro děti.\n    </p>\n\n    <div id=\"hero-meta\">\n      <div id=\"hero-language\">\n        <span id=\"hero-language-icon\">🗺️</span>\n        <span id=\"hero-language-label\">CS</span>\n      </div>\n    </div>\n  </div>\n</div>\n",
+    "css": "\n#hero-card {\n  position: relative;\n  overflow: hidden;\n  border-radius: 24px;\n  background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(14,165,233,0.04) 50%, rgba(56,189,248,0.08) 100%);\n  padding: 48px;\n  border: 1px solid rgba(99,102,241,0.2);\n  box-shadow: 0 20px 40px rgba(99,102,241,0.06);\n}\n\n#hero-background-top {\n  position: absolute;\n  top: -48px;\n  right: -48px;\n  width: 256px;\n  height: 256px;\n  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);\n  transform: rotate(12deg);\n  pointer-events: none;\n}\n\n#hero-background-bottom {\n  position: absolute;\n  bottom: -32px;\n  left: -32px;\n  width: 192px;\n  height: 192px;\n  background: radial-gradient(circle, rgba(14,165,233,0.06) 0%, transparent 70%);\n  transform: rotate(-12deg);\n  pointer-events: none;\n}\n\n#hero-content {\n  position: relative;\n  z-index: 1;\n}\n\n#hero-badge {\n  display: inline-block;\n  padding: 4px 12px;\n  background-color: rgba(99,102,241,0.12);\n  color: #6366f1;\n  border-radius: 9999px;\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.1em;\n  text-transform: uppercase;\n  margin-bottom: 16px;\n}\n\n#hero-title {\n  font-size: 44px;\n  font-weight: 900;\n  color: #111827;\n  margin: 0 0 16px 0;\n  letter-spacing: -0.02em;\n  line-height: 1.1;\n}\n\n#hero-description {\n  font-size: 18px;\n  color: #4b5563;\n  max-width: 700px;\n  line-height: 1.7;\n  font-weight: 500;\n  margin: 0 0 32px 0;\n}\n\n#hero-meta {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 16px;\n}\n\n#hero-language {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 8px 16px;\n  background-color: rgba(255,255,255,0.6);\n  backdrop-filter: blur(8px);\n  border-radius: 9999px;\n  border: 1px solid rgba(229,231,235,0.6);\n  box-shadow: 0 1px 3px rgba(0,0,0,0.05);\n}\n\n#hero-language-icon {\n  font-size: 18px;\n}\n\n#hero-language-label {\n  font-size: 13px;\n  font-weight: 700;\n  color: #374151;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n",
+    "js": "",
+    "js_click": "",
+    "sql": {},
+    "sql_click": {},
+    "tags": [
+      "dashboard",
+      "html",
+      "css"
+    ],
+    "edited": false
+  },
+  {
+    "id": "empty",
+    "name": "Empty",
+    "description": "Empty fallback component",
+    "html": "",
+    "css": "",
+    "js": "",
+    "js_click": "",
+    "sql": {},
+    "sql_click": {},
+    "tags": [],
+    "edited": false
+  }
+]

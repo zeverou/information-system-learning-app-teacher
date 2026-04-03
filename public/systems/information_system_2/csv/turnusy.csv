@@ -1,0 +1,4 @@
+id_turnusu[INTEGER],datum_od[DATE],datum_do[DATE],kapacita[INTEGER]
+1,2025-07-01,2025-07-10,15
+2,2025-07-11,2025-07-20,15
+3,2025-07-21,2025-07-30,15

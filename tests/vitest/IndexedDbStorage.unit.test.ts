@@ -40,9 +40,12 @@ function makeFakeRecord(id = '1') {
         name: 'Test System',
         language: 'cs',
         description: 'Test description',
+        pages: [],
         tasks: [],
-        actualComponentMap: [],
+        actualComponents: [],
+        defaultComponents: [],
         databaseBinary: null,
+        score: null,
     }
 }
 
@@ -167,6 +170,7 @@ describe('IndexedDbStorage.LoadInformationSystem', () => {
         expect(result.result).toBe(OperationResultType.SUCCESS)
         expect(result.data!.id).toBe('42')
         expect(result.data!.name).toBe('Test System')
+        expect(result.data!.pages).toEqual([])
     })
 
     it('attaches DatabaseWrapper when databaseBinary is present', async () => {
