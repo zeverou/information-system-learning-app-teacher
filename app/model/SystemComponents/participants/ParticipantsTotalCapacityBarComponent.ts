@@ -12,7 +12,7 @@ export const celkovaKapacitaUcastnikuKomponenta = new Component({
   <div id="pozadi-kapacity-ucastniku">
     <div id="vypln-kapacity-ucastniku" style="width: procento_obsazenosti_ucastniku%"></div>
   </div>
-  <span id="procenta-kapacity-ucastniku">procento_obsazenosti_ucastniku%</span>
+  <span id="procenta-kapacity-ucastniku">procento_obsazenosti_ucastniku %</span>
 </div>
 `,
   css: `
@@ -52,10 +52,19 @@ export const celkovaKapacitaUcastnikuKomponenta = new Component({
   font-weight: 700;
 }
 `,
-  js: ``,
+  js: `let procento_obsazenosti_ucastniku: number = celkem_zapsanych / celkova_kapacita * 100;
+  procento_obsazenosti_ucastniku = Number(procento_obsazenosti_ucastniku.toFixed(2));`,
   js_click: ``,
   sql: {
-    "celkova-kapacita-ucastniku": `SELECT COUNT(DISTINCT tu.id_ucastnika) AS celkem_zapsanych, SUM(DISTINCT t.kapacita) AS celkova_kapacita, (COUNT(DISTINCT tu.id_ucastnika) * 100) / SUM(DISTINCT t.kapacita) AS procento_obsazenosti_ucastniku FROM turnusy t LEFT JOIN turnusy_ucastnici tu ON t.id_turnusu = tu.id_turnusu`
+    "celkova-kapacita-ucastniku": `SELECT
+  (
+    SELECT COUNT(DISTINCT id_ucastnika)
+    FROM turnusy_ucastnici
+  ) AS celkem_zapsanych,
+  (
+    SELECT SUM(kapacita)
+    FROM turnusy
+  ) AS celkova_kapacita`
   },
   sql_click: {}
 });

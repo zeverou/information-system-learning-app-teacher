@@ -10,10 +10,21 @@
             <!-- Session header row -->
             <div class="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                 @click="toggleSession(sessionId)">
-                <div class="flex-1">
+                <div class="flex-1 flex items-center justify-between gap-3 flex-wrap">
                     <ComponentWrapper
                         :component="withVars(sessionHeaderComponent, [new Variable('idTurnusu', sessionId)])"
                     />
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <ComponentWrapper
+                            :component="withVars(sessionDateComponent, [new Variable('idTurnusu', sessionId)])"
+                        />
+                        <ComponentWrapper
+                            :component="withVars(sessionMealCountComponent, [new Variable('idTurnusu', sessionId)])"
+                        />
+                        <ComponentWrapper
+                            :component="withVars(sessionPortionCountComponent, [new Variable('idTurnusu', sessionId)])"
+                        />
+                    </div>
                 </div>
                 <UIcon
                     :name="isSessionExpanded(sessionId) ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
@@ -29,10 +40,18 @@
                     <!-- Day header row -->
                     <div class="flex items-center gap-3 px-6 py-3 cursor-pointer hover:bg-gray-50 transition-colors bg-gray-50/50"
                         @click="toggleDay(sessionId, date)">
-                        <div class="flex-1">
+                        <div class="flex-1 flex items-center justify-between gap-3 flex-wrap">
                             <ComponentWrapper
                                 :component="withVars(dayHeaderComponent, [new Variable('datumDne', date)])"
                             />
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <ComponentWrapper
+                                    :component="withVars(dayMealCountComponent, [new Variable('datumDne', date)])"
+                                />
+                                <ComponentWrapper
+                                    :component="withVars(dayPortionCountComponent, [new Variable('datumDne', date)])"
+                                />
+                            </div>
                         </div>
                         <UIcon
                             :name="isDayExpanded(sessionId, date) ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
@@ -48,9 +67,17 @@
                             <!-- Meal row -->
                             <div class="flex items-center gap-3 px-8 py-4 cursor-pointer hover:bg-blue-50/30 transition-colors bg-white"
                                 @click="toggleMeal(mealId, date)">
-                                <div class="flex-1">
+                                <div class="flex-1 flex items-start justify-between gap-3 flex-wrap">
+                                    <div class="flex flex-col gap-1 min-w-0">
+                                        <ComponentWrapper
+                                            :component="withVars(mealRowComponent, [new Variable('idJidla', mealId)])"
+                                        />
+                                        <ComponentWrapper
+                                            :component="withVars(mealAllergensComponent, [new Variable('idJidla', mealId)])"
+                                        />
+                                    </div>
                                     <ComponentWrapper
-                                        :component="withVars(mealRowComponent, [new Variable('idJidla', mealId)])"
+                                        :component="withVars(mealServingTimeComponent, [new Variable('idJidla', mealId)])"
                                     />
                                 </div>
                                 <UIcon
@@ -61,9 +88,12 @@
 
                             <!-- People section -->
                             <div v-if="isMealExpanded(mealId, date)"
-                                class="px-10 py-4 bg-blue-50/40 border-t border-blue-100">
+                                class="px-10 py-4 bg-blue-50/40 border-t border-blue-100 flex flex-col gap-4">
                                 <ComponentWrapper
                                     :component="withVars(mealPeopleComponent, [new Variable('idJidla', mealId), new Variable('datumDne', date)])"
+                                />
+                                <ComponentWrapper
+                                    :component="withVars(mealSupervisorsComponent, [new Variable('idJidla', mealId), new Variable('datumDne', date)])"
                                 />
                             </div>
                         </div>
@@ -109,9 +139,17 @@ const isDbReady = computed(() => !!systemsStore.selectedSystem?.database?.sqlJsD
 
 // Components
 const sessionHeaderComponent = computed(() => systemsStore.getComponentById('jidelnicek-hlavicka-turnusu'));
+const sessionDateComponent = computed(() => systemsStore.getComponentById('jidelnicek-datum-turnusu'));
+const sessionMealCountComponent = computed(() => systemsStore.getComponentById('jidelnicek-pocet-jidel-turnusu'));
+const sessionPortionCountComponent = computed(() => systemsStore.getComponentById('jidelnicek-pocet-porci-turnusu'));
 const dayHeaderComponent = computed(() => systemsStore.getComponentById('jidelnicek-hlavicka-dne'));
+const dayMealCountComponent = computed(() => systemsStore.getComponentById('jidelnicek-pocet-jidel-dne'));
+const dayPortionCountComponent = computed(() => systemsStore.getComponentById('jidelnicek-pocet-porci-dne'));
 const mealRowComponent = computed(() => systemsStore.getComponentById('jidelnicek-radek-jidla'));
+const mealAllergensComponent = computed(() => systemsStore.getComponentById('jidelnicek-alergeny-jidla'));
+const mealServingTimeComponent = computed(() => systemsStore.getComponentById('jidelnicek-doba-podavani-jidla'));
 const mealPeopleComponent = computed(() => systemsStore.getComponentById('jidelnicek-lide-jidla'));
+const mealSupervisorsComponent = computed(() => systemsStore.getComponentById('jidelnicek-vedouci-jidla'));
 
 // State
 const sessionIds = ref<number[]>([]);
@@ -207,4 +245,3 @@ onMounted(() => {
 
 <style scoped>
 </style>
-

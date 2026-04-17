@@ -1,34 +1,18 @@
-﻿import { Component } from "~/model/Component";
+import { Component } from "~/model/Component";
 
 export const jidelnicekHlavickaTurnusuKomponenta = new Component({
   id: "jidelnicek-hlavicka-turnusu",
   name: "Jídelníček – Hlavička turnusu",
   tags: ["jídelníček"],
-  description: `Hlavička turnusu v akordéonu jídelníčku. Vyžaduje generalVariable: idTurnusu.`,
+  description: `Zobrazuje název turnusu v akordéonu jídelníčku. Vyžaduje generalVariable: idTurnusu.`,
   html: `
-<div id="jidelnicek-radek-turnusu">
-  <div id="jidelnicek-turnusu-levy">
-    <span id="jidelnicek-turnusu-ikona">📅</span>
-    <span id="jidelnicek-turnusu-popisek">Turnus idTurnusu</span>
-  </div>
-  <div id="jidelnicek-turnusu-stitky">
-    <span id="jidelnicek-turnusu-datum-stitek">datum_od_jidelnicku – datum_do_jidelnicku</span>
-    <span id="jidelnicek-turnusu-jidla-stitek">Unikátních jídel: pocet_unikatnich_jidel</span>
-    <span id="jidelnicek-turnusu-porci-stitek">Počet porcí: pocet_porci</span>
-  </div>
+<div id="jidelnicek-turnusu-nazev">
+  <span id="jidelnicek-turnusu-ikona">📅</span>
+  <span id="jidelnicek-turnusu-popisek">Turnus idTurnusu</span>
 </div>
 `,
   css: `
-#jidelnicek-radek-turnusu {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-#jidelnicek-turnusu-levy {
+#jidelnicek-turnusu-nazev {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -43,14 +27,22 @@ export const jidelnicekHlavickaTurnusuKomponenta = new Component({
   font-weight: 700;
   color: #111827;
 }
+`,
+  js: ``,
+  js_click: ``,
+  sql: {},
+  sql_click: {}
+});
 
-#jidelnicek-turnusu-stitky {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
+export const jidelnicekDatumTurnusuKomponenta = new Component({
+  id: "jidelnicek-datum-turnusu",
+  name: "Jídelníček – Datum turnusu",
+  tags: ["jídelníček"],
+  description: `Zobrazuje datumový rozsah turnusu v jídelníčku. Vyžaduje generalVariable: idTurnusu.`,
+  html: `
+<span id="jidelnicek-turnusu-datum-stitek">datum_od_jidelnicku – datum_do_jidelnicku</span>
+`,
+  css: `
 #jidelnicek-turnusu-datum-stitek {
   display: inline-flex;
   align-items: center;
@@ -62,7 +54,24 @@ export const jidelnicekHlavickaTurnusuKomponenta = new Component({
   color: #0e7490;
   border: 1px solid #a5f3fc;
 }
+`,
+  js: ``,
+  js_click: ``,
+  sql: {
+    "jidelnicek-datum-turnusu": `SELECT strftime('%d. %m. %Y', datum_od) AS datum_od_jidelnicku, strftime('%d. %m. %Y', datum_do) AS datum_do_jidelnicku FROM turnusy WHERE id_turnusu = idTurnusu`
+  },
+  sql_click: {}
+});
 
+export const jidelnicekPocetJidelTurnusuKomponenta = new Component({
+  id: "jidelnicek-pocet-jidel-turnusu",
+  name: "Jídelníček – Počet jídel turnusu",
+  tags: ["jídelníček"],
+  description: `Zobrazuje počet unikátních jídel turnusu v jídelníčku. Vyžaduje generalVariable: idTurnusu.`,
+  html: `
+<span id="jidelnicek-turnusu-jidla-stitek">Unikátních jídel: pocet_unikatnich_jidel</span>
+`,
+  css: `
 #jidelnicek-turnusu-jidla-stitek {
   display: inline-flex;
   align-items: center;
@@ -74,7 +83,24 @@ export const jidelnicekHlavickaTurnusuKomponenta = new Component({
   color: #15803d;
   border: 1px solid #bbf7d0;
 }
+`,
+  js: ``,
+  js_click: ``,
+  sql: {
+    "jidelnicek-pocet-jidel-turnusu": `SELECT COUNT(DISTINCT kj.id_jidla) AS pocet_unikatnich_jidel FROM turnusy t LEFT JOIN kniha_jidel kj ON DATE(kj.datum) BETWEEN DATE(t.datum_od) AND DATE(t.datum_do) WHERE t.id_turnusu = idTurnusu GROUP BY t.id_turnusu`
+  },
+  sql_click: {}
+});
 
+export const jidelnicekPocetPorciTurnusuKomponenta = new Component({
+  id: "jidelnicek-pocet-porci-turnusu",
+  name: "Jídelníček – Počet porcí turnusu",
+  tags: ["jídelníček"],
+  description: `Zobrazuje počet porcí turnusu v jídelníčku. Vyžaduje generalVariable: idTurnusu.`,
+  html: `
+<span id="jidelnicek-turnusu-porci-stitek">Počet porcí: pocet_porci</span>
+`,
+  css: `
 #jidelnicek-turnusu-porci-stitek {
   display: inline-flex;
   align-items: center;
@@ -90,8 +116,21 @@ export const jidelnicekHlavickaTurnusuKomponenta = new Component({
   js: ``,
   js_click: ``,
   sql: {
-    "jidelnicek-hlavicka-turnusu": `SELECT strftime('%d. %m. %Y', t.datum_od) AS datum_od_jidelnicku, strftime('%d. %m. %Y', t.datum_do) AS datum_do_jidelnicku, COUNT(DISTINCT kj.id_jidla) AS pocet_unikatnich_jidel, (SELECT COUNT(*) FROM ucastnici_jidla uj WHERE DATE(uj.datum_podavani) BETWEEN DATE(t.datum_od) AND DATE(t.datum_do)) + (SELECT COUNT(*) FROM jidla_vedouci jv WHERE DATE(jv.datum_podavani) BETWEEN DATE(t.datum_od) AND DATE(t.datum_do)) AS pocet_porci FROM turnusy t LEFT JOIN kniha_jidel kj ON DATE(kj.datum) BETWEEN DATE(t.datum_od) AND DATE(t.datum_do) WHERE t.id_turnusu = idTurnusu GROUP BY t.id_turnusu`
+    "jidelnicek-pocet-porci-turnusu": `SELECT (
+  (
+    SELECT COUNT(*)
+    FROM turnusy_ucastnici tu
+    WHERE tu.id_turnusu = t.id_turnusu
+  ) * (
+    SELECT COUNT(*)
+    FROM kniha_jidel kj
+    WHERE DATE(kj.datum) BETWEEN DATE(t.datum_od) AND DATE(t.datum_do)
+  )
+) + (
+  SELECT COUNT(*)
+  FROM jidla_vedouci jv
+  WHERE DATE(jv.datum_podavani) BETWEEN DATE(t.datum_od) AND DATE(t.datum_do)
+) AS pocet_porci FROM turnusy t WHERE t.id_turnusu = idTurnusu`
   },
   sql_click: {}
 });
-

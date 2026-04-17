@@ -9,7 +9,7 @@ export const editVstupKapacitaKomponenta = new Component({
   html: `
 <div class="form-radek">
   <label>Kapacita:</label>
-  <input type="number" id="system-edit_vstup_kapacita" value="edit_vstup_kapacita" />
+  <input type="number" id="system-edit_vstup_kapacita" min="1" value="edit_vstup_kapacita" style="border: 4px solid barva_ramecku" />
 </div>
 `,
 
@@ -19,7 +19,15 @@ export const editVstupKapacitaKomponenta = new Component({
 .form-radek input { padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; }
 `,
 
-  js: ``,
+  js: `const je_kapacita_validni = (edit_vstup_kapacita > 0);
+
+let barva_ramecku = "#FFFFFF";
+
+if (je_kapacita_validni) {
+    barva_ramecku = "#4aff5c";
+} else {
+    barva_ramecku = "#ff4f92";
+}`,
   sql: {
     nacistKapacituTurnusu: `SELECT kapacita AS edit_vstup_kapacita FROM turnusy WHERE id_turnusu = idTurnusu`
   },

@@ -80,6 +80,16 @@ const { systemInputVariables, upsertSystemInputVariable, removeSystemInputVariab
 const ownedSystemVariableNames = new Set<string>();
 let db: DatabaseWrapper | undefined = undefined;
 let isRefreshingSqlVars = false;
+const componentCodeUpdatedEventName = 'component-code-updated';
+
+type ComponentCodeUpdatedEvent = CustomEvent<{ componentId: string }>;
+
+type ActiveInputSnapshot = {
+  identifier: string;
+  value: string;
+  selectionStart: number | null;
+  selectionEnd: number | null;
+};
 
 function mergeVariablesByName(...groups: Array<Variable[] | undefined>): Variable[] {
   const merged = new Map<string, Variable>();
@@ -140,6 +150,10 @@ function handleTeacherModeClick() {
     globalSettings.selectedComponents.add(componentId)
   }
   void systemsStore.updateSystem(system)
+}
+
+function hasDisabledActionControl() {
+  return !!wrapperRef.value?.querySelector('button:disabled, input:disabled, select:disabled, textarea:disabled, [aria-disabled="true"]');
 }
 
 function resolveActionTemplate(template: string) {
@@ -249,8 +263,23 @@ async function handleActionModalSubmit() {
 }
 
 async function handleModalSave(payload: { updatedComponent: SystemComponent, updatedVariables: ComponentVariables }) {
-  // Update local component properties
-  Object.assign(props.component, payload.updatedComponent);
+  const originalComponent = systemsStore.getComponentById(props.component.id);
+  if (originalComponent) {
+    // Update the original component so all instances are updated and it successfully synchronizes to DB
+    Object.assign(originalComponent, payload.updatedComponent);
+    
+    // If the current component is a clone (Object.create), avoid masking the prototype with own properties
+    if (originalComponent !== props.component) {
+      for (const key in payload.updatedComponent) {
+        if (Object.prototype.hasOwnProperty.call(props.component, key) && key !== 'variables') {
+          delete (props.component as any)[key];
+        }
+      }
+    }
+  } else {
+    // Update local component properties
+    Object.assign(props.component, payload.updatedComponent);
+  }
 
   // Update local variables for v-html rendering
   componentVariables.value = payload.updatedVariables;
@@ -258,12 +287,18 @@ async function handleModalSave(payload: { updatedComponent: SystemComponent, upd
   // Apply new CSS
   applyStyle(props.component.css);
 
+  if (import.meta.client) {
+    window.dispatchEvent(new CustomEvent(componentCodeUpdatedEventName, {
+      detail: { componentId: props.component.id }
+    }));
+  }
+
   if (systemsStore.selectedSystem) {
     await systemsStore.updateSystem(systemsStore.selectedSystem);
   }
 }
 
-function handleClick() {
+function handleClick(event: MouseEvent) {
   if (globalSettings.teacherMode && globalSettings.teacherHighlightEnabled) {
     return;
   }
@@ -273,6 +308,17 @@ function handleClick() {
     return;
   }
 
+  const target = event.target;
+  if (
+    target instanceof Element &&
+    target.closest('button:disabled, input:disabled, select:disabled, textarea:disabled, [aria-disabled="true"]')
+  ) {
+    return;
+  }
+
+  if (hasDisabledActionControl()) {
+    return;
+  }
 
   // execute js code on click if exists
   if (props.component.js_click) {
@@ -317,6 +363,10 @@ function applyStyle(css: string) {
 
 // Watchers for styles and variables
 watch(() => [componentVariables.value, systemInputVariables.value], () => applyStyle(props.component.css), { deep: true });
+
+watch(systemInputVariables, () => {
+  void refreshJsVariables({ preserveActiveInput: true });
+}, { deep: true });
 
 watch(() => props.component.variables?.generalVariables, (newVars) => {
   componentVariables.value.generalVariables = newVars ?? [];
@@ -376,7 +426,13 @@ async function populateSqlVariables(sqlRecord: Record<string, string>) {
   }
 }
 
-function getVariableValue(input: HTMLInputElement): VariableType | null {
+type SystemFormControl = HTMLInputElement | HTMLSelectElement;
+
+function getVariableValue(input: SystemFormControl): VariableType | null {
+  if (input instanceof HTMLSelectElement) {
+    return input.value;
+  }
+
   switch (input.type) {
     case 'number':
       return input.value === '' ? '' : Number(input.value);
@@ -390,8 +446,12 @@ function getVariableValue(input: HTMLInputElement): VariableType | null {
   }
 }
 
-function syncSystemInput(input: HTMLInputElement) {
-  const inputIdentifier = input.name || input.id;
+function getInputIdentifier(input: SystemFormControl) {
+  return input.name || input.id;
+}
+
+function syncSystemInput(input: SystemFormControl) {
+  const inputIdentifier = getInputIdentifier(input);
   if (!inputIdentifier.startsWith('system-')) return;
 
   const value = getVariableValue(input);
@@ -402,10 +462,61 @@ function syncSystemInput(input: HTMLInputElement) {
   upsertSystemInputVariable(varName, value);
 }
 
+function captureActiveSystemInput(): ActiveInputSnapshot | null {
+  if (!import.meta.client) return null;
+  if (!wrapperRef.value) return null;
+
+  const activeElement = document.activeElement;
+  if (!(activeElement instanceof HTMLInputElement)) return null;
+  if (!wrapperRef.value.contains(activeElement)) return null;
+
+  const identifier = getInputIdentifier(activeElement);
+  if (!identifier.startsWith('system-')) return null;
+
+  let selectionStart: number | null = null;
+  let selectionEnd: number | null = null;
+  try {
+    selectionStart = activeElement.selectionStart;
+    selectionEnd = activeElement.selectionEnd;
+  } catch {
+    // Some input types do not expose cursor selection information.
+  }
+
+  return {
+    identifier,
+    value: activeElement.value,
+    selectionStart,
+    selectionEnd,
+  };
+}
+
+async function restoreActiveSystemInput(snapshot: ActiveInputSnapshot | null) {
+  if (!import.meta.client) return;
+  if (!snapshot || !wrapperRef.value) return;
+
+  await nextTick();
+
+  const input = Array.from(wrapperRef.value.querySelectorAll('input'))
+    .find(inputElement => getInputIdentifier(inputElement) === snapshot.identifier);
+
+  if (!input) return;
+
+  input.value = snapshot.value;
+  input.focus({ preventScroll: true });
+
+  if (snapshot.selectionStart !== null && snapshot.selectionEnd !== null) {
+    try {
+      input.setSelectionRange(snapshot.selectionStart, snapshot.selectionEnd);
+    } catch {
+      // Some input types, such as number/date/email, do not support text selections.
+    }
+  }
+}
+
 function handleInput(event: Event) {
   const target = event.target;
 
-  if (!(target instanceof HTMLInputElement)) return;
+  if (!(target instanceof HTMLInputElement) && !(target instanceof HTMLSelectElement)) return;
 
   syncSystemInput(target);
 }
@@ -413,37 +524,73 @@ function handleInput(event: Event) {
 function registerInitialSystemInputs() {
   if (!wrapperRef.value) return;
 
-  const inputs = Array.from(wrapperRef.value.querySelectorAll('input'));
+  const inputs = Array.from(wrapperRef.value.querySelectorAll('input, select'));
   for (const input of inputs) {
     syncSystemInput(input);
   }
 }
 
-onMounted(async () => {
-  db = systemsStore.selectedSystem?.database ?? undefined;
+async function refreshComponentCode() {
+  db = systemsStore.selectedSystem?.database ?? db;
   applyStyle(props.component.css);
 
-  componentVariables.value.generalVariables = props.component.variables?.generalVariables ?? [];
-
+  componentVariables.value.sqlVariables = [];
   if (db && props.component.sql) {
     const replacedSql: Record<string, string> = SqlHandler.ReplaceSqlForVariablesInRecord(componentVariables.value, props.component.sql);
     await populateSqlVariables(replacedSql);
   }
 
+  await refreshJsVariables();
+}
+
+async function refreshJsVariables(options: { preserveActiveInput?: boolean } = {}) {
+  const activeInputSnapshot = options.preserveActiveInput ? captureActiveSystemInput() : null;
+
+  componentVariables.value.jsVariables = [];
+  await nextTick();
+
   if (props.component.js) {
     try {
       const fullCode = jsVarsHeader.value ? `${jsVarsHeader.value}\n${props.component.js}` : props.component.js;
       componentVariables.value.jsVariables = JsHandler.getJsVariables(fullCode, props.component.js);
+
+      if (props.component.js.includes('document.')) {
+        await nextTick();
+        JsHandler.getJsVariables(fullCode, props.component.js);
+      }
     } catch (e) {
-      console.error('Error parsing JS variables on mount:', e);
+      console.error('Error parsing JS variables:', e);
     }
   }
 
+  await restoreActiveSystemInput(activeInputSnapshot);
+}
+
+function handleComponentCodeUpdated(event: Event) {
+  const detail = (event as ComponentCodeUpdatedEvent).detail;
+  if (!detail || detail.componentId !== props.component.id) return;
+  void refreshComponentCode();
+}
+
+onMounted(async () => {
+  db = systemsStore.selectedSystem?.database ?? undefined;
+
+  componentVariables.value.generalVariables = props.component.variables?.generalVariables ?? [];
+  await refreshComponentCode();
+
   await nextTick();
   registerInitialSystemInputs();
+
+  if (import.meta.client) {
+    window.addEventListener(componentCodeUpdatedEventName, handleComponentCodeUpdated);
+  }
 });
 
 onBeforeUnmount(() => {
+  if (import.meta.client) {
+    window.removeEventListener(componentCodeUpdatedEventName, handleComponentCodeUpdated);
+  }
+
   for (const variableName of ownedSystemVariableNames) {
     removeSystemInputVariable(variableName);
   }

@@ -8,9 +8,15 @@ function generateSystemsManifest() {
     buildStart() {
       const systemsDir = path.resolve(__dirname, 'public/systems')
       if (!fs.existsSync(systemsDir)) fs.mkdirSync(systemsDir, { recursive: true })
-      const zips = fs.readdirSync(systemsDir).filter(f => f.endsWith('.zip'))
-      fs.writeFileSync(path.join(systemsDir, 'manifest.json'), JSON.stringify({ systems: zips }, null, 2))
-      console.log(`[systems-manifest] Found ${zips.length} ZIP(s):`, zips)
+      const systems = fs.readdirSync(systemsDir, { withFileTypes: true })
+        .filter(entry =>
+          entry.isFile() && entry.name.endsWith('.zip') ||
+          entry.isDirectory() && fs.existsSync(path.join(systemsDir, entry.name, 'config.json'))
+        )
+        .map(entry => entry.name)
+
+      fs.writeFileSync(path.join(systemsDir, 'manifest.json'), JSON.stringify({ systems }, null, 2))
+      console.log(`[systems-manifest] Found ${systems.length} system(s):`, systems)
     }
   }
 }
@@ -50,7 +56,7 @@ export default defineNuxtConfig({
     defaultLocale: 'cs',
     langDir: 'locales/',
     strategy: 'no_prefix',
-    detectBrowserLanguage: false, // nebo 'no_prefix', 'prefix_except_default'
+    detectBrowserLanguage: false
   },
   app: {
     // locally:

@@ -18,12 +18,20 @@
             @mouseenter="taskPopoverOpen = true"
             @mouseleave="taskPopoverOpen = false"
         >
-            <TasksDesignerModal ref="tasksDesignerModalRef" />
+            <UButton
+                icon="i-lucide-clipboard-list"
+                color="sky"
+                variant="subtle"
+                size="md"
+                @click="openTaskDesigner"
+            >
+                <span class="mobile-hidden">{{ t('tasks') }}</span>
+            </UButton>
             <div v-show="taskPopoverOpen" class="task-popover">
                 <div class="task-popover-inner">
                 <button
                     class="task-popover-item task-popover-item--designer"
-                    @click="tasksDesignerModalRef?.openModal(); taskPopoverOpen = false"
+                    @click="openTaskDesigner"
                 >
                     <UIcon name="i-lucide-pencil-ruler" class="w-4 h-4 shrink-0" />
                     {{ t('go_to_designer') }}
@@ -34,7 +42,7 @@
                     :key="task.id"
                     class="task-popover-item"
                     :class="{ 'task-popover-item--active': globalSettings.selectedTaskId === task.id }"
-                    @click="globalSettings.selectedTaskId = task.id"
+                    @click="openTaskDesignerForTask(task.id)"
                 >
                     <UIcon name="i-lucide-circle-dot" class="w-3.5 h-3.5 shrink-0 opacity-60" />
                     <span class="truncate">{{ task.title || t('task_untitled') }}</span>
@@ -128,21 +136,9 @@
             </template>
         </UPopover>
 
-        <UPopover v-model:open="exitPopoverOpen" arrow>
-            <UButton icon="i-heroicons-arrow-right-on-rectangle" color="red" variant="subtle" size="md">
-                <span class="mobile-hidden">{{ $t('exit_system') }}</span>
-            </UButton>
-            <template #content>
-                <div class="p-3 flex flex-col gap-2 min-w-[200px]">
-                    <UButton block :label="$t('leave_system')" color="red" variant="soft"
-                        icon="i-heroicons-arrow-left-on-rectangle" @click="leaveSystem" class="justify-start" />
-                    <UButton block :label="$t('leave_and_save')" color="yellow" variant="soft"
-                        icon="i-heroicons-document-check" @click="leaveAndSave" class="justify-start" />
-                    <UButton block :label="$t('stay_in_system')" color="neutral" variant="ghost"
-                        icon="i-heroicons-x-mark" @click="stayInSystem" class="justify-start" />
-                </div>
-            </template>
-        </UPopover>
+        <UButton v-if="globalSettings.teacherMode" icon="i-heroicons-arrow-right-on-rectangle" color="red" variant="subtle" size="md" @click="leaveSystem">
+            <span class="mobile-hidden">{{ $t('leave_system') }}</span>
+        </UButton>
     </div>
 </template>
 
@@ -159,12 +155,12 @@ const globalSettings = useGlobalSettingsStore()
 
 const { t } = useI18n()
 const toast = useToast()
+const route = useRoute()
 
 const resetPopoverOpen = ref(false)
 const exitPopoverOpen = ref(false)
 const studentDrawerOpen = ref(false)
 const taskPopoverOpen = ref(false)
-const tasksDesignerModalRef = ref<{ openModal: () => void } | null>(null)
 
 
 async function printTableData() {
@@ -182,6 +178,28 @@ async function IsDbNull() {
 
 function openComponentExplorer() {
     navigateTo(`/systems/${systemsStore.selectedSystemId}/component-explorer`);
+}
+
+function openTaskDesigner() {
+    taskPopoverOpen.value = false
+    navigateTo({
+        path: `/systems/${systemsStore.selectedSystemId}/designer`,
+        query: {
+            backTo: route.fullPath,
+        },
+    })
+}
+
+function openTaskDesignerForTask(taskId: string) {
+    globalSettings.selectedTaskId = taskId as any
+    taskPopoverOpen.value = false
+    navigateTo({
+        path: `/systems/${systemsStore.selectedSystemId}/designer`,
+        query: {
+            backTo: route.fullPath,
+            taskId,
+        },
+    })
 }
 
 async function refreshComponents() {
@@ -225,7 +243,6 @@ async function leaveSystem() {
     // await SystemReset.refreshComponentsCore();
     // await SystemReset.refreshDatabaseCore();
     // await SystemReset.refreshTasksCore();
-    exitPopoverOpen.value = false;
 }
 
 async function leaveAndSave() {

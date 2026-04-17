@@ -10,9 +10,9 @@ export const editVstupDobaPodavaniKomponenta = new Component({
 <div class="form-radek">
   <label>Doba podávání:</label>
   <select id="system-edit_vstup_doba_podavani">
-    <option value="snídaně">Snídaně</option>
-    <option value="oběd">Oběd</option>
-    <option value="večeře">Večeře</option>
+    <option value="snídaně" snidane_selected>Snídaně</option>
+    <option value="oběd" obed_selected>Oběd</option>
+    <option value="večeře" vecere_selected>Večeře</option>
   </select>
 </div>
 `,
@@ -23,10 +23,17 @@ export const editVstupDobaPodavaniKomponenta = new Component({
 .form-radek input, .form-radek select { padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; }
 `,
 
-  js: `
-var selectEl = document.getElementById('system-edit_vstup_doba_podavani');
-if (selectEl) { selectEl.value = 'edit_vstup_doba_podavani'; }
-`,
+  js: `let snidane_selected = "";
+let obed_selected = "";
+let vecere_selected = "";
+
+if (edit_vstup_doba_podavani === "snídaně") {
+  snidane_selected = "selected";
+} else if (edit_vstup_doba_podavani === "oběd") {
+  obed_selected = "selected";
+} else if (edit_vstup_doba_podavani === "večeře") {
+  vecere_selected = "selected";
+}`,
   sql: {
     nacistDobuPodavani: `SELECT doba_podavani AS edit_vstup_doba_podavani FROM jidla WHERE id_jidla = idJidla`
   },

@@ -73,12 +73,15 @@ async function generateComponentsJson() {
 
     walk(searchDir);
 
-    // Save the result to a JSON file
+    // Save the result to the preloaded public system folder.
     const outputFileName = 'system_components.json';
-    const outputFilePath = path.join(searchDir, outputFileName);
+    const outputDir = path.join(projectRoot, 'public', 'systems', 'information_system_2');
+    const outputFilePath = path.join(outputDir, outputFileName);
+
+    fs.mkdirSync(outputDir, { recursive: true });
     fs.writeFileSync(outputFilePath, JSON.stringify(components, null, 2), 'utf-8');
 
-    console.log(`\nSuccess! Generated ${components.length} components into ${outputFileName}`);
+    console.log(`\nSuccess! Generated ${components.length} components into ${outputFilePath}`);
 }
 
 // Execute the generation

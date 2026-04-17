@@ -9,7 +9,7 @@ export const editVstupEmailVedoucihoKomponenta = new Component({
   html: `
 <div class="form-radek">
   <label>Email:</label>
-  <input type="email" id="system-edit_vstup_email_vedouciho" value="edit_vstup_email_vedouciho" />
+  <input type="email" id="system-edit_vstup_email_vedouciho" value="edit_vstup_email_vedouciho" style="border: 4px solid barva_ramecku" />
 </div>
 `,
 
@@ -19,7 +19,15 @@ export const editVstupEmailVedoucihoKomponenta = new Component({
 .form-radek input { padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; }
 `,
 
-  js: ``,
+  js: `const je_validni_email = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(edit_vstup_email_vedouciho);
+
+let barva_ramecku = "#FFFFFF";
+
+if (je_validni_email) {
+    barva_ramecku = "#4aff5c";
+} else {
+    barva_ramecku = "#ff4f92";
+}`,
   sql: {
     nacistEmailVedouciho: `SELECT email AS edit_vstup_email_vedouciho FROM vedouci WHERE id_vedouciho = idVedouciho`
   },

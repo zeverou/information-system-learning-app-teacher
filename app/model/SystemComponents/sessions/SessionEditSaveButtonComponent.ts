@@ -7,14 +7,19 @@ export const editTlacitkoUlozitKomponenta = new Component({
   description: "Tlačítko pro uložení změn existujícího turnusu. Vyžaduje generalVariable: idTurnusu.",
 
   html: `
-<button id="system-edit_btn_ulozit" class="btn-uspech">Upravit turnus</button>
+<button id="system-edit_btn_ulozit" class="btn-uspech" stav_tlacitka>Upravit turnus</button>
 `,
 
   css: `
 .btn-uspech { background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+.btn-uspech:disabled { background: #9ca3af; cursor: not-allowed; opacity: 0.65; }
 `,
 
-  js: ``,
+  js: `const je_datum_od_validni = !isNaN(new Date(edit_vstup_datum_od).getTime());
+const je_datum_do_validni = !isNaN(new Date(edit_vstup_datum_do).getTime());
+const je_rozsah_dat_validni = new Date(edit_vstup_datum_od).getTime() <= new Date(edit_vstup_datum_do).getTime();
+const je_kapacita_validni = Number(edit_vstup_kapacita) > 0;
+const stav_tlacitka = je_datum_od_validni && je_datum_do_validni && je_rozsah_dat_validni && je_kapacita_validni ? "" : "disabled";`,
   sql: {},
   sql_click: {
     upravitTurnus: `UPDATE turnusy SET datum_od = DATE('edit_vstup_datum_od'), datum_do = DATE('edit_vstup_datum_do'), kapacita = edit_vstup_kapacita WHERE id_turnusu = idTurnusu`

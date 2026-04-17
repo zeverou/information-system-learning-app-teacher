@@ -21,21 +21,23 @@
             <!-- Spacer -->
             <div class="flex-1" />
 
-            <!-- Reset filter -->
+            <!-- Reset filter
             <UButton
                 icon="i-heroicons-arrow-path"
                 color="neutral"
                 variant="outline"
                 @click="resetFilter"
             />
+            -->
 
-            <!-- Search -->
+            <!-- Search
             <UInput
                 v-model="filterText"
                 icon="i-heroicons-magnifying-glass"
                 :placeholder="t('filter_participants')"
                 class="w-56"
             />
+            -->
 
             <!-- Add participant modal -->
             <ModalContainer v-model:open="createModalOpen" class="w-fit">
@@ -274,4 +276,3 @@ onMounted(() => {
     box-sizing: border-box;
 }
 </style>
-

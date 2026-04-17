@@ -9,7 +9,7 @@ export const editVstupVekVedoucihoKomponenta = new Component({
   html: `
 <div class="form-radek">
   <label>Věk:</label>
-  <input type="number" id="system-edit_vstup_vek_vedouciho" min="1" max="99" value="edit_vstup_vek_vedouciho" />
+  <input type="number" id="system-edit_vstup_vek_vedouciho" min="1" max="99" value="edit_vstup_vek_vedouciho" style="border: 4px solid barva_ramecku" />
 </div>
 `,
 
@@ -19,7 +19,15 @@ export const editVstupVekVedoucihoKomponenta = new Component({
 .form-radek input { padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; }
 `,
 
-  js: ``,
+  js: `const je_vek_validni = Number(edit_vstup_vek_vedouciho) >= 18 && Number(edit_vstup_vek_vedouciho) <= 99;
+
+let barva_ramecku = "#FFFFFF";
+
+if (je_vek_validni) {
+    barva_ramecku = "#4aff5c";
+} else {
+    barva_ramecku = "#ff4f92";
+}`,
   sql: {
     nacistVekVedouciho: `SELECT vek AS edit_vstup_vek_vedouciho FROM vedouci WHERE id_vedouciho = idVedouciho`
   },

@@ -9,7 +9,7 @@ export const vstupDatumOdKomponenta = new Component({
   html: `
 <div class="form-radek">
   <label>Datum od:</label>
-  <input type="date" id="system-vstup_datum_od" />
+  <input type="date" id="system-vstup_datum_od" style="border: 4px solid barva_ramecku" />
 </div>
 `,
 
@@ -19,6 +19,15 @@ export const vstupDatumOdKomponenta = new Component({
 .form-radek input { padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; }
 `,
 
-  js: ``,
+  js: `const je_datum_validni =
+    !isNaN(new Date(vstup_datum_od).getTime());
+
+let barva_ramecku = "#FFFFFF";
+
+if (je_datum_validni) {
+    barva_ramecku = "#4aff5c";
+} else {
+    barva_ramecku = "#ff4f92";
+}`,
   sql: {},
 });

@@ -1,124 +1,135 @@
 <template>
-  <UCard v-if="props.selectedTask" class="shadow-lg dark:bg-gray-900/50">
-    <div class="space-y-6">
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-            {{ t('task_detail_title') }}
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            {{ t('task_detail_description') }}
-          </p>
+  <div v-if="props.selectedTask" class="space-y-6 pt-2">
+    <div class="grid gap-8 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)] xl:items-start">
+      <div class="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+              {{ t('task_detail_title') }}
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              {{ t('task_detail_description') }}
+            </p>
+          </div>
+
+          <UButton
+            icon="i-lucide-download"
+            color="neutral"
+            variant="soft"
+            size="sm"
+            @click="downloadTaskJson"
+          >
+            {{ t('task_download_json') }}
+          </UButton>
         </div>
 
-        <div class="flex items-center gap-2">
-          <span class="text-sm font-medium text-gray-500 dark:text-gray-400">ID</span>
-          <UBadge color="neutral" variant="subtle" size="lg" class="font-mono">
-            {{ taskForm.id }}
-          </UBadge>
-          <UButton icon="i-lucide-download" color="neutral" variant="ghost" size="xs" title="Download task as JSON"
-            @click="downloadTaskJson" />
-        </div>
+        <UFormField :label="t('task_title_label')">
+          <UInput v-model="taskForm.title" :placeholder="t('task_title_placeholder')" class="w-full" />
+        </UFormField>
+
+        <UFormField :label="t('task_description_label')">
+          <UTextarea
+            v-model="taskForm.description"
+            :placeholder="t('task_description_placeholder')"
+            :rows="4"
+            autoresize
+            class="w-full"
+          />
+        </UFormField>
       </div>
 
-      <div class="grid gap-4 md:grid-cols-2">
-        <UFormField label="Title" class="md:col-span-2">
-          <UInput v-model="taskForm.title" placeholder="Task title" class="w-full" />
-        </UFormField>
-
-        <UFormField label="Description" class="md:col-span-2">
-          <UInput v-model="taskForm.description" placeholder="Task description" class="w-full" />
-        </UFormField>
-
-        <USeparator class="md:col-span-2" />
-
+      <div class="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
         <span class="text-sm font-semibold text-gray-900 dark:text-white md:col-span-2">
           {{ t('points') }}
         </span>
 
-        <div class="grid grid-cols-3 gap-3">
-          <UFormField label="Round">
+        <div class="grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
+          <UFormField :label="t('task_round')">
             <UInput v-model.number="taskForm.round" type="number" min="1" class="w-full" />
           </UFormField>
 
-          <UFormField label="Points Reward">
+          <UFormField :label="t('task_points_reward')">
             <UInput v-model.number="taskForm.pointsReward" type="number" min="0" class="w-full" />
           </UFormField>
 
-          <UFormField label="Fail Penalty">
+          <UFormField :label="t('task_fail_penalty')">
             <UInput v-model.number="taskForm.failPenalty" type="number" min="0" class="w-full" />
           </UFormField>
         </div>
-
-        <USeparator class="md:col-span-2" />
-
       </div>
+    </div>
 
-      <UFormField label="Selected Components">
-        <div v-if="selectedComponentIds.length" class="flex flex-wrap gap-2">
-          <UBadge v-for="componentId in selectedComponentIds" :key="componentId" color="neutral" variant="subtle"
-            class="flex items-center gap-1 font-mono pr-1">
-            <span>{{ componentId }}</span>
+    <USeparator />
+
+    <UFormField :label="t('task_selected_components')">
+      <div v-if="selectedComponentIds.length" class="flex flex-wrap gap-2">
+        <UBadge v-for="componentId in selectedComponentIds" :key="componentId" color="neutral" variant="subtle"
+          class="flex items-center gap-1 font-mono pr-1">
+          <span>{{ componentId }}</span>
+          <HoverHint :text="t('task_edit_component_action')">
             <UButton icon="i-lucide-pencil" color="neutral" variant="ghost" size="xs" class="shrink-0"
               @click.stop="startEditingComponent(componentId)" />
+          </HoverHint>
+          <HoverHint :text="t('task_remove_component_action')">
             <UButton icon="i-lucide-trash-2" color="red" variant="ghost" size="xs" class="shrink-0"
               @click.stop="removeSelectedComponent(componentId)" />
-          </UBadge>
-        </div>
-        <p v-else class="text-sm text-gray-500 dark:text-gray-400">
-          No components selected.
-        </p>
-      </UFormField>
+          </HoverHint>
+        </UBadge>
+      </div>
+      <p v-else class="text-sm text-gray-500 dark:text-gray-400">
+        {{ t('task_no_components') }}
+      </p>
+    </UFormField>
 
-      <div v-if="editingComponent" class="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
-              Edit Component Body
-            </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              {{ editingComponent.name || editingComponent.id }}
-            </p>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <UButton color="neutral" variant="ghost" @click="stopEditingComponent">
-              Close
-            </UButton>
-            <UButton color="sky" :disabled="!isEditingComponentValid" @click="saveEditedComponent">
-              Save Changes
-            </UButton>
-          </div>
+    <div v-if="editingComponent" class="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+            {{ t('task_edit_component_title') }}
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ editingComponent.name || editingComponent.id }}
+          </p>
         </div>
 
-        <EditComponentBody :key="editingComponent.id" ref="editComponentBodyRef" :component="editingComponent"
-          @validation-change="isEditingComponentValid = $event" />
+        <div class="flex items-center gap-2">
+          <UButton color="neutral" variant="ghost" @click="stopEditingComponent">
+            {{ t('task_close') }}
+          </UButton>
+          <UButton color="sky" :disabled="!isEditingComponentValid" @click="saveEditedComponent">
+            {{ t('task_save_changes') }}
+          </UButton>
+        </div>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-2">
+      <EditComponentBody :key="editingComponent.id" ref="editComponentBodyRef" :component="editingComponent"
+        @validation-change="isEditingComponentValid = $event" />
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-2">
         <div class="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
             {{ t('task_activity') }}
           </h3>
 
           <div class="grid gap-4">
-            <UFormField label="Activity Label (optional)">
-              <UInput v-model="taskForm.activityLabel" placeholder="Activity label" class="w-full" />
+            <UFormField :label="t('task_activity_label_opt')">
+              <UInput v-model="taskForm.activityLabel" :placeholder="t('task_activity_label_placeholder')" class="w-full" />
             </UFormField>
 
-            <UFormField label="Activity Type">
+            <UFormField :label="t('task_activity_type')">
               <USelect v-model="taskForm.activityType" :items="activityTypeOptions" value-key="value" label-key="label"
-                placeholder="Select activity type" class="w-full" />
+                :placeholder="t('task_select_activity_type')" class="w-full" />
             </UFormField>
 
-            <UFormField v-if="taskForm.activityType === ActivityType.SELECT_OPTIONS" label="Options">
+            <UFormField v-if="taskForm.activityType === ActivityType.SELECT_OPTIONS" :label="t('task_activity_options')">
               <div class="space-y-3">
                 <div v-for="(option, index) in taskForm.activityOptions" :key="`activity-option-${index}`"
                   class="flex items-center gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-800">
                   <span class="w-6 text-sm font-medium text-gray-500 dark:text-gray-400">
                     {{ index + 1 }}.
                   </span>
-                  <UInput v-model="option.text" placeholder="Option text" class="flex-1" />
+                  <UInput v-model="option.text" :placeholder="t('task_option_text_placeholder')" class="flex-1" />
                   <UButton :icon="option.isCorrect ? 'i-lucide-check' : 'i-lucide-x'"
                     :color="option.isCorrect ? 'green' : 'red'" variant="soft" size="sm" class="shrink-0"
                     @click="toggleActivityOptionCorrect(index)" />
@@ -127,19 +138,36 @@
                 </div>
 
                 <UButton icon="i-lucide-plus" color="neutral" variant="soft" @click="addActivityOption">
-                  Add Option
+                  {{ t('task_add_option') }}
                 </UButton>
               </div>
             </UFormField>
 
-            <UFormField label="Activity Description">
-              <UInput v-model="taskForm.activityDescription" placeholder="Activity description" class="w-full" />
+            <UFormField :label="t('task_activity_description')">
+              <UTextarea
+                v-model="taskForm.activityDescription"
+                :placeholder="t('task_activity_description_placeholder')"
+                :rows="4"
+                autoresize
+                class="w-full"
+              />
             </UFormField>
 
-            <UFormField label="Substitute After Activity">
-              <UCheckbox v-model="taskForm.substituteAfterActivity"
-                label="Replace error components with originals after activity completes" />
-            </UFormField>
+            <div class="flex items-start gap-2">
+              <UCheckbox
+                v-model="taskForm.substituteAfterActivity"
+                :label="t('task_substitute_checkbox')"
+              />
+              <HoverHint :text="t('task_substitute_after_activity_hint')">
+                <button
+                  type="button"
+                  class="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full text-gray-400 transition-colors hover:text-teacher-600 focus:outline-none dark:text-gray-500 dark:hover:text-teacher-400"
+                  :aria-label="t('task_substitute_after_activity_hint')"
+                >
+                  <UIcon name="i-lucide-circle-help" class="h-4 w-4" />
+                </button>
+              </HoverHint>
+            </div>
           </div>
         </div>
 
@@ -149,27 +177,33 @@
           </h3>
 
           <div class="grid gap-4">
-            <UFormField label="Finish Label (optional)">
-              <UInput v-model="taskForm.finishLabel" placeholder="Finish label" class="w-full" />
+            <UFormField :label="t('task_finish_label_opt')">
+              <UInput v-model="taskForm.finishLabel" :placeholder="t('task_finish_label_placeholder')" class="w-full" />
             </UFormField>
 
-            <UFormField label="Finish Description">
-              <UInput v-model="taskForm.finishDescription" placeholder="Finish description" class="w-full" />
+            <UFormField :label="t('task_finish_description_label')">
+              <UTextarea
+                v-model="taskForm.finishDescription"
+                :placeholder="t('task_finish_description_placeholder')"
+                :rows="4"
+                autoresize
+                class="w-full"
+              />
             </UFormField>
 
-            <UFormField label="Finish Type">
+            <UFormField :label="t('task_finish_type')">
               <USelect v-model="taskForm.finishType" :items="finishTypeOptions" value-key="value" label-key="label"
-                placeholder="Select finish type" class="w-full" />
+                :placeholder="t('task_select_finish_type')" class="w-full" />
             </UFormField>
 
-            <UFormField v-if="taskForm.finishType === FinishType.SELECT_OPTIONS" label="Finish Options">
+            <UFormField v-if="taskForm.finishType === FinishType.SELECT_OPTIONS" :label="t('task_finish_options')">
               <div class="space-y-3">
                 <div v-for="(option, index) in taskForm.finishOptions" :key="`finish-option-${index}`"
                   class="flex items-center gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-800">
                   <span class="w-6 text-sm font-medium text-gray-500 dark:text-gray-400">
                     {{ index + 1 }}.
                   </span>
-                  <UInput v-model="option.text" placeholder="Option text" class="flex-1" />
+                  <UInput v-model="option.text" :placeholder="t('task_option_text_placeholder')" class="flex-1" />
                   <UButton :icon="option.isCorrect ? 'i-lucide-check' : 'i-lucide-x'"
                     :color="option.isCorrect ? 'green' : 'red'" variant="soft" size="sm" class="shrink-0"
                     @click="toggleFinishOptionCorrect(index)" />
@@ -178,30 +212,36 @@
                 </div>
 
                 <UButton icon="i-lucide-plus" color="neutral" variant="soft" @click="addFinishOption">
-                  Add Option
+                  {{ t('task_add_option') }}
                 </UButton>
               </div>
             </UFormField>
 
-            <UFormField v-if="taskForm.finishType === FinishType.TYPE_CORRECT" label="Correct Answer">
-              <UInput v-model="taskForm.finishCorrectAnswer" placeholder="Correct answer" class="w-full" />
+            <UFormField v-if="taskForm.finishType === FinishType.TYPE_CORRECT" :label="t('task_finish_correct_answer')">
+              <UInput v-model="taskForm.finishCorrectAnswer" :placeholder="t('task_correct_answer_placeholder')" class="w-full" />
             </UFormField>
           </div>
         </div>
       </div>
 
       <div class="grid gap-4">
-        <UFormField label="Feedback" class="md:col-span-2">
-          <UInput v-model="taskForm.feedback" placeholder="Feedback" class="w-full" />
+        <UFormField :label="t('task_feedback_label')" class="md:col-span-2">
+          <UTextarea
+            v-model="taskForm.feedback"
+            :placeholder="t('task_feedback_placeholder')"
+            :rows="4"
+            autoresize
+            class="w-full"
+          />
         </UFormField>
-      </div>
     </div>
-  </UCard>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import EditComponentBody from '~/components/EditComponentBody.vue'
+import HoverHint from '~/components/HoverHint.vue'
 import { Component as SystemComponent } from '~/model/Component'
 import type { ComponentVariables } from '~/model/ComponentVariables'
 import type { GUID } from '~/model/GUID'

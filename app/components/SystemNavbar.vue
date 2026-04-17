@@ -23,17 +23,6 @@
                     </NuxtLink>
                 </nav>
 
-                <!-- Right Section: System Actions -->
-                <UButton
-                    class="lg:hidden"
-                    icon="i-lucide-clipboard-list"
-                    color="sky"
-                    variant="subtle"
-                    size="md"
-                    @click="$emit('open-tasks')"
-                >
-                    {{ t('tasks') }}
-                </UButton>
             </div>
         </div>
     </div>
@@ -45,15 +34,14 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-/* Emits */
-defineEmits<{ 'open-tasks': [] }>()
-
 /* 2. Stores */
 const highlightStore = useHighlightStore()
 const systemsStore = useSystemsStore()
+const globalSettingsStore = useGlobalSettingsStore()
 
 /* 3. Context hooks */
 const { t, locale } = useI18n()
+const route = useRoute()
 
 /* 8. Local state (ref, reactive) */
 const tasksPopoverOpen = ref(false)
@@ -62,7 +50,7 @@ const localItems = computed<NavigationMenuItem[]>(() => {
     // Access locale.value so the computed updates when the locale changes
     void locale.value
 
-    return [
+    const items: NavigationMenuItem[] = [
         {
             label: t('dashboard'),
             icon: 'i-heroicons-chart-bar-20-solid',
@@ -100,6 +88,8 @@ const localItems = computed<NavigationMenuItem[]>(() => {
             data_target: 'system-meal-plan',
         },
     ]
+
+    return items
 })
 
 /* 10. Watchers */

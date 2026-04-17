@@ -6,24 +6,27 @@ export default defineNuxtPlugin((_nuxtApp) => {
         const tasks = systemsStore.selectedSystem?.tasks ?? []
         const solved = new Set(globalSettings.solvedComponentIds)
         const ids = new Set<string>()
-        console.log('[sync-error-components] raw globalSettings.solvedComponentIds:', globalSettings.solvedComponentIds)
-        console.log('[sync-error-components] solvedComponentIds:', [...solved])
+
         for (const task of tasks) {
             for (const component of task.errorComponents ?? []) {
-                const isSolved = solved.has(component.id)
-                console.log(`[sync-error-components] component "${component.id}" (${component.name}) → solved: ${isSolved}`)
-                if (!isSolved) {
+                if (!solved.has(component.id)) {
                     ids.add(component.id)
                 }
             }
         }
-        console.log('[sync-error-components] final errorComponentIds:', [...ids])
+
         globalSettings.errorComponentIds = Array.from(ids)
     }
 
     watch(
-        () => [systemsStore.selectedSystem?.tasks, globalSettings.solvedComponentIds] as const,
+        () => [
+            systemsStore.selectedSystemId,
+            (systemsStore.selectedSystem?.tasks ?? []).flatMap(task =>
+                (task.errorComponents ?? []).map(component => String(component.id))
+            ),
+            [...(globalSettings.solvedComponentIds ?? [])].map(id => String(id)),
+        ] as const,
         sync,
-        { deep: true, immediate: true }
+        { immediate: true }
     )
 })

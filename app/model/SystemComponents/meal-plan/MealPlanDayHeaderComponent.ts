@@ -1,33 +1,18 @@
-﻿import { Component } from "~/model/Component";
+import { Component } from "~/model/Component";
 
 export const jidelnicekHlavickaDneKomponenta = new Component({
   id: "jidelnicek-hlavicka-dne",
   name: "Jídelníček – Hlavička dne",
   tags: ["jídelníček"],
-  description: `Hlavička dne v akordéonu jídelníčku. Vyžaduje generalVariable: datumDne (formát YYYY-MM-DD).`,
+  description: `Zobrazuje datum dne v akordéonu jídelníčku. Vyžaduje generalVariable: datumDne (formát YYYY-MM-DD).`,
   html: `
-<div id="jidelnicek-radek-dne">
-  <div id="jidelnicek-dne-levy">
-    <span id="jidelnicek-dne-ikona">📅</span>
-    <span id="jidelnicek-dne-datum">zobrazeni_dne</span>
-  </div>
-  <div id="jidelnicek-dne-stitky">
-    <span id="jidelnicek-dne-jidla-stitek">Unikátních jídel: pocet_unikatnich_jidel_dne</span>
-    <span id="jidelnicek-dne-porci-stitek">Počet porcí: pocet_porci_dne</span>
-  </div>
+<div id="jidelnicek-dne-nazev">
+  <span id="jidelnicek-dne-ikona">📅</span>
+  <span id="jidelnicek-dne-datum">zobrazeni_dne</span>
 </div>
 `,
   css: `
-#jidelnicek-radek-dne {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-#jidelnicek-dne-levy {
+#jidelnicek-dne-nazev {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -42,14 +27,24 @@ export const jidelnicekHlavickaDneKomponenta = new Component({
   font-weight: 600;
   color: #111827;
 }
+`,
+  js: ``,
+  js_click: ``,
+  sql: {
+    "jidelnicek-hlavicka-dne": `SELECT strftime('%d. %m. %Y', 'datumDne') AS zobrazeni_dne`
+  },
+  sql_click: {}
+});
 
-#jidelnicek-dne-stitky {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
+export const jidelnicekPocetJidelDneKomponenta = new Component({
+  id: "jidelnicek-pocet-jidel-dne",
+  name: "Jídelníček – Počet jídel dne",
+  tags: ["jídelníček"],
+  description: `Zobrazuje počet unikátních jídel dne v jídelníčku. Vyžaduje generalVariable: datumDne (formát YYYY-MM-DD).`,
+  html: `
+<span id="jidelnicek-dne-jidla-stitek">Unikátních jídel: pocet_unikatnich_jidel_dne</span>
+`,
+  css: `
 #jidelnicek-dne-jidla-stitek {
   display: inline-flex;
   align-items: center;
@@ -61,7 +56,24 @@ export const jidelnicekHlavickaDneKomponenta = new Component({
   color: #15803d;
   border: 1px solid #bbf7d0;
 }
+`,
+  js: ``,
+  js_click: ``,
+  sql: {
+    "jidelnicek-pocet-jidel-dne": `SELECT COUNT(DISTINCT id_jidla) AS pocet_unikatnich_jidel_dne FROM kniha_jidel WHERE DATE(datum) = DATE('datumDne')`
+  },
+  sql_click: {}
+});
 
+export const jidelnicekPocetPorciDneKomponenta = new Component({
+  id: "jidelnicek-pocet-porci-dne",
+  name: "Jídelníček – Počet porcí dne",
+  tags: ["jídelníček"],
+  description: `Zobrazuje počet porcí dne v jídelníčku. Vyžaduje generalVariable: datumDne (formát YYYY-MM-DD).`,
+  html: `
+<span id="jidelnicek-dne-porci-stitek">Počet porcí: pocet_porci_dne</span>
+`,
+  css: `
 #jidelnicek-dne-porci-stitek {
   display: inline-flex;
   align-items: center;
@@ -77,8 +89,22 @@ export const jidelnicekHlavickaDneKomponenta = new Component({
   js: ``,
   js_click: ``,
   sql: {
-    "jidelnicek-hlavicka-dne": `SELECT strftime('%d. %m. %Y', 'datumDne') AS zobrazeni_dne, COUNT(DISTINCT id_jidla) AS pocet_unikatnich_jidel_dne, (SELECT COUNT(*) FROM ucastnici_jidla WHERE datum_podavani = 'datumDne') + (SELECT COUNT(*) FROM jidla_vedouci WHERE datum_podavani = 'datumDne') AS pocet_porci_dne FROM kniha_jidel WHERE datum = 'datumDne'`
+    "jidelnicek-pocet-porci-dne": `SELECT (
+  (
+    SELECT COUNT(*)
+    FROM turnusy_ucastnici tu
+    JOIN turnusy t ON t.id_turnusu = tu.id_turnusu
+    WHERE DATE('datumDne') BETWEEN DATE(t.datum_od) AND DATE(t.datum_do)
+  ) * (
+    SELECT COUNT(*)
+    FROM kniha_jidel kj
+    WHERE DATE(kj.datum) = DATE('datumDne')
+  )
+) + (
+  SELECT COUNT(*)
+  FROM jidla_vedouci jv
+  WHERE DATE(jv.datum_podavani) = DATE('datumDne')
+) AS pocet_porci_dne`
   },
   sql_click: {}
 });
-

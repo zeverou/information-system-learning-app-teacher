@@ -109,8 +109,7 @@ onBeforeUnmount(() => {
   align-items: flex-start;
   justify-content: center;
   padding: 1.5rem;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(4px);
+  background: transparent;
 }
 
 .modal-panel {

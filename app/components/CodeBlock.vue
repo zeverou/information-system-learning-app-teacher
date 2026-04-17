@@ -4,19 +4,10 @@
             <div class="flex items-center gap-2">
                 <span class="language-badge" :class="getLanguageClass">{{ label || language }}</span>
                 <UBadge v-if="correct !== undefined" :color="correct ? 'green' : 'red'" variant="subtle" size="sm">
-                    {{ correct ? 'Correct' : 'Incorrect' }}
+                    {{ correct ? t('correct_badge') : t('incorrect_badge') }}
                 </UBadge>
             </div>
             <div class="header-actions flex items-center justify-end gap-2">
-                <UButton
-                    color="neutral"
-                    variant="soft"
-                    icon="i-lucide-text-initial"
-                    @click="formatCode"
-                    size="sm"
-                    class="format-btn"
-                    title="Format code"
-                />
             </div>
         </div>
 
@@ -30,6 +21,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { VueMonacoEditor } from '@guolao/vue-monaco-editor'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 function formatCode() {
     if (monacoEditorInstance && monacoEditorInstance.getAction) {

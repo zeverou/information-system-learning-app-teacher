@@ -60,6 +60,13 @@
             </div>
             <USwitch color="orange" :model-value="globalSettingsStore.taskMenuDisplayedAsSidebar" @update:model-value="val => globalSettingsStore.taskMenuDisplayedAsSidebar = val" />
           </div>
+          <div class="flex items-center justify-between mt-4">
+            <div class="flex flex-col">
+              <span class="text-sm font-medium text-gray-900 dark:text-white">{{ t('load_systems_from_public_folder') }}</span>
+              <span class="text-sm text-gray-500 dark:text-gray-400">{{ t('load_systems_from_public_folder_description') }}</span>
+            </div>
+            <USwitch color="orange" :model-value="globalSettingsStore.loadSystemsFromPublicFolder" @update:model-value="val => globalSettingsStore.loadSystemsFromPublicFolder = val" />
+          </div>
           <!-- Dark Mode Switch -->
           <div class="flex items-center justify-between mt-4">
             <div class="flex flex-col">

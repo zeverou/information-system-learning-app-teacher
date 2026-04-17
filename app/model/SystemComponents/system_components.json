@@ -1,5 +1,18 @@
 [
   {
+    "id": "empty",
+    "name": "Empty",
+    "description": "Empty fallback component",
+    "html": "",
+    "css": "",
+    "js": "",
+    "js_click": "",
+    "sql": {},
+    "sql_click": {},
+    "tags": [],
+    "edited": false
+  },
+  {
     "id": "statistika-max-vek-ucastnika",
     "name": "Statistika – Max. věk účastníka",
     "description": "Zobrazuje věk nejstaršího účastníka.",
@@ -192,19 +205,6 @@
       "html",
       "css"
     ],
-    "edited": false
-  },
-  {
-    "id": "empty",
-    "name": "Empty",
-    "description": "Empty fallback component",
-    "html": "",
-    "css": "",
-    "js": "",
-    "js_click": "",
-    "sql": {},
-    "sql_click": {},
-    "tags": [],
     "edited": false
   },
   {
@@ -606,18 +606,19 @@
     "id": "stitek-alergenu-ucastnika",
     "name": "Štítek alergenů účastníka",
     "description": "Zobrazuje štítek s počtem alergenů účastníka (zelený=0, růžový>=1). Vyžaduje generalVariable: idUcastnika.",
-    "html": "\n<div id=\"obal-stitku-alergenu-ucastnika\">html_alergenu_ucastnika</div>\n",
-    "css": "\n#obal-stitku-alergenu-ucastnika {\n  display: inline-flex;\n}\n\n.stitek-alergenu-ucastnika {\n  display: inline-flex;\n  align-items: center;\n  padding: 4px 14px;\n  border-radius: 9999px;\n  font-size: 12px;\n  font-weight: 600;\n  border: 1px solid transparent;\n}\n\n.stitek-alergenu-zadne {\n  background-color: #dcfce7;\n  border-color: #bbf7d0;\n  color: #15803d;\n}\n\n.stitek-alergenu-ma {\n  background-color: #fce7f3;\n  border-color: #fbcfe8;\n  color: #be185d;\n}\n",
-    "js": "",
+    "html": "<div class=\"stitek-alergenu-ucastnika\" style=\"background-color: barva;\">Alergeny: pocet_alergenu_ucastnika</div>",
+    "css": "\n.stitek-alergenu-ucastnika {\n  display: inline-flex;\n  align-items: center;\n  padding: 4px 14px;\n  border-radius: 9999px;\n  font-size: 12px;\n  font-weight: 600;\n  border: 1px solid transparent;\n}\n",
+    "js": "let barva = \"#FFFFFF\";\n  if (pocet_alergenu_ucastnika === 0) {\n    barva = \"#9aefb8\";\n  } else {\n    barva = \"#ea98ba\";\n  }",
     "js_click": "",
     "sql": {
-      "stitek-alergenu-ucastnika": "SELECT '<span class=\"stitek-alergenu-ucastnika ' || CASE WHEN COUNT(ua.id_alergenu) = 0 THEN 'stitek-alergenu-zadne' ELSE 'stitek-alergenu-ma' END || '\">Alergeny: ' || COUNT(ua.id_alergenu) || '</span>' AS html_alergenu_ucastnika FROM ucastnici u LEFT JOIN ucastnici_alergeny ua ON u.id_ucastnika = ua.id_ucastnika WHERE u.id_ucastnika = idUcastnika"
+      "pocet-alergenu-ucastnika": "SELECT COUNT(ua.id_alergenu) AS pocet_alergenu_ucastnika\nFROM ucastnici u\nJOIN ucastnici_alergeny ua \n  ON u.id_ucastnika = ua.id_ucastnika\nWHERE u.id_ucastnika = idUcastnika;"
     },
     "sql_click": {},
     "tags": [
       "účastníci",
       "html",
       "css",
+      "js",
       "sql"
     ],
     "edited": false
@@ -668,16 +669,17 @@
     "description": "Zobrazuje celkový počet zapsaných / celkovou kapacitu a procento obsazenosti.",
     "html": "\n<div id=\"widget-kapacity-ucastniku\">\n  <span id=\"ikona-kapacity-ucastniku\">👥</span>\n  <span id=\"popisek-kapacity-ucastniku\">Kapacita: celkem_zapsanych/celkova_kapacita</span>\n  <div id=\"pozadi-kapacity-ucastniku\">\n    <div id=\"vypln-kapacity-ucastniku\" style=\"width: procento_obsazenosti_ucastniku%\"></div>\n  </div>\n  <span id=\"procenta-kapacity-ucastniku\">procento_obsazenosti_ucastniku%</span>\n</div>\n",
     "css": "\n#widget-kapacity-ucastniku {\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  padding: 6px 16px;\n  background: #18181b;\n  border: 1px solid #3f3f46;\n  border-radius: 10px;\n  color: #e4e4e7;\n  font-size: 13px;\n  font-weight: 500;\n}\n\n#ikona-kapacity-ucastniku {\n  font-size: 15px;\n}\n\n#pozadi-kapacity-ucastniku {\n  width: 80px;\n  height: 8px;\n  background: #3f3f46;\n  border-radius: 9999px;\n  overflow: hidden;\n}\n\n#vypln-kapacity-ucastniku {\n  height: 100%;\n  background: #22c55e;\n  border-radius: 9999px;\n}\n\n#procenta-kapacity-ucastniku {\n  color: #22c55e;\n  font-weight: 700;\n}\n",
-    "js": "",
+    "js": "let procento_obsazenosti_ucastniku: number = celkem_zapsanych / celkova_kapacita * 100;\n\nprocento_obsazenosti_ucastniku = Number(procento_obsazenosti_ucastniku.toFixed(2));",
     "js_click": "",
     "sql": {
-      "celkova-kapacita-ucastniku": "SELECT COUNT(DISTINCT tu.id_ucastnika) AS celkem_zapsanych, SUM(DISTINCT t.kapacita) AS celkova_kapacita, (COUNT(DISTINCT tu.id_ucastnika) * 100) / SUM(DISTINCT t.kapacita) AS procento_obsazenosti_ucastniku FROM turnusy t LEFT JOIN turnusy_ucastnici tu ON t.id_turnusu = tu.id_turnusu"
+      "celkova-kapacita-ucastniku": "SELECT\n  (\n    SELECT COUNT(DISTINCT id_ucastnika)\n    FROM turnusy_ucastnici\n  ) AS celkem_zapsanych,\n  (\n    SELECT SUM(kapacita)\n    FROM turnusy\n  ) AS celkova_kapacita"
     },
     "sql_click": {},
     "tags": [
       "účastníci",
       "html",
       "css",
+      "js",
       "sql"
     ],
     "edited": false
@@ -1411,18 +1413,19 @@
     "id": "stitek-alergenu-vedouciho",
     "name": "Štítek alergenů vedoucího",
     "description": "Zobrazuje štítek s počtem alergenů vedoucího (zelený=0, růžový>=1). Vyžaduje generalVariable: idVedouciho.",
-    "html": "\n<div id=\"obal-stitku-alergenu-vedouciho\">html_alergenu_vedouciho</div>\n",
-    "css": "\n#obal-stitku-alergenu-vedouciho {\n  display: inline-flex;\n}\n\n.stitek-alergenu-vedouciho {\n  display: inline-flex;\n  align-items: center;\n  padding: 4px 14px;\n  border-radius: 9999px;\n  font-size: 12px;\n  font-weight: 600;\n  border: 1px solid transparent;\n}\n\n.stitek-alergenu-vedouciho-zadne {\n  background-color: #dcfce7;\n  border-color: #bbf7d0;\n  color: #15803d;\n}\n\n.stitek-alergenu-vedouciho-ma {\n  background-color: #fce7f3;\n  border-color: #fbcfe8;\n  color: #be185d;\n}\n",
-    "js": "",
+    "html": "<div class=\"stitek-alergenu-vedouciho\" style=\"background-color: barva;\">Alergeny: pocet_alergenu_vedouciho</div>",
+    "css": "\n.stitek-alergenu-vedouciho {\n  display: inline-flex;\n  align-items: center;\n  padding: 4px 14px;\n  border-radius: 9999px;\n  font-size: 12px;\n  font-weight: 600;\n  border: 1px solid transparent;\n}\n",
+    "js": "let barva = \"#FFFFFF\";\n  if (pocet_alergenu_vedouciho === 0) {\n    barva = \"#9aefb8\";\n  } else {\n    barva = \"#ea98ba\";\n  }",
     "js_click": "",
     "sql": {
-      "stitek-alergenu-vedouciho": "SELECT '<span class=\"stitek-alergenu-vedouciho ' || CASE WHEN COUNT(va.id_alergenu) = 0 THEN 'stitek-alergenu-vedouciho-zadne' ELSE 'stitek-alergenu-vedouciho-ma' END || '\">Alergeny: ' || COUNT(va.id_alergenu) || '</span>' AS html_alergenu_vedouciho FROM vedouci v LEFT JOIN vedouci_alergeny va ON v.id_vedouciho = va.id_vedouciho WHERE v.id_vedouciho = idVedouciho"
+      "pocet-alergenu-vedouciho": "SELECT COUNT(va.id_alergenu) AS pocet_alergenu_vedouciho\nFROM vedouci v\nJOIN vedouci_alergeny va\n  ON v.id_vedouciho = va.id_vedouciho\nWHERE v.id_vedouciho = idVedouciho;"
     },
     "sql_click": {},
     "tags": [
       "vedoucí",
       "html",
       "css",
+      "js",
       "sql"
     ],
     "edited": false

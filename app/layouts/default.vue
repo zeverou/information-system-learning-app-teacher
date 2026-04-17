@@ -8,6 +8,8 @@ const globalSettings = useGlobalSettingsStore()
 const systemsStore = useSystemsStore()
 
 const isSystemRoute = computed(() => /^\/systems\/[^/]+\//.test(route.path))
+const isFullscreenSystemPage = computed(() => route.meta.fullscreenSystemPage === true)
+const showSystemChrome = computed(() => isSystemRoute.value && !isFullscreenSystemPage.value)
 const teacherMode = computed(() => globalSettings.teacherMode)
 
 // Resizable right panel
@@ -38,13 +40,24 @@ function onDividerMousedown(e: MouseEvent) {
   window.addEventListener('mousemove', onMousemove)
   window.addEventListener('mouseup', onMouseup)
 }
+
+function openDesignerFromSidebar() {
+  mobileTasksOpen.value = false
+  navigateTo({
+    path: `/systems/${systemsStore.selectedSystemId}/designer`,
+    query: {
+      backTo: route.fullPath,
+      ...(globalSettings.selectedTaskId ? { taskId: globalSettings.selectedTaskId } : {}),
+    },
+  })
+}
 </script>
 
 <template>
   <div class="default-layout flex flex-col overflow-hidden bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
 
     <!-- System route: 2-column layout (desktop) / single column (mobile) -->
-    <div v-if="isSystemRoute" class="default-main flex flex-col lg:flex-row overflow-hidden" :class="{ 'select-none': isDragging }">
+    <div v-if="showSystemChrome" class="default-main flex flex-col lg:flex-row overflow-hidden" :class="{ 'select-none': isDragging }">
 
       <!-- Main column: nav bar + page content -->
       <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
@@ -69,20 +82,29 @@ function onDividerMousedown(e: MouseEvent) {
           <SystemToolbar />
         </div>
 
-        <!-- Task list (student mode only) -->
-        <template v-if="!teacherMode">
-          <div class="flex-shrink-0 px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+        <div class="flex-shrink-0 px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+          <div class="flex items-center gap-3">
             <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ t('tasks') }}</h2>
-            <UBadge color="red" variant="subtle" size="lg" class="font-bold px-3">
-              {{ t('score') }}: {{ systemsStore.selectedSystem?.score.score ?? 0 }}
-            </UBadge>
+            <UButton
+              v-if="teacherMode"
+              icon="i-lucide-pencil-ruler"
+              color="teacher"
+              variant="soft"
+              size="sm"
+              @click="openDesignerFromSidebar"
+            >
+              {{ t('go_to_designer') }}
+            </UButton>
           </div>
-          <div class="flex-1 overflow-hidden">
-            <CustomScrollbar>
-              <TaskList />
-            </CustomScrollbar>
-          </div>
-        </template>
+          <UBadge v-if="!teacherMode" color="red" variant="subtle" size="lg" class="font-bold px-3">
+            {{ t('score') }}: {{ systemsStore.selectedSystem?.score.score ?? 0 }}
+          </UBadge>
+        </div>
+        <div class="flex-1 overflow-hidden">
+          <CustomScrollbar>
+            <TaskList />
+          </CustomScrollbar>
+        </div>
       </div>
 
       <!-- Mobile/tablet slideover (bottom) -->
@@ -95,20 +117,29 @@ function onDividerMousedown(e: MouseEvent) {
               <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="sm" @click="mobileTasksOpen = false" />
             </div>
 
-            <!-- Task list (student mode only) -->
-            <template v-if="!teacherMode">
-              <div class="flex-shrink-0 px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+            <div class="flex-shrink-0 px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+              <div class="flex items-center gap-3">
                 <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ t('tasks') }}</h2>
-                <UBadge color="red" variant="subtle" size="lg" class="font-bold px-3">
-                  {{ t('score') }}: {{ systemsStore.selectedSystem?.score.score ?? 0 }}
-                </UBadge>
+                <UButton
+                  v-if="teacherMode"
+                  icon="i-lucide-pencil-ruler"
+                  color="teacher"
+                  variant="soft"
+                  size="sm"
+                  @click="openDesignerFromSidebar"
+                >
+                  {{ t('go_to_designer') }}
+                </UButton>
               </div>
-              <div class="flex-1 overflow-hidden">
-                <CustomScrollbar>
-                  <TaskList />
-                </CustomScrollbar>
-              </div>
-            </template>
+              <UBadge v-if="!teacherMode" color="red" variant="subtle" size="lg" class="font-bold px-3">
+                {{ t('score') }}: {{ systemsStore.selectedSystem?.score.score ?? 0 }}
+              </UBadge>
+            </div>
+            <div class="flex-1 overflow-hidden">
+              <CustomScrollbar>
+                <TaskList />
+              </CustomScrollbar>
+            </div>
           </div>
         </template>
       </USlideover>

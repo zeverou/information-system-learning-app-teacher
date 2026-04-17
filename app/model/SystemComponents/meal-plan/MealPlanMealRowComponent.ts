@@ -1,32 +1,18 @@
-﻿import { Component } from "~/model/Component";
+import { Component } from "~/model/Component";
 
 export const jidelnicekRadekJidlaKomponenta = new Component({
   id: "jidelnicek-radek-jidla",
   name: "Jídelníček – Řádek jídla",
   tags: ["jídelníček"],
-  description: `Řádek jídla v akordéonu jídelníčku s názvem, alergeny a dobou podávání. Vyžaduje generalVariable: idJidla.`,
+  description: `Zobrazuje název jídla v akordéonu jídelníčku. Vyžaduje generalVariable: idJidla.`,
   html: `
-<div id="jidelnicek-radek-jidla-kontejner">
-  <div id="jidelnicek-jidlo-levy">
-    <span id="jidelnicek-jidlo-ikona">🍽️</span>
-    <div id="jidelnicek-jidlo-info">
-      <span id="jidelnicek-jidlo-nazev">nazev_jidla_jidelnicku</span>
-      <div id="jidelnicek-jidlo-alergeny">html_alergenu_jidelnicku</div>
-    </div>
-  </div>
-  <span id="jidelnicek-jidlo-doba-stitek">doba_podavani_jidelnicku</span>
+<div id="jidelnicek-jidlo-nazev-kontejner">
+  <span id="jidelnicek-jidlo-ikona">🍽️</span>
+  <span id="jidelnicek-jidlo-nazev">nazev_jidla_jidelnicku</span>
 </div>
 `,
   css: `
-#jidelnicek-radek-jidla-kontejner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-}
-
-#jidelnicek-jidlo-levy {
+#jidelnicek-jidlo-nazev-kontejner {
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -38,19 +24,30 @@ export const jidelnicekRadekJidlaKomponenta = new Component({
   flex-shrink: 0;
 }
 
-#jidelnicek-jidlo-info {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 #jidelnicek-jidlo-nazev {
   font-size: 15px;
   font-weight: 700;
   color: #111827;
 }
+`,
+  js: ``,
+  js_click: ``,
+  sql: {
+    "jidelnicek-radek-jidla": `SELECT j.jmeno AS nazev_jidla_jidelnicku FROM jidla j WHERE j.id_jidla = idJidla`
+  },
+  sql_click: {}
+});
 
-#jidelnicek-jidlo-alergeny {
+export const jidelnicekAlergenyJidlaKomponenta = new Component({
+  id: "jidelnicek-alergeny-jidla",
+  name: "Jídelníček – Alergeny jídla",
+  tags: ["jídelníček"],
+  description: `Zobrazuje alergeny jídla v akordéonu jídelníčku. Vyžaduje generalVariable: idJidla.`,
+  html: `
+<div id="jidelnicek-jidlo-alergeny-idJidla"></div>
+`,
+  css: `
+[id^="jidelnicek-jidlo-alergeny-"] {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
@@ -67,7 +64,38 @@ export const jidelnicekRadekJidlaKomponenta = new Component({
   border: 1px solid #fbcfe8;
   color: #be185d;
 }
+`,
+  js: `
+  const alergenyJidelnicku = typeof alergeny_jidelnicku === 'undefined' ? [] : (Array.isArray(alergeny_jidelnicku) ? alergeny_jidelnicku : [alergeny_jidelnicku]);
 
+  const seznamAlergenuJidelnicku = document.querySelector('#jidelnicek-jidlo-alergeny-' + idJidla);
+  if (seznamAlergenuJidelnicku) {
+    seznamAlergenuJidelnicku.innerHTML = '';
+
+    alergenyJidelnicku.forEach(function(text) {
+      const span = document.createElement('span');
+      span.className = 'pilulka-alergenu-jidelnicku';
+      span.textContent = text;
+
+      seznamAlergenuJidelnicku.appendChild(span);
+    });
+  }`,
+  js_click: ``,
+  sql: {
+    "jidelnicek-alergeny-jidla": `SELECT a.jmeno AS alergeny_jidelnicku FROM alergeny a JOIN jidla_alergeny ja ON a.id_alergenu = ja.id_alergenu WHERE ja.id_jidla = idJidla`
+  },
+  sql_click: {}
+});
+
+export const jidelnicekDobaPodavaniJidlaKomponenta = new Component({
+  id: "jidelnicek-doba-podavani-jidla",
+  name: "Jídelníček – Doba podávání jídla",
+  tags: ["jídelníček"],
+  description: `Zobrazuje dobu podávání jídla v akordéonu jídelníčku. Vyžaduje generalVariable: idJidla.`,
+  html: `
+  <span id="jidelnicek-jidlo-doba-stitek">doba_podavani_jidelnicku</span>
+`,
+  css: `
 #jidelnicek-jidlo-doba-stitek {
   display: inline-flex;
   align-items: center;
@@ -84,8 +112,7 @@ export const jidelnicekRadekJidlaKomponenta = new Component({
   js: ``,
   js_click: ``,
   sql: {
-    "jidelnicek-radek-jidla": `SELECT j.jmeno AS nazev_jidla_jidelnicku, j.doba_podavani AS doba_podavani_jidelnicku, COALESCE(GROUP_CONCAT('<span class="pilulka-alergenu-jidelnicku">' || a.jmeno || '</span>', ''), '') AS html_alergenu_jidelnicku FROM jidla j LEFT JOIN jidla_alergeny ja ON j.id_jidla = ja.id_jidla LEFT JOIN alergeny a ON ja.id_alergenu = a.id_alergenu WHERE j.id_jidla = idJidla GROUP BY j.id_jidla, j.jmeno, j.doba_podavani`
+    "jidelnicek-doba-podavani-jidla": `SELECT j.doba_podavani AS doba_podavani_jidelnicku FROM jidla j WHERE j.id_jidla = idJidla`
   },
   sql_click: {}
 });
-

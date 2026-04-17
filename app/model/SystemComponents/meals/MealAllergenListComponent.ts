@@ -8,7 +8,7 @@ export const seznamAlergenuJidlaKomponenta = new Component({
   html: `
 <div id="sekce-alergenu-jidla">
   <div id="popisek-alergenu-jidla">Alergeny:</div>
-  <div id="pilulky-alergenu-jidla">html_alergenu_jidla</div>
+  <div id="pilulky-alergenu-jidla-idJidla"></div>
 </div>
 `,
   css: `
@@ -42,11 +42,27 @@ export const seznamAlergenuJidlaKomponenta = new Component({
   color: #be185d;
 }
 `,
-  js: ``,
+  js: `
+  const seznamAlergenu = typeof alergeny === 'undefined' ? [] : (Array.isArray(alergeny) ? alergeny : [alergeny]);
+
+  const list = document.querySelector('#pilulky-alergenu-jidla-' + idJidla);
+  if (list) {
+    list.innerHTML = '';
+
+    seznamAlergenu.forEach(function(text) {
+      const span = document.createElement('span');
+      span.className = 'pilulka-alergenu-jidla';
+      span.textContent = text;
+
+      list.appendChild(span);
+    });
+  }`,
   js_click: ``,
   sql: {
-    "seznam-alergenu-jidla": `SELECT COALESCE(GROUP_CONCAT('<span class="pilulka-alergenu-jidla">' || a.jmeno || '</span>', ''), '') AS html_alergenu_jidla FROM jidla j LEFT JOIN jidla_alergeny ja ON j.id_jidla = ja.id_jidla LEFT JOIN alergeny a ON ja.id_alergenu = a.id_alergenu WHERE j.id_jidla = idJidla`
+    "seznam-alergenu-jidla": `SELECT a.jmeno AS alergeny
+FROM alergeny a
+JOIN jidla_alergeny ja ON a.id_alergenu = ja.id_alergenu
+WHERE ja.id_jidla = idJidla`
   },
   sql_click: {}
 });
-

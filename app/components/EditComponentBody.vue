@@ -6,15 +6,6 @@
       <UButton icon="i-lucide-plus" color="neutral" variant="ghost" @click="sizeMultiplier += 0.05" />
     </div>
 
-    <div class="flex flex-row gap-2 w-full items-center">
-      <USelect id="query-select" v-model="selectedSqlQuery" :items="sqlQueryNames" placeholder="Vyberte SQL dotaz"
-        class="flex-1" :disabled="Object.keys(sqlRecord).length === 1" />
-      <UBadge color="neutral" variant="subtle" size="md">{{ sqlQueryNames.length }}</UBadge>
-      <UButton icon="i-lucide-plus" @click="addQuery" size="md" class="aspect-square shrink-0" />
-      <UButton icon="i-lucide-minus" @click="removeQuery" size="md" color="red" variant="subtle"
-        class="aspect-square shrink-0" :disabled="sqlQueryNames.length <= 1" />
-    </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 w-full">
       <CodeBlock v-model:code="editedHtml" language="html" label="HTML" height="400px" :correct="undefined"
         :size-multiplier="sizeMultiplier" />
@@ -22,17 +13,27 @@
         :size-multiplier="sizeMultiplier" />
       <CodeBlock v-model:code="editedJs" language="typescript" label="JS" height="400px" :correct="undefined"
         :protected-prefix="jsVarsHeader || undefined" :size-multiplier="sizeMultiplier" />
-      <CodeBlock v-model:code="editedSql" language="sql" label="SQL" height="400px" :correct="isEditedSqlValid"
-        :size-multiplier="sizeMultiplier" />
+      <div class="flex flex-col gap-2">
+        <div class="flex flex-row gap-2 w-full items-center">
+          <USelect id="query-select" v-model="selectedSqlQuery" :items="sqlQueryNames" :placeholder="t('select_sql_query')"
+            class="flex-1" :disabled="Object.keys(sqlRecord).length === 1" />
+          <UBadge color="neutral" variant="subtle" size="md">{{ sqlQueryNames.length }}</UBadge>
+          <UButton icon="i-lucide-plus" @click="addQuery" size="md" class="aspect-square shrink-0" />
+          <UButton icon="i-lucide-minus" @click="removeQuery" size="md" color="red" variant="subtle"
+            class="aspect-square shrink-0" :disabled="sqlQueryNames.length <= 1" />
+        </div>
+        <CodeBlock v-model:code="editedSql" language="sql" label="SQL" height="400px" :correct="isEditedSqlValid"
+          :size-multiplier="sizeMultiplier" />
+      </div>
     </div>
 
-    <USeparator label="Click Actions" />
+    <USeparator :label="t('click_actions')" />
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
       <div class="flex flex-col gap-2">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">JS Click Action</span>
-          <UButton v-if="!editedJsClick" icon="i-lucide-plus" size="xs" variant="ghost" label="Add Action"
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('js_click_action') }}</span>
+          <UButton v-if="!editedJsClick" icon="i-lucide-plus" size="xs" variant="ghost" :label="t('add_action')"
             @click="editedJsClick = '// click logic here'" />
           <UButton v-else icon="i-lucide-trash-2" size="xs" variant="ghost" color="red" @click="editedJsClick = ''" />
         </div>
@@ -42,13 +43,13 @@
         <div v-else
           class="flex flex-row items-center gap-2 py-4 px-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700">
           <UIcon name="i-lucide-mouse-pointer-2" class="w-5 h-5 text-gray-400" />
-          <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">No JS click action defined</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ t('no_js_click_action') }}</p>
         </div>
       </div>
 
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider shrink-0">SQL Click Actions</span>
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider shrink-0">{{ t('sql_click_actions') }}</span>
           <USelect v-if="sqlClickQueryNames.length > 0" v-model="selectedSqlClickQuery" :items="sqlClickQueryNames"
             placeholder="Select SQL click query" size="xs" class="flex-1"
             :disabled="sqlClickQueryNames.length <= 1" />
@@ -66,7 +67,7 @@
         <div v-else
           class="flex flex-row items-center gap-2 py-4 px-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700">
           <UIcon name="i-lucide-database-zap" class="w-5 h-5 text-gray-400" />
-          <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">No SQL click actions defined</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ t('no_sql_click_action') }}</p>
         </div>
       </div>
     </div>
@@ -74,7 +75,7 @@
     <USeparator />
 
     <div v-if="generalVariableNames.length > 0" class="mt-2 text-left">
-      <p class="text-xs text-left font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-2">Available General variables</p>
+      <p class="text-xs text-left font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-2">{{ t('available_general_variables') }}</p>
       <div class="flex flex-wrap gap-2 text-left">
         <div v-for="name in generalVariableNames" :key="name" class="general-var-card text-left">
           <span class="general-var-name">{{ name }}</span>
@@ -84,7 +85,7 @@
     </div>
 
     <div v-if="sqlVariableNames.length > 0" class="mt-2">
-      <p class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2">Available SQL variables</p>
+      <p class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2">{{ t('available_sql_variables') }}</p>
       <div class="flex flex-wrap gap-2">
         <div v-for="name in sqlVariableNames" :key="name" class="sql-var-card">
           <span class="sql-var-name">{{ name }}</span>
@@ -94,7 +95,7 @@
     </div>
 
     <div v-if="jsVariableNames.length > 0" class="mt-2">
-      <p class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2">Available JS variables</p>
+      <p class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2">{{ t('available_js_variables') }}</p>
       <div class="flex flex-wrap gap-2">
         <div v-for="name in jsVariableNames" :key="name" class="js-var-card">
           <span class="js-var-name">{{ name }}</span>
@@ -109,6 +110,7 @@
 <script setup lang="ts">
 import type { QueryExecResult } from 'sql.js';
 import { ref, watch, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { SqlHandler } from '~/core/SqlHandler';
 import { JsHandler } from '~/core/JsHandler';
 import { Component as SystemComponent } from '~/model/Component';
@@ -123,6 +125,8 @@ const props = defineProps<{
   component: SystemComponent;
   variables?: ComponentVariables;
 }>();
+
+const { t } = useI18n();
 
 const emit = defineEmits<{
   (e: 'validation-change', isValid: boolean): void;

@@ -187,12 +187,12 @@ INSERT INTO turnusy (id_turnusu, datum_od, datum_do, kapacita) VALUES
 (3,'2025-07-21','2025-07-30',15);
 
 INSERT INTO vedouci (id_vedouciho, jmeno, email, rodne_cislo, telefon, adresa, vek) VALUES
-(1,'Petr Novotný','petr.novotny@example.com','750101/1234','+420 601 111 111','Hlavní 1, Praha',35),
-(2,'Jana Svobodová','jana.svobodova@example.com','820202/2345','+420 602 222 222','Masarykova 2, Brno',32),
-(3,'Martin Dvořák','martin.dvorak@example.com','790303/3456','+420 603 333 333','Komenského 3, Ostrava',40),
-(4,'Eva Procházková','eva.prochazkova@example.com','850404/4567','+420 604 444 444','Smetanova 4, Plzeň',29),
-(5,'Tomáš Král','tomas.kral.supervisor@example.com','780505/5678','+420 605 555 555','Jiráskova 5, Liberec',38),
-(6,'Lucie Bláhová','lucie.blahova@example.com','830606/6789','+420 606 666 666','Palackého 6, Zlín',31);
+(1,'Petr Novotný','petr.novotny@example.com','750101/1234','+420 601 111 111','Hlavní 1, Praha, 110 00',35),
+(2,'Jana Svobodová','jana.svobodova@example.com','820202/2345','+420 602 222 222','Masarykova 2, Brno, 602 00',32),
+(3,'Martin Dvořák','martin.dvorak@example.com','790303/3456','+420 603 333 333','Komenského 3, Ostrava, 702 00',40),
+(4,'Eva Procházková','eva.prochazkova@example.com','850404/4567','+420 604 444 444','Smetanova 4, Plzeň, 301 00',29),
+(5,'Tomáš Král','tomas.kral.supervisor@example.com','780505/5678','+420 605 555 555','Jiráskova 5, Liberec, 460 01',38),
+(6,'Lucie Bláhová','lucie.blahova@example.com','830606/6789','+420 606 666 666','Palackého 6, Zlín, 760 01',31);
 
 INSERT INTO vedouci_alergeny (id_vedouciho, id_alergenu) VALUES
 (1,1),(3,1),(3,3),(5,1),(5,14),(6,2),(6,6);
@@ -201,36 +201,36 @@ INSERT INTO vedouci_turnusy (id_turnusu, id_vedouciho) VALUES
 (1,1),(1,2),(2,3),(2,4),(3,5),(3,6);
 
 INSERT INTO ucastnici (id_ucastnika, jmeno, email, rodne_cislo, telefon, adresa, vek) VALUES
-(1,'Tereza Nováková','tereza.novakova@example.com','045217/1234','+420 601 123 456','Náměstí Míru 12, Praha',12),
-(2,'Jan Dvořák','jan.dvorak@example.com','071015/2345','+420 721 456 789','Jiráskova 8, Brno',14),
-(3,'Anna Svobodová','anna.svobodova@example.com','091208/3456','+420 737 789 123','Komenského 22, Ostrava',13),
-(4,'Lukáš Černý','lukas.cerny@example.com','100312/4567','+420 601 555 789','Masarykova 11, Plzeň',10),
-(5,'Eliška Procházková','eliska.prochazkova@example.com','120505/5678','+420 602 987 654','Smetanova 3, Liberec',12),
-(6,'Tomáš Král','tomas.kral@example.com','110801/6789','+420 775 123 987','Husova 7, Olomouc',11),
-(7,'Barbora Veselá','barbora.vesela@example.com','131217/7890','+420 723 345 678','Benešova 15, Zlín',13),
-(8,'Jakub Němec','jakub.nemec@example.com','100405/8901','+420 777 123 321','Na Příkopě 4, Praha',10),
-(9,'Adéla Horáková','adela.horakova@example.com','121106/9012','+420 602 555 888','Dlouhá 9, České Budějovice',12),
-(10,'David Marek','david.marek@example.com','080723/0123','+420 737 444 321','Zahradní 20, Karlovy Vary',8),
-(11,'Veronika Bláhová','veronika.blahova@example.com','140219/1324','+420 701 212 111','Palackého 14, Jihlava',14),
-(12,'Filip Beneš','filip.benes@example.com','090402/3456','+420 777 654 321','Riegrova 18, Pardubice',9),
-(13,'Karolína Fialová','karolina.fialova@example.com','100707/7788','+420 602 333 999','Tylova 2, Hradec Králové',10),
-(14,'Matěj Malý','matej.maly@example.com','070811/4455','+420 775 998 877','Petrova 5, Ústí nad Labem',7),
-(15,'Lucie Kolářová','lucie.kolarova@example.com','130405/1234','+420 703 456 789','Kollárova 9, Teplice',13),
-(16,'Ondřej Růžička','ondrej.ruzicka@example.com','091101/6655','+420 605 888 777','Vrchlického 13, Havířov',12),
-(17,'Klára Kovářová','klara.kovarova@example.com','121004/2323','+420 736 789 001','Pionýrů 6, Opava',11),
-(18,'Vojtěch Jelínek','vojtech.jelinek@example.com','070501/3344','+420 703 333 666','Mlýnská 3, Karviná',7),
-(19,'Simona Urbanová','simona.urbanova@example.com','101005/1122','+420 705 666 444','Sladkovského 7, Třebíč',10),
-(20,'Petr Konečný','petr.konecny@example.com','090918/7788','+420 776 555 222','Znojemská 1, Znojmo',9),
-(21,'Kateřina Holubová','katerina.holubova@example.com','130302/4466','+420 702 777 000','Hlavní 16, Příbram',13),
-(22,'Štěpán Polák','stepan.polak@example.com','071217/5566','+420 733 222 555','Čechova 4, Prostějov',14),
-(23,'Alena Hrušková','alena.hruskova@example.com','080710/6677','+420 604 321 654','Lidická 5, Kladno',8),
-(24,'Dominik Mach','dominik.mach@example.com','111104/7788','+420 739 123 456','Žižkova 14, Mladá Boleslav',11),
-(25,'Kristýna Němcová','kristyna.nemcova@example.com','060809/8899','+420 757 111 222','Kovářská 20, Uherské Hradiště',12),
-(26,'Michal Hlaváček','michal.hlavecek@example.com','041116/9900','+420 774 234 567','Špitálská 12, Třinec',10),
-(27,'Denisa Kolmanová','denisa.kolmanova@example.com','150709/2222','+420 766 444 333','Tovární 8, Frýdek-Místek',14),
-(28,'Jindřich Kříž','jindrich.kriz@example.com','080104/4455','+420 777 222 888','Nádražní 3, Kroměříž',9),
-(29,'Lucie Klímová','lucie.klimova@example.com','090903/6677','+420 777 333 444','Tylova 19, Valašské Meziříčí',12),
-(30,'Jakub Mareš','jakub.mares@example.com','110506/7788','+420 602 333 444','Koliště 16, Opava',13);
+(1,'Tereza Nováková','tereza.novakova@example.com','045217/1234','+420 601 123 456','Náměstí Míru 12, Praha, 120 00',12),
+(2,'Jan Dvořák','jan.dvorak@example.com','071015/2345','+420 721 456 789','Jiráskova 8, Brno, 602 00',14),
+(3,'Anna Svobodová','anna.svobodova@example.com','091208/3456','+420 737 789 123','Komenského 22, Ostrava, 702 00',13),
+(4,'Lukáš Černý','lukas.cerny@example.com','100312/4567','+420 601 555 789','Masarykova 11, Plzeň, 301 00',10),
+(5,'Eliška Procházková','eliska.prochazkova@example.com','120505/5678','+420 602 987 654','Smetanova 3, Liberec, 460 01',12),
+(6,'Tomáš Král','tomas.kral@example.com','110801/6789','+420 775 123 987','Husova 7, Olomouc, 779 00',11),
+(7,'Barbora Veselá','barbora.vesela@example.com','131217/7890','+420 723 345 678','Benešova 15, Zlín, 760 01',13),
+(8,'Jakub Němec','jakub.nemec@example.com','100405/8901','+420 777 123 321','Na Příkopě 4, Praha, 110 00',10),
+(9,'Adéla Horáková','adela.horakova@example.com','121106/9012','+420 602 555 888','Dlouhá 9, České Budějovice, 370 01',12),
+(10,'David Marek','david.marek@example.com','080723/0123','+420 737 444 321','Zahradní 20, Karlovy Vary, 360 01',8),
+(11,'Veronika Bláhová','veronika.blahova@example.com','140219/1324','+420 701 212 111','Palackého 14, Jihlava, 586 01',14),
+(12,'Filip Beneš','filip.benes@example.com','090402/3456','+420 777 654 321','Riegrova 18, Pardubice, 530 02',9),
+(13,'Karolína Fialová','karolina.fialova@example.com','100707/7788','+420 602 333 999','Tylova 2, Hradec Králové, 500 02',10),
+(14,'Matěj Malý','matej.maly@example.com','070811/4455','+420 775 998 877','Petrova 5, Ústí nad Labem, 400 01',7),
+(15,'Lucie Kolářová','lucie.kolarova@example.com','130405/1234','+420 703 456 789','Kollárova 9, Teplice, 415 01',13),
+(16,'Ondřej Růžička','ondrej.ruzicka@example.com','091101/6655','+420 605 888 777','Vrchlického 13, Havířov, 736 01',12),
+(17,'Klára Kovářová','klara.kovarova@example.com','121004/2323','+420 736 789 001','Pionýrů 6, Opava, 746 01',11),
+(18,'Vojtěch Jelínek','vojtech.jelinek@example.com','070501/3344','+420 703 333 666','Mlýnská 3, Karviná, 733 01',7),
+(19,'Simona Urbanová','simona.urbanova@example.com','101005/1122','+420 705 666 444','Sladkovského 7, Třebíč, 674 01',10),
+(20,'Petr Konečný','petr.konecny@example.com','090918/7788','+420 776 555 222','Znojemská 1, Znojmo, 669 02',9),
+(21,'Kateřina Holubová','katerina.holubova@example.com','130302/4466','+420 702 777 000','Hlavní 16, Příbram, 261 01',13),
+(22,'Štěpán Polák','stepan.polak@example.com','071217/5566','+420 733 222 555','Čechova 4, Prostějov, 796 01',14),
+(23,'Alena Hrušková','alena.hruskova@example.com','080710/6677','+420 604 321 654','Lidická 5, Kladno, 272 01',8),
+(24,'Dominik Mach','dominik.mach@example.com','111104/7788','+420 739 123 456','Žižkova 14, Mladá Boleslav, 293 01',11),
+(25,'Kristýna Němcová','kristyna.nemcova@example.com','060809/8899','+420 757 111 222','Kovářská 20, Uherské Hradiště, 686 01',12),
+(26,'Michal Hlaváček','michal.hlavecek@example.com','041116/9900','+420 774 234 567','Špitálská 12, Třinec, 739 61',10),
+(27,'Denisa Kolmanová','denisa.kolmanova@example.com','150709/2222','+420 766 444 333','Tovární 8, Frýdek-Místek, 738 01',14),
+(28,'Jindřich Kříž','jindrich.kriz@example.com','080104/4455','+420 777 222 888','Nádražní 3, Kroměříž, 767 01',9),
+(29,'Lucie Klímová','lucie.klimova@example.com','090903/6677','+420 777 333 444','Tylova 19, Valašské Meziříčí, 757 01',12),
+(30,'Jakub Mareš','jakub.mares@example.com','110506/7788','+420 602 333 444','Koliště 16, Opava, 746 01',13);
 
 INSERT INTO turnusy_ucastnici (id_ucastnika, id_turnusu) VALUES
 (1,1),(2,1),(3,1),(4,1),(5,1),(6,1),(7,1),(8,1),(9,1),(10,1),
@@ -405,3 +405,11 @@ INSERT INTO ucastnici_jidla (id_jidla, id_ucastnika, datum_podavani) VALUES
 (10,8,'2025-07-10'),(20,8,'2025-07-10'),(30,8,'2025-07-10'),
 (10,9,'2025-07-10'),(20,9,'2025-07-10'),(30,9,'2025-07-10'),
 (10,10,'2025-07-10'),(20,10,'2025-07-10');
+
+INSERT OR IGNORE INTO ucastnici_jidla (id_jidla, id_ucastnika, datum_podavani)
+SELECT kj.id_jidla, tu.id_ucastnika, kj.datum
+FROM kniha_jidel kj
+JOIN turnusy t
+  ON DATE(kj.datum) BETWEEN DATE(t.datum_od) AND DATE(t.datum_do)
+JOIN turnusy_ucastnici tu
+  ON tu.id_turnusu = t.id_turnusu;

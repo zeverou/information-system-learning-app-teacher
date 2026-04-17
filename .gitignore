@@ -55,4 +55,5 @@ app/pages/demo.vue
 /cypress/screenshots
 /cypress/videos
 
-
+/CONTEXT/
+todo.md
