@@ -2,10 +2,7 @@
     <div class="p-6">
         <div class="flex items-center gap-2 mb-6">
             <UBadge color="neutral" variant="subtle" size="lg">
-                <span>Tables: {{ tableNames.length }}</span>
-            </UBadge>
-            <UBadge :color="isDbReady ? 'green' : 'red'" variant="subtle" size="lg">
-                <span>Ready: {{ isDbReady ? 'Yes' : 'No' }}</span>
+                <span>{{ t('tables') }}: {{ tableNames.length }}</span>
             </UBadge>
             <UButton v-if="!isDbReady" @click="handleCheckReady" icon="i-heroicons-shield-check" color="sky"
                 variant="soft" size="sm" :loading="isChecking">
@@ -15,6 +12,16 @@
                 variant="soft" size="sm" :loading="isInitializing">
                 Initialize Database
             </UButton>
+            <ModernHoverPopover
+                :title="t('refresh_database_popover_title')"
+                :description="t('refresh_database_popover_description')"
+                icon="i-heroicons-circle-stack"
+            >
+                <UButton @click="handleRefreshDatabase" icon="i-heroicons-circle-stack" color="orange"
+                    variant="soft" size="sm" :loading="isRefreshingDatabase">
+                    {{ t('refresh_database') }}
+                </UButton>
+            </ModernHoverPopover>
         </div>
 
         <div v-if="isDbReady" class="flex flex-col gap-4">
@@ -26,8 +33,7 @@
                 <span class="text-sm text-gray-500 whitespace-nowrap">{{ tablePage }} / {{ tableTotalPages }}</span>
                 <UButton icon="i-heroicons-chevron-right" variant="soft" color="neutral" size="sm"
                     :disabled="tablePage >= tableTotalPages" @click="tablePage++" />
-                <span class="text-xs text-gray-400 whitespace-nowrap">{{ tableRowCount }} row{{ tableRowCount === 1 ? ''
-                    : 's' }}</span>
+                <span class="text-xs text-gray-400 whitespace-nowrap">{{ tableRowCount }} {{ t('rows') }}</span>
             </div>
             <div class="h-[420px] overflow-y-auto">
                 <DatabaseTable v-if="value" :queryResult="tableQueryResult" :page="tablePage" :tableName="value"
@@ -45,18 +51,11 @@
 
         <!-- Query Execution -->
         <div class="flex flex-col gap-4">
-            <CodeBlock v-model:code="query" language="sql" label="SQL Query" height="125px" />
-            <div class="flex justify-between items-center">
-                <UBadge :color="isQueryValid ? 'green' : 'red'" variant="subtle" size="lg">
-                    <span class="flex items-center gap-1">
-                        <UIcon :name="isQueryValid ? 'i-heroicons-check-circle' : 'i-heroicons-x-circle'"
-                            class="w-5 h-5" />
-                        {{ isQueryValid ? 'Valid SQL' : 'Invalid SQL' }}
-                    </span>
-                </UBadge>
+            <CodeBlock v-model:code="query" language="sql" :label="t('sql_query')" height="125px" :correct="isQueryValid" />
+            <div class="flex justify-end items-center">
                 <UButton @click="handleExecuteQuery" icon="i-heroicons-arrow-path" color="teacher" variant="soft"
                     size="lg" :loading="isExecuting" :disabled="!isQueryValid">
-                    Execute Query
+                    {{ t('execute_query') }}
                 </UButton>
             </div>
             <DatabaseTable v-if="queryResult !== null" :queryResult="queryResult" :page="queryPage"
@@ -67,8 +66,7 @@
                 <span class="text-sm text-gray-500 whitespace-nowrap">{{ queryPage }} / {{ queryTotalPages }}</span>
                 <UButton icon="i-heroicons-chevron-right" variant="soft" color="neutral" size="sm"
                     :disabled="queryPage >= queryTotalPages" @click="queryPage++" />
-                <span class="text-xs text-gray-400 whitespace-nowrap">{{ queryRowCount }} row{{ queryRowCount === 1 ? ''
-                    : 's' }}</span>
+                <span class="text-xs text-gray-400 whitespace-nowrap">{{ queryRowCount }} {{ t('rows') }}</span>
             </div>
         </div>
     </div>
@@ -83,6 +81,8 @@ import { OperationResultType } from '~/utils/OperationResultType'
 
 const route = useRoute()
 const systemsStore = useSystemsStore()
+const { t } = useI18n()
+const toast = useToast()
 
 
 
@@ -111,6 +111,7 @@ watch(value, async (tableName) => {
 const isDbReady = ref(false)
 const isInitializing = ref(false)
 const isChecking = ref(false)
+const isRefreshingDatabase = ref(false)
 
 const query = ref('')
 
@@ -186,6 +187,34 @@ async function handleInitialize() {
         } finally {
             isInitializing.value = false
         }
+    }
+}
+
+async function handleRefreshDatabase() {
+    const system = systemsStore.selectedSystem
+    if (!system?.database) {
+        toast.add({ title: t('refresh_database_error'), color: 'red', icon: 'i-lucide-alert-triangle' })
+        return
+    }
+
+    isRefreshingDatabase.value = true
+    try {
+        await system.database.resetDatabase()
+        await systemsStore.updateSystem(system)
+
+        value.value = ''
+        tableQueryResult.value = null
+        queryResult.value = null
+        tablePage.value = 1
+        queryPage.value = 1
+        await loadDatabaseInfo()
+
+        toast.add({ title: t('refresh_database_success'), color: 'primary', icon: 'i-lucide-check-circle' })
+    } catch (error) {
+        console.error("Failed to refresh database", error)
+        toast.add({ title: t('refresh_database_error'), color: 'red', icon: 'i-lucide-alert-triangle' })
+    } finally {
+        isRefreshingDatabase.value = false
     }
 }
 

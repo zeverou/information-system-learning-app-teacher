@@ -404,6 +404,8 @@
     "correct_badge": "Correct",
     "incorrect_badge": "Incorrect",
     "select_sql_query": "Select SQL query",
+    "refresh_database_popover_title": "Refresh database",
+    "refresh_database_popover_description": "Returns all tables to their original state.",
     "available_general_variables": "Available General variables",
     "available_sql_variables": "Available SQL variables",
     "available_js_variables": "Available JS variables"

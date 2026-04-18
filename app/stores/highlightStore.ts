@@ -18,7 +18,7 @@ export const useHighlightStore = defineStore('highlight', () => {
 
     function toggleHighlight() {
         // if highlight is on, so we it being turned off -> clear the selected ones
-        if (isEditModeActive.value) {
+        if (isHighlightActive.value) {
             selectedHighlightedComponentsIds.value = new Set();
         }
         isHighlightActive.value = !isHighlightActive.value;

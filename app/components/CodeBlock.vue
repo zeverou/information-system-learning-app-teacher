@@ -3,7 +3,7 @@
         <div v-if="label || language" class="code-header">
             <div class="flex items-center gap-2">
                 <span class="language-badge" :class="getLanguageClass">{{ label || language }}</span>
-                <UBadge v-if="correct !== undefined" :color="correct ? 'green' : 'red'" variant="subtle" size="sm">
+                <UBadge v-if="showCorrectBadge" :color="correct ? 'green' : 'red'" variant="subtle" size="sm">
                     {{ correct ? t('correct_badge') : t('incorrect_badge') }}
                 </UBadge>
             </div>
@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, getCurrentInstance } from 'vue'
 import { VueMonacoEditor } from '@guolao/vue-monaco-editor'
 import { useI18n } from 'vue-i18n'
 
@@ -53,6 +53,21 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits(['update:code', 'change'])
+const instance = getCurrentInstance()
+const showCorrectBadge = computed(() => {
+    const vnodeProps = instance?.vnode.props ?? {}
+    const hasCorrectProp = Object.prototype.hasOwnProperty.call(vnodeProps, 'correct')
+        || Object.prototype.hasOwnProperty.call(vnodeProps, 'correct-value')
+        
+    if (!hasCorrectProp || props.correct === undefined) return false;
+    
+    // Hide the correct badge if the code is empty
+    if (!props.code || props.code.trim() === '') {
+        return false;
+    }
+
+    return true;
+})
 
 const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')

@@ -409,6 +409,8 @@
     "correct_badge": "Správně",
     "incorrect_badge": "Nesprávně",
     "select_sql_query": "Vyberte SQL dotaz",
+    "refresh_database_popover_title": "Obnovit databázi",
+    "refresh_database_popover_description": "Vrátí všechny tabulky do původního stavu.",
     "available_general_variables": "Dostupné obecné proměnné",
     "available_sql_variables": "Dostupné SQL proměnné",
     "available_js_variables": "Dostupné JS proměnné"

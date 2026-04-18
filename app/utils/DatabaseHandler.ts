@@ -50,7 +50,7 @@ export class DatabaseHandler {
      */
     public static async getTableNames(db: Database): Promise<Operation<string[]>> {
         try {
-            const result = db.exec("SELECT name FROM sqlite_master WHERE type='table';");
+            const result = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence';");
             const names: string[] = [];
             const firstResult = result[0];
             if (firstResult?.values) {

@@ -15,7 +15,8 @@ const teacherMode = computed(() => globalSettings.teacherMode)
 // Resizable right panel
 const RIGHT_PANEL_MIN = 200
 const RIGHT_PANEL_MAX = 700
-const rightPanelWidth = ref(320)
+const rightPanelWidth = ref<number | null>(null)
+const rightPanelRef = ref<HTMLElement | null>(null)
 const isDragging = ref(false)
 
 // Mobile slideover
@@ -24,7 +25,7 @@ const mobileTasksOpen = ref(false)
 function onDividerMousedown(e: MouseEvent) {
   isDragging.value = true
   const startX = e.clientX
-  const startWidth = rightPanelWidth.value
+  const startWidth = rightPanelRef.value?.getBoundingClientRect().width ?? rightPanelWidth.value ?? window.innerWidth / 3
 
   function onMousemove(e: MouseEvent) {
     const delta = startX - e.clientX
@@ -76,7 +77,11 @@ function openDesignerFromSidebar() {
       />
 
       <!-- Right column: toolbar + task list (desktop only) -->
-      <div class="hidden lg:flex flex-shrink-0 flex-col overflow-hidden" :style="{ width: rightPanelWidth + 'px', backgroundColor: '#eef6fd' }">
+      <div
+        ref="rightPanelRef"
+        class="hidden lg:flex flex-shrink-0 flex-col overflow-hidden"
+        :style="{ width: rightPanelWidth === null ? '35%' : rightPanelWidth + 'px', backgroundColor: '#eef6fd' }"
+      >
         <!-- Toolbar -->
         <div class="flex-shrink-0 px-3 py-2 border-b border-gray-200 dark:border-gray-800 flex flex-wrap gap-1">
           <SystemToolbar />

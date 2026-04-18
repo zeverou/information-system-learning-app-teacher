@@ -25,7 +25,7 @@
         </UBadge>
       </div>
 
-      <div :class="['component-html', { 'teacher-mode-disabled': globalSettings.teacherMode && globalSettings.teacherHighlightEnabled }]"
+      <div :class="['component-html', { 'content-interaction-disabled': (globalSettings.teacherMode && globalSettings.teacherHighlightEnabled) || highlightStore.isHighlightActive }]"
         v-html="resolvedComponentHtml"></div>
     </div>
 
@@ -599,42 +599,35 @@ onBeforeUnmount(() => {
 
 <style scoped>
 @keyframes glow-yellow {
-
-  0%,
-  100% {
-    background-color: #ffd057;
-    box-shadow: 0 0 2px rgba(255, 208, 87, 0.4);
+  0%, 100% {
+    outline: 4px solid rgba(250, 204, 21, 0.4);
+    background-color: rgba(250, 204, 21, 0.05);
   }
-
   50% {
-    background-color: #ffda73;
-    box-shadow: 0 0 16px rgba(255, 208, 87, 0.9);
+    outline: 4px solid rgba(250, 204, 21, 0.8);
+    background-color: rgba(250, 204, 21, 0.15);
   }
 }
 
 @keyframes glow-orange {
-
-  0%,
-  100% {
-    background-color: #f97316;
-    box-shadow: 0 0 0 2px #f97316, 0 0 2px rgba(249, 115, 22, 0.4);
+  0%, 100% {
+    outline: 4px solid rgba(249, 115, 22, 0.6);
+    background-color: rgba(249, 115, 22, 0.15);
   }
-
   50% {
-    background-color: #fb8633;
-    box-shadow: 0 0 0 2px #f97316, 0 0 18px rgba(249, 115, 22, 0.9);
+    outline: 4px solid rgba(249, 115, 22, 1);
+    background-color: rgba(249, 115, 22, 0.25);
   }
 }
 
 @keyframes glow-border {
-
-  0%,
-  100% {
-    box-shadow: 0 0 0 2px #f97316, 0 0 2px rgba(249, 115, 22, 0.4);
+  0%, 100% {
+    outline: 4px solid rgba(249, 115, 22, 0.4);
+    background-color: transparent;
   }
-
   50% {
-    box-shadow: 0 0 0 2px #f97316, 0 0 12px rgba(249, 115, 22, 0.8);
+    outline: 4px solid rgba(249, 115, 22, 0.8);
+    background-color: transparent;
   }
 }
 
@@ -648,15 +641,17 @@ onBeforeUnmount(() => {
 }
 
 .highlight-active {
-  padding: 8px;
+  outline-offset: 4px;
   animation: glow-yellow 2s ease-in-out infinite;
 }
 
 .highlight-active.is-highlighted {
+  outline-offset: 4px;
   animation: glow-orange 2s ease-in-out infinite;
 }
 
 .is-highlighted {
+  outline-offset: 4px;
   animation: glow-border 2s ease-in-out infinite;
 }
 
@@ -709,7 +704,7 @@ onBeforeUnmount(() => {
   display: block;
 }
 
-.teacher-mode-disabled {
+.content-interaction-disabled {
   pointer-events: none;
 }
 
@@ -725,3 +720,35 @@ onBeforeUnmount(() => {
   background-color: rgba(56, 189, 248, 0.08);
 }
 </style>
+.teacher-mode-overlay {
+  position: absolute;
+  inset: -8px;
+  z-index: 40;
+  border-radius: 8px;
+  cursor: pointer;
+  animation: glow-light-blue 2s ease-in-out infinite;
+}
+.teacher-mode-overlay.is-selected {
+  animation: glow-blue 2s ease-in-out infinite;
+}
+
+@keyframes glow-light-blue {
+  0%, 100% {
+    background-color: rgba(147, 197, 253, 0.4);
+    box-shadow: 0 0 2px rgba(147, 197, 253, 0.4);
+  }
+  50% {
+    background-color: rgba(147, 197, 253, 0.6);
+    box-shadow: 0 0 16px rgba(147, 197, 253, 0.7);
+  }
+}
+@keyframes glow-blue {
+  0%, 100% {
+    background-color: rgba(56, 189, 248, 0.4);
+    box-shadow: 0 0 0 2px #38bdf8, 0 0 2px rgba(56, 189, 248, 0.4);
+  }
+  50% {
+    background-color: rgba(56, 189, 248, 0.6);
+    box-shadow: 0 0 0 2px #38bdf8, 0 0 18px rgba(56, 189, 248, 0.9);
+  }
+}
