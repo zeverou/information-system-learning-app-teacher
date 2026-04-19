@@ -40,19 +40,37 @@
 
       <div class="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
         <span class="text-sm font-semibold text-gray-900 dark:text-white md:col-span-2">
-          {{ t('points') }}
+          {{ t('task_scoring_label') }}
         </span>
 
         <div class="grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
-          <UFormField :label="t('task_round')">
+          <UFormField>
+            <template #label>
+              <span>{{ t('task_round') }}</span>
+              <span class="ml-1 font-normal text-gray-500 dark:text-gray-400">
+                ({{ t('task_round_info') }})
+              </span>
+            </template>
             <UInput v-model.number="taskForm.round" type="number" min="1" class="w-full" />
           </UFormField>
 
-          <UFormField :label="t('task_points_reward')">
+          <UFormField>
+            <template #label>
+              <span>{{ t('task_points_reward') }}</span>
+              <span class="ml-1 font-normal text-gray-500 dark:text-gray-400">
+                ({{ t('task_points_reward_info') }})
+              </span>
+            </template>
             <UInput v-model.number="taskForm.pointsReward" type="number" min="0" class="w-full" />
           </UFormField>
 
-          <UFormField :label="t('task_fail_penalty')">
+          <UFormField>
+            <template #label>
+              <span>{{ t('task_fail_penalty') }}</span>
+              <span class="ml-1 font-normal text-gray-500 dark:text-gray-400">
+                ({{ t('task_fail_penalty_info') }})
+              </span>
+            </template>
             <UInput v-model.number="taskForm.failPenalty" type="number" min="0" class="w-full" />
           </UFormField>
         </div>
@@ -61,7 +79,21 @@
 
     <USeparator />
 
-    <UFormField :label="t('task_selected_components')">
+    <UFormField>
+      <template #label>
+        <span class="inline-flex items-center gap-1.5">
+          {{ t('task_selected_components') }}
+          <HoverHint :text="t('task_selected_components_info')">
+            <button
+              type="button"
+              class="inline-flex h-4 w-4 items-center justify-center rounded-full text-gray-400 transition-colors hover:text-teacher-600 focus:outline-none dark:text-gray-500 dark:hover:text-teacher-400"
+              :aria-label="t('task_selected_components_info')"
+            >
+              <UIcon name="i-lucide-info" class="h-4 w-4" />
+            </button>
+          </HoverHint>
+        </span>
+      </template>
       <div v-if="selectedComponentIds.length" class="flex flex-wrap gap-2">
         <UBadge v-for="componentId in selectedComponentIds" :key="componentId" color="neutral" variant="subtle"
           class="flex items-center gap-1 font-mono pr-1">
@@ -117,7 +149,28 @@
               <UInput v-model="taskForm.activityLabel" :placeholder="t('task_activity_label_placeholder')" class="w-full" />
             </UFormField>
 
-            <UFormField :label="t('task_activity_type')">
+            <UFormField>
+              <template #label>
+                <span class="inline-flex items-center gap-1.5">
+                  {{ t('task_activity_type') }}
+                  <HoverHint>
+                    <button
+                      type="button"
+                      class="inline-flex h-4 w-4 items-center justify-center rounded-full text-gray-400 transition-colors hover:text-teacher-600 focus:outline-none dark:text-gray-500 dark:hover:text-teacher-400"
+                      :aria-label="t('task_activity_type_info')"
+                    >
+                      <UIcon name="i-lucide-info" class="h-4 w-4" />
+                    </button>
+                    <template #content>
+                      <div class="space-y-1.5 text-left font-normal">
+                        <p><span class="font-semibold">{{ t('task_activity_repair') }}</span>: {{ t('task_activity_repair_info') }}</p>
+                        <p><span class="font-semibold">{{ t('task_activity_select') }}</span>: {{ t('task_activity_select_info') }}</p>
+                        <p><span class="font-semibold">{{ t('task_activity_select_options') }}</span>: {{ t('task_activity_select_options_info') }}</p>
+                      </div>
+                    </template>
+                  </HoverHint>
+                </span>
+              </template>
               <USelect v-model="taskForm.activityType" :items="activityTypeOptions" value-key="value" label-key="label"
                 :placeholder="t('task_select_activity_type')" class="w-full" />
             </UFormField>
@@ -161,10 +214,10 @@
               <HoverHint :text="t('task_substitute_after_activity_hint')">
                 <button
                   type="button"
-                  class="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full text-gray-400 transition-colors hover:text-teacher-600 focus:outline-none dark:text-gray-500 dark:hover:text-teacher-400"
+                  class="mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full text-gray-400 transition-colors hover:text-teacher-600 focus:outline-none dark:text-gray-500 dark:hover:text-teacher-400"
                   :aria-label="t('task_substitute_after_activity_hint')"
                 >
-                  <UIcon name="i-lucide-circle-help" class="h-4 w-4" />
+                  <UIcon name="i-lucide-info" class="h-4 w-4" />
                 </button>
               </HoverHint>
             </div>

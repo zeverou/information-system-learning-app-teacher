@@ -709,13 +709,13 @@ onBeforeUnmount(() => {
 }
 
 .teacher-outline {
-  outline: 2px solid #93c5fd;
+  outline: 4px solid #3b82f6;
   outline-offset: 2px;
   border-radius: 6px;
 }
 
 .teacher-outline--selected {
-  outline: 2px solid #38bdf8;
+  outline: 4px solid #38bdf8;
   outline-offset: 2px;
   background-color: rgba(56, 189, 248, 0.08);
 }
