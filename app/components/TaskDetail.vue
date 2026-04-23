@@ -168,17 +168,17 @@
           </HoverHint>
         </span>
       </template>
-      <div v-if="selectedComponentIds.length" class="flex flex-wrap gap-2">
-        <UBadge v-for="componentId in selectedComponentIds" :key="componentId" color="neutral" variant="subtle"
+      <div v-if="selectedComponents.length" class="flex flex-wrap gap-2">
+        <UBadge v-for="component in selectedComponents" :key="component.id" color="neutral" variant="subtle"
           class="flex items-center gap-1 font-mono pr-1">
-          <span>{{ componentId }}</span>
+          <span>{{ component.name }}</span>
           <HoverHint :text="t('task_edit_component_action')">
             <UButton icon="i-lucide-pencil" color="neutral" variant="ghost" size="xs" class="shrink-0"
-              @click.stop="startEditingComponent(componentId)" />
+              @click.stop="startEditingComponent(component.id)" />
           </HoverHint>
           <HoverHint :text="t('task_remove_component_action')">
             <UButton icon="i-lucide-trash-2" color="red" variant="ghost" size="xs" class="shrink-0"
-              @click.stop="removeSelectedComponent(componentId)" />
+              @click.stop="removeSelectedComponent(component.id)" />
           </HoverHint>
         </UBadge>
       </div>
@@ -310,6 +310,70 @@
                 </button>
               </HoverHint>
             </div>
+
+            <UCheckbox
+              v-if="isRepairActivity"
+              v-model="taskForm.activityCheckRepair"
+              :label="t('task_activity_check_repair')"
+            />
+
+            <UFormField v-if="isRepairActivity && taskForm.activityCheckRepair">
+              <template #label>
+                <span>{{ t('task_activity_repair_checks') }}</span>
+              </template>
+
+              <div class="space-y-3">
+                <div
+                  v-for="(constraint, index) in taskForm.activityRepairChecks"
+                  :key="constraint.id"
+                  class="grid gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-800 md:grid-cols-[minmax(0,1.5fr)_160px_minmax(0,1fr)_auto]"
+                >
+                  <USelect
+                    v-model="constraint.componentId"
+                    :items="componentContainsComponentOptions"
+                    value-key="value"
+                    label-key="label"
+                    :placeholder="t('task_component_contains_component')"
+                    class="w-full"
+                    @update:model-value="value => updateActivityRepairCheckSelection(index, value)"
+                  />
+                  <USelect
+                    v-model="constraint.operator"
+                    :items="componentContainsOperatorOptions"
+                    value-key="value"
+                    label-key="label"
+                    class="w-full"
+                  />
+                  <UInput
+                    v-model="constraint.text"
+                    :placeholder="t('task_component_contains_text_placeholder')"
+                    class="w-full"
+                  />
+                  <UButton
+                    icon="i-lucide-trash-2"
+                    color="red"
+                    variant="ghost"
+                    size="sm"
+                    class="justify-self-start md:justify-self-end"
+                    @click="removeActivityRepairCheck(index)"
+                  />
+                </div>
+
+                <p v-if="!componentContainsComponentOptions.length" class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ t('task_no_component_options') }}
+                </p>
+
+                <UButton
+                  icon="i-lucide-plus"
+                  color="neutral"
+                  variant="soft"
+                  :disabled="!componentContainsComponentOptions.length"
+                  @click="addActivityRepairCheck"
+                >
+                  {{ t('task_add_component_contains_constraint') }}
+                </UButton>
+              </div>
+            </UFormField>
           </div>
         </div>
 
@@ -386,6 +450,65 @@
                 class="font-mono w-full"
               />
             </UFormField>
+
+            <UFormField v-if="taskForm.finishType === FinishType.VARIABLE_CONSTRAINT">
+              <template #label>
+                <span>{{ t('task_finish_variable_constraints') }}</span>
+              </template>
+
+              <div class="space-y-3">
+                <div
+                  v-for="(constraint, index) in taskForm.finishVariableConstraints"
+                  :key="constraint.id"
+                  class="grid gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-800 md:grid-cols-[minmax(0,1.6fr)_120px_minmax(0,1fr)_auto]"
+                >
+                  <USelect
+                    v-model="constraint.variableKey"
+                    :items="variableConstraintOptions"
+                    value-key="value"
+                    label-key="label"
+                    :placeholder="t('task_variable_constraint_variable')"
+                    class="w-full"
+                    @update:model-value="value => updateVariableConstraintSelection(index, value)"
+                  />
+                  <USelect
+                    v-model="constraint.operator"
+                    :items="variableConstraintOperatorOptions"
+                    value-key="value"
+                    label-key="label"
+                    class="w-full"
+                  />
+                  <UInput
+                    v-model="constraint.value"
+                    :placeholder="t('task_variable_constraint_value_placeholder')"
+                    class="w-full"
+                  />
+                  <UButton
+                    icon="i-lucide-trash-2"
+                    color="red"
+                    variant="ghost"
+                    size="sm"
+                    class="justify-self-start md:justify-self-end"
+                    @click="removeVariableConstraint(index)"
+                  />
+                </div>
+
+                <p v-if="!variableConstraintOptions.length" class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ t('task_no_variable_options') }}
+                </p>
+
+                <UButton
+                  icon="i-lucide-plus"
+                  color="neutral"
+                  variant="soft"
+                  :disabled="!variableConstraintOptions.length"
+                  @click="addVariableConstraint"
+                >
+                  {{ t('task_add_variable_constraint') }}
+                </UButton>
+              </div>
+            </UFormField>
+
           </div>
         </div>
       </div>
@@ -426,8 +549,10 @@ import { Component as SystemComponent } from '~/model/Component'
 import type { ComponentVariables } from '~/model/ComponentVariables'
 import type { GUID } from '~/model/GUID'
 import type { Page } from '~/model/Page'
+import type { ComponentContainsConstraint, ComponentContainsOperator } from '~/model/Task/Activity/ComponentContainsCheck'
 import { ActivityType } from '~/model/Task/Activity/ActivityType'
 import { FinishType } from '~/model/Task/Finish/FinishType'
+import type { VariableConstraint, VariableConstraintOperator, VariableConstraintScope } from '~/model/Task/Finish/VariableConstraintFinish'
 import { Task } from '~/model/Task/Task'
 import { useSystemsStore } from '~/stores/systemsStore'
 import { systemVisiblePages } from '~/utils/taskPageVisibility'
@@ -446,10 +571,13 @@ type TaskDetailForm = {
   activityType: ActivityType
   activityLabel: string
   activityDescription: string
+  activityCheckRepair: boolean
+  activityRepairChecks: ComponentContainsConstraintForm[]
   activityOptions: ActivityOption[]
   finishOptions: ActivityOption[]
   finishCorrectAnswer: string
   finishCheckQuery: string
+  finishVariableConstraints: VariableConstraintForm[]
   substituteAfterActivity: boolean
   visiblePages: Page[]
 }
@@ -458,6 +586,39 @@ type ActivityOption = {
   id?: GUID
   text: string
   isCorrect: boolean
+}
+
+type VariableConstraintForm = {
+  id: GUID
+  variableKey: string
+  componentId?: string
+  componentName?: string
+  variableName: string
+  variableScope: VariableConstraintScope
+  operator: VariableConstraintOperator
+  value: string
+}
+
+type VariableConstraintOption = {
+  label: string
+  value: string
+  componentId?: string
+  componentName?: string
+  variableName: string
+  variableScope: VariableConstraintScope
+}
+
+type ComponentContainsConstraintForm = {
+  id: GUID
+  componentId: string
+  componentName?: string
+  operator: ComponentContainsOperator
+  text: string
+}
+
+type ComponentContainsComponentOption = {
+  label: string
+  value: string
 }
 
 const props = defineProps<{
@@ -474,6 +635,12 @@ const selectedTaskFromSettings = computed<Task | null>(() => {
 })
 const selectedComponentIds = computed(() =>
   selectedTaskFromSettings.value?.errorComponents?.map(component => component.id) ?? []
+)
+const selectedComponents = computed(() =>
+  selectedTaskFromSettings.value?.errorComponents?.map(component => ({
+    id: component.id,
+    name: component.name || component.id
+  })) ?? []
 )
 const systemPages = computed(() => {
   const system = systemsStore.selectedSystem
@@ -493,6 +660,55 @@ const levelOptions = computed(() =>
 const tasksInSelectedLevel = computed(() =>
   systemTasks.value.filter(task => task.round === taskForm.round)
 )
+const taskSelectedComponents = computed(() =>
+  selectedTaskFromSettings.value?.errorComponents ?? []
+)
+const availableFinishComponents = computed(() => {
+  const uniqueComponents = new Map<string, { id: string, name: string }>()
+  const allComponents = taskSelectedComponents.value
+
+  for (const component of allComponents) {
+    uniqueComponents.set(String(component.id), {
+      id: String(component.id),
+      name: component.name || String(component.id)
+    })
+  }
+
+  return Array.from(uniqueComponents.values())
+})
+const variableConstraintOperatorOptions: Array<{ label: VariableConstraintOperator; value: VariableConstraintOperator }> = [
+  { label: '<', value: '<' },
+  { label: '>', value: '>' },
+  { label: '>=', value: '>=' },
+  { label: '<=', value: '<=' },
+  { label: '==', value: '==' }
+]
+const componentContainsOperatorOptions = computed<Array<{ label: string; value: ComponentContainsOperator }>>(() => [
+  { label: t('task_component_contains_operator_contains'), value: 'contains' },
+  { label: t('task_component_contains_operator_not_contains'), value: 'not-contains' }
+])
+const componentContainsComponentOptions = computed<ComponentContainsComponentOption[]>(() =>
+  availableFinishComponents.value.map(component => ({
+    label: component.name,
+    value: component.id
+  }))
+)
+const variableConstraintOptions = computed<VariableConstraintOption[]>(() => {
+  void t('task_variable_group_general')
+  const seen = new Set<string>()
+  const options: VariableConstraintOption[] = []
+  const components = taskSelectedComponents.value
+
+  for (const component of components) {
+    const componentName = component.name || component.id
+    addComponentVariableOptions(options, seen, component.id, componentName, 'general', component.variables?.generalVariables)
+    addComponentVariableOptions(options, seen, component.id, componentName, 'sql', component.variables?.sqlVariables)
+    addComponentVariableOptions(options, seen, component.id, componentName, 'js', component.variables?.jsVariables)
+    addSystemInputVariableOptions(options, seen, component.id, componentName, component.html)
+  }
+
+  return options
+})
 const editingComponentId = ref<string | null>(null)
 const isEditingComponentValid = ref(true)
 const editComponentBodyRef = ref<InstanceType<typeof EditComponentBody> | null>(null)
@@ -520,10 +736,13 @@ const createDefaultForm = (): TaskDetailForm => ({
   activityType: ActivityType.REPAIR,
   activityLabel: '',
   activityDescription: '',
+  activityCheckRepair: false,
+  activityRepairChecks: [],
   activityOptions: [],
   finishOptions: [],
   finishCorrectAnswer: '',
   finishCheckQuery: '',
+  finishVariableConstraints: [],
   substituteAfterActivity: false,
   visiblePages: []
 })
@@ -548,7 +767,8 @@ const finishTypeOptions = computed(() => [
   { label: t('task_finish_type_after_activity'), value: FinishType.IMMEDIATE },
   { label: t('task_finish_type_after_db_label'), value: FinishType.AFTER_DATABASE_UPDATE },
   { label: t('task_finish_type_select_options_label'), value: FinishType.SELECT_OPTIONS },
-  { label: t('task_finish_type_correct_label'), value: FinishType.TYPE_CORRECT }
+  { label: t('task_finish_type_correct_label'), value: FinishType.TYPE_CORRECT },
+  { label: t('task_finish_type_variable_constraint_label'), value: FinishType.VARIABLE_CONSTRAINT }
 ])
 
 const activityTypeOptions = computed(() => [
@@ -591,6 +811,10 @@ watch(
       activityType: task.activityType,
       activityLabel: task.activity?.label ?? '',
       activityDescription: task.activity?.description ?? '',
+      activityCheckRepair: Boolean((task.activity as { checkRepair?: boolean } | undefined)?.checkRepair),
+      activityRepairChecks: Array.isArray((task.activity as { repairChecks?: ComponentContainsConstraint[] } | undefined)?.repairChecks)
+        ? ((task.activity as { repairChecks?: ComponentContainsConstraint[] }).repairChecks ?? []).map(toComponentContainsConstraintForm)
+        : [],
       activityOptions: Array.isArray((task.activity as { options?: ActivityOption[] } | undefined)?.options)
         ? (task.activity as { options?: ActivityOption[] }).options.map(option => ({
           id: option.id,
@@ -607,6 +831,10 @@ watch(
         : [],
       finishCorrectAnswer: (task.finish as { correctAnswer?: string } | undefined)?.correctAnswer ?? '',
       finishCheckQuery: (task.finish as { checkQuery?: string } | undefined)?.checkQuery ?? '',
+      finishVariableConstraints: task.finishType === FinishType.VARIABLE_CONSTRAINT
+        && Array.isArray((task.finish as { constraints?: VariableConstraint[] } | undefined)?.constraints)
+        ? ((task.finish as { constraints?: VariableConstraint[] }).constraints ?? []).map(toVariableConstraintForm)
+        : [],
       substituteAfterActivity: (task.activity as any)?.substituteAfterActivity ?? false,
       visiblePages: (Array.isArray(task.visiblePages)
         ? task.visiblePages
@@ -652,7 +880,8 @@ function buildTaskUpdate(selectedTask: Task): Task {
         isCorrect: option.isCorrect
       })),
       correctAnswer: taskForm.finishCorrectAnswer,
-      checkQuery: taskForm.finishCheckQuery
+      checkQuery: taskForm.finishCheckQuery,
+      constraints: taskForm.finishVariableConstraints.map(toVariableConstraint)
     },
     taskForm.finishDescription
   )
@@ -668,6 +897,10 @@ function buildTaskUpdate(selectedTask: Task): Task {
       label: taskForm.activityLabel || undefined,
       description: taskForm.activityDescription || taskForm.description,
       activityComponents: selectedTask.activity?.activityComponents ?? selectedTask.errorComponents ?? [],
+      checkRepair: taskForm.activityType === ActivityType.REPAIR ? taskForm.activityCheckRepair : false,
+      repairChecks: taskForm.activityType === ActivityType.REPAIR && taskForm.activityCheckRepair
+        ? taskForm.activityRepairChecks.map(toComponentContainsConstraint)
+        : [],
       substituteAfterActivity: taskForm.activityType === ActivityType.REPAIR ? false : taskForm.substituteAfterActivity,
       options: taskForm.activityType === ActivityType.SELECT_OPTIONS
         ? taskForm.activityOptions.map(option => ({
@@ -746,7 +979,11 @@ watch(
   (activityType) => {
     if (activityType === ActivityType.REPAIR) {
       taskForm.substituteAfterActivity = false
+      return
     }
+
+    taskForm.activityCheckRepair = false
+    taskForm.activityRepairChecks = []
   },
   { immediate: true }
 )
@@ -867,6 +1104,212 @@ function toggleFinishOptionCorrect(index: number) {
   }
 
   option.isCorrect = !option.isCorrect
+}
+
+function addVariableConstraint() {
+  const firstOption = variableConstraintOptions.value[0]
+  const constraint: VariableConstraintForm = {
+    id: createOptionId(),
+    variableKey: firstOption?.value ?? '',
+    componentId: firstOption?.componentId,
+    componentName: firstOption?.componentName,
+    variableName: firstOption?.variableName ?? '',
+    variableScope: firstOption?.variableScope ?? 'general',
+    operator: '==',
+    value: ''
+  }
+
+  taskForm.finishVariableConstraints.push(constraint)
+}
+
+function createComponentContainsConstraint() {
+  const firstComponent = componentContainsComponentOptions.value[0]
+  return {
+    id: createOptionId(),
+    componentId: firstComponent?.value ?? '',
+    componentName: firstComponent?.label,
+    operator: 'contains',
+    text: ''
+  } satisfies ComponentContainsConstraintForm
+}
+
+function addActivityRepairCheck() {
+  taskForm.activityRepairChecks.push(createComponentContainsConstraint())
+}
+
+function removeActivityRepairCheck(index: number) {
+  taskForm.activityRepairChecks.splice(index, 1)
+}
+
+function updateActivityRepairCheckSelection(index: number, value: unknown) {
+  const constraint = taskForm.activityRepairChecks[index]
+  if (!constraint) {
+    return
+  }
+
+  constraint.componentId = String(value ?? '')
+  const selectedOption = componentContainsComponentOptions.value.find(option => option.value === constraint.componentId)
+  constraint.componentName = selectedOption?.label
+}
+
+function removeVariableConstraint(index: number) {
+  taskForm.finishVariableConstraints.splice(index, 1)
+}
+
+function updateVariableConstraintSelection(index: number, value: unknown) {
+  const constraint = taskForm.finishVariableConstraints[index]
+  if (!constraint) {
+    return
+  }
+
+  constraint.variableKey = String(value ?? '')
+
+  const selectedOption = variableConstraintOptions.value.find(option => option.value === constraint.variableKey)
+  if (!selectedOption) {
+    return
+  }
+
+  constraint.componentId = selectedOption.componentId
+  constraint.componentName = selectedOption.componentName
+  constraint.variableName = selectedOption.variableName
+  constraint.variableScope = selectedOption.variableScope
+}
+
+function addComponentVariableOptions(
+  options: VariableConstraintOption[],
+  seen: Set<string>,
+  componentId: string,
+  componentName: string,
+  scope: VariableConstraintScope,
+  variables: Array<{ name: string }> | undefined
+) {
+  for (const variable of variables ?? []) {
+    addVariableConstraintOption(options, seen, {
+      label: `${componentName} / ${variableGroupLabel(scope)} / ${variable.name}`,
+      value: variableConstraintKey(componentId, scope, variable.name),
+      componentId,
+      componentName,
+      variableName: variable.name,
+      variableScope: scope
+    })
+  }
+}
+
+function addSystemInputVariableOptions(
+  options: VariableConstraintOption[],
+  seen: Set<string>,
+  componentId: string,
+  componentName: string,
+  html: string
+) {
+  const matches = html.matchAll(/\b(?:name|id)=["']system-([^"']+)["']/g)
+  for (const match of matches) {
+    const variableName = match[1]
+    if (!variableName) {
+      continue
+    }
+
+    addVariableConstraintOption(options, seen, {
+      label: `${componentName} / ${variableGroupLabel('system')} / ${variableName}`,
+      value: variableConstraintKey(componentId, 'system', variableName),
+      componentId,
+      componentName,
+      variableName,
+      variableScope: 'system'
+    })
+  }
+}
+
+function addVariableConstraintOption(
+  options: VariableConstraintOption[],
+  seen: Set<string>,
+  option: VariableConstraintOption
+) {
+  if (seen.has(option.value)) {
+    return
+  }
+
+  seen.add(option.value)
+  options.push(option)
+}
+
+function variableGroupLabel(scope: VariableConstraintScope): string {
+  switch (scope) {
+    case 'sql':
+      return t('task_variable_group_sql')
+    case 'js':
+      return t('task_variable_group_js')
+    case 'system':
+      return t('task_variable_group_system')
+    case 'general':
+    default:
+      return t('task_variable_group_general')
+  }
+}
+
+function variableConstraintKey(componentId: string | undefined, scope: VariableConstraintScope, variableName: string): string {
+  return `${componentId ?? 'system'}::${scope}::${variableName}`
+}
+
+function toVariableConstraintForm(constraint: VariableConstraint): VariableConstraintForm {
+  const variableScope = constraint.variableScope ?? 'general'
+  return {
+    id: (constraint.id ?? createOptionId()) as GUID,
+    variableKey: variableConstraintKey(constraint.componentId, variableScope, constraint.variableName),
+    componentId: constraint.componentId,
+    componentName: constraint.componentName,
+    variableName: constraint.variableName,
+    variableScope,
+    operator: constraint.operator ?? '==',
+    value: String(constraint.value ?? '')
+  }
+}
+
+function toVariableConstraint(constraint: VariableConstraintForm): VariableConstraint {
+  const selectedOption = variableConstraintOptions.value.find(option => option.value === constraint.variableKey)
+  const variableScope = selectedOption?.variableScope ?? constraint.variableScope
+
+  return {
+    id: constraint.id,
+    componentId: selectedOption?.componentId ?? constraint.componentId,
+    componentName: selectedOption?.componentName ?? constraint.componentName,
+    variableName: selectedOption?.variableName ?? constraint.variableName,
+    variableScope,
+    operator: constraint.operator,
+    value: parseConstraintValue(constraint.value)
+  }
+}
+
+function parseConstraintValue(value: string): string | number {
+  const trimmedValue = value.trim()
+  if (trimmedValue === '') {
+    return ''
+  }
+
+  const parsed = Number(trimmedValue)
+  return Number.isFinite(parsed) ? parsed : value
+}
+
+function toComponentContainsConstraintForm(constraint: ComponentContainsConstraint): ComponentContainsConstraintForm {
+  return {
+    id: (constraint.id ?? createOptionId()) as GUID,
+    componentId: String(constraint.componentId ?? ''),
+    componentName: constraint.componentName,
+    operator: constraint.operator ?? 'contains',
+    text: constraint.text ?? ''
+  }
+}
+
+function toComponentContainsConstraint(constraint: ComponentContainsConstraintForm): ComponentContainsConstraint {
+  const selectedOption = componentContainsComponentOptions.value.find(option => option.value === constraint.componentId)
+
+  return {
+    id: constraint.id,
+    componentId: constraint.componentId,
+    componentName: selectedOption?.label ?? constraint.componentName,
+    operator: constraint.operator,
+    text: constraint.text
+  }
 }
 
 function isPageVisible(page: Page): boolean {

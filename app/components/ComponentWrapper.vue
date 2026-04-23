@@ -1,5 +1,5 @@
 <template>
-  <div ref="wrapperRef" @click="handleClick" @input="handleInput"
+  <div ref="wrapperRef" :data-component-id="props.component.id" @click="handleClick" @input="handleInput"
     :class="['component-wrapper', {
       'highlight-active': highlightStore.isHighlightActive,
       'is-highlighted': highlightStore.isHighlightActive && highlightStore.selectedHighlightedComponentsIds.has(props.component.id),

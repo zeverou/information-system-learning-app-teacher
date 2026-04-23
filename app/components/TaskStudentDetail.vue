@@ -29,7 +29,7 @@
             </h3>
           </div>
           <UBadge
-            v-if="props.task.activityType === ActivityType.SELECT || props.task.activityType === ActivityType.SELECT_OPTIONS"
+            v-if="canEvaluateActivity"
             :color="props.task.activity?.isCompleted ? 'green' : 'neutral'"
             variant="subtle"
             size="md"
@@ -100,7 +100,7 @@
           </UBadge>
         </div>
 
-        <div v-if="props.task.activityType === ActivityType.SELECT || props.task.activityType === ActivityType.SELECT_OPTIONS" class="flex items-center gap-3 mt-2">
+        <div v-if="canEvaluateActivity" class="flex items-center gap-3 mt-2">
           <UButton
             color="primary"
             variant="solid"
@@ -134,7 +134,10 @@
       </div>
 
       <!-- Finish section -->
-      <div class="rounded-xl border border-gray-200 p-4 dark:border-gray-800 space-y-3">
+      <div
+        class="rounded-xl border border-gray-200 p-4 dark:border-gray-800 space-y-3 transition-opacity"
+        :class="isFinishLocked ? 'cursor-not-allowed opacity-50' : ''"
+      >
         <div class="flex items-center justify-between gap-2">
           <div>
             <p class="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">{{ t('task_finish') }}</p>
@@ -171,14 +174,14 @@
             :key="`fin-opt-${index}`"
             class="flex items-center gap-3 rounded-lg border px-3 py-2 select-none transition-colors"
             :class="[
-              props.task.finish?.isComplete
+              props.task.finish?.isComplete || isFinishLocked
                 ? 'cursor-not-allowed opacity-60'
                 : 'cursor-pointer',
               selectedFinishOptionIndices.includes(index)
                 ? 'border-sky-400 bg-sky-50 dark:border-sky-600 dark:bg-sky-900/20'
                 : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
             ]"
-            @click="!props.task.finish?.isComplete && toggleFinishOption(index)"
+            @click="!props.task.finish?.isComplete && !isFinishLocked && toggleFinishOption(index)"
           >
             <div
               class="w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors"
@@ -196,7 +199,7 @@
           v-if="props.task.finishType === FinishType.TYPE_CORRECT"
           v-model="typeCorrectAnswer"
           :placeholder="t('task_your_answer')"
-          :disabled="props.task.finish?.isComplete"
+          :disabled="props.task.finish?.isComplete || isFinishLocked"
           class="w-full"
         />
 
@@ -205,7 +208,7 @@
             color="primary"
             variant="solid"
             icon="i-lucide-check-circle"
-            :disabled="props.task.finish?.isComplete === true"
+            :disabled="props.task.finish?.isComplete === true || isFinishLocked"
             @click="evaluateFinish"
           >
             {{ t('evaluate') }}
@@ -243,6 +246,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { type ComponentContainsConstraint, type ComponentDomSnapshot } from '~/model/Task/Activity/ComponentContainsCheck'
 import { ActivityType } from '~/model/Task/Activity/ActivityType'
 import { FinishType } from '~/model/Task/Finish/FinishType'
 import type { Task } from '~/model/Task/Task'
@@ -256,6 +260,7 @@ const { t } = useI18n()
 const highlightStore = useHighlightStore()
 const systemsStore = useSystemsStore()
 const globalSettings = useGlobalSettingsStore()
+const { systemInputVariables } = useSystemInputVariables()
 
 const props = defineProps<{
   task: Task | null
@@ -314,6 +319,8 @@ function evaluateActivity() {
     console.log('[SELECT_OPTIONS] correct indices:', correctIndices, '| selected indices:', selectedIndices)
     isCorrect = selectedIndices.length === correctIndices.length && selectedIndices.every(i => correctIndices.includes(i))
     activity.isCompleted = isCorrect
+  } else if (task.activityType === ActivityType.REPAIR) {
+    isCorrect = isTaskActivityCompleted(task)
   }
 
   activityEvaluationResult.value = isCorrect
@@ -366,6 +373,14 @@ async function evaluateFinish() {
     isCorrect = await task.finish.evaluate(typeCorrectAnswer.value)
   } else if (task.finishType === FinishType.AFTER_DATABASE_UPDATE) {
     isCorrect = await task.finish.evaluate(systemsStore.selectedSystem?.database)
+  } else if (task.finishType === FinishType.VARIABLE_CONSTRAINT) {
+    isCorrect = await task.finish.evaluate({
+      components: [
+        ...(task.errorComponents ?? []),
+        ...(systemsStore.selectedSystem?.actualComponents ?? [])
+      ],
+      systemInputVariables: systemInputVariables.value
+    })
   }
 
   finishEvaluationResult.value = isCorrect
@@ -423,51 +438,25 @@ function isTaskActivityCompleted(task: Task): boolean {
     return false
   }
 
-  const repaired = areRepairComponentsCorrect(task)
-  task.componentsRepaired = repaired
-  if (task.activity) {
-    task.activity.isCompleted = repaired
-  }
-
-  return repaired
-}
-
-function areRepairComponentsCorrect(task: Task): boolean {
   const components = task.activity?.activityComponents?.length
     ? task.activity.activityComponents
     : task.errorComponents
 
-  if (!components.length) {
-    return task.componentsRepaired
+  if (!task.activity) {
+    return false
   }
 
-  const defaultComponents = systemsStore.selectedSystem?.defaultComponents ?? []
-
-  return components.every(component => {
-    const defaultComponent = defaultComponents.find(item => String(item.id) === String(component.id))
-    return defaultComponent ? componentMatchesDefault(component, defaultComponent) : false
+  task.activity.check({
+    components,
+    defaultComponents: systemsStore.selectedSystem?.defaultComponents ?? [],
+    domSnapshots: collectComponentDomSnapshots(
+      ((task.activity as { repairChecks?: ComponentContainsConstraint[] } | undefined)?.repairChecks ?? [])
+    ),
+    componentsRepaired: task.componentsRepaired
   })
-}
 
-function componentMatchesDefault(component: any, defaultComponent: any): boolean {
-  return ['html', 'css', 'js', 'js_click'].every(field => {
-    const current = String(component[field] ?? '')
-    const expected = String(defaultComponent[field] ?? '')
-    return current === '' && expected !== '' ? true : current === expected
-  }) && recordMatchesDefault(component.sql, defaultComponent.sql)
-    && recordMatchesDefault(component.sql_click, defaultComponent.sql_click)
-}
-
-function recordMatchesDefault(currentRecord: Record<string, string> | undefined, expectedRecord: Record<string, string> | undefined): boolean {
-  const current = currentRecord ?? {}
-  const expected = expectedRecord ?? {}
-  const currentKeys = Object.keys(current)
-
-  if (currentKeys.length === 0) {
-    return true
-  }
-
-  return currentKeys.every(key => String(current[key] ?? '') === String(expected[key] ?? ''))
+  task.componentsRepaired = Boolean(task.activity.isCompleted)
+  return Boolean(task.activity.isCompleted)
 }
 
 function getActivityComponentIds(task: Task): string[] {
@@ -482,6 +471,44 @@ function addSolvedComponentIds(componentIds: string[]) {
       globalSettings.solvedComponentIds.push(id)
     }
   }
+}
+
+function collectComponentDomSnapshots(constraints: ComponentContainsConstraint[]): ComponentDomSnapshot[] {
+  if (!import.meta.client) {
+    return []
+  }
+
+  const componentIds = new Set(
+    constraints
+      .map(constraint => String(constraint.componentId ?? ''))
+      .filter(Boolean)
+  )
+
+  if (!componentIds.size) {
+    return []
+  }
+
+  const wrappers = Array.from(document.querySelectorAll<HTMLElement>('[data-component-id]'))
+
+  return wrappers
+    .map((wrapper) => {
+      const componentId = wrapper.dataset.componentId ?? ''
+      if (!componentIds.has(componentId)) {
+        return null
+      }
+
+      const content = wrapper.querySelector<HTMLElement>('.component-html') ?? wrapper
+      return {
+        componentId,
+        html: content.innerHTML,
+        text: normalizeDomText(content.textContent ?? '')
+      } satisfies ComponentDomSnapshot
+    })
+    .filter((snapshot): snapshot is ComponentDomSnapshot => snapshot !== null)
+}
+
+function normalizeDomText(value: string): string {
+  return value.replace(/\s+/g, ' ').trim()
 }
 
 const selectedComponentNames = computed(() => {
@@ -509,11 +536,46 @@ const activityOptions = computed<Option[]>(() => {
   return activity?.options ?? []
 })
 
+const canEvaluateActivity = computed(() => {
+  if (!props.task) {
+    return false
+  }
+
+  if (props.task.activityType === ActivityType.SELECT || props.task.activityType === ActivityType.SELECT_OPTIONS) {
+    return true
+  }
+
+  return props.task.activityType === ActivityType.REPAIR
+    && Boolean((props.task.activity as { checkRepair?: boolean } | undefined)?.checkRepair)
+})
+
+const isFinishUnlocked = computed(() => {
+  if (!props.task) {
+    return false
+  }
+
+  if (props.task.finish?.isComplete || props.task.completed) {
+    return true
+  }
+
+  const isUncheckedRepair = props.task.activityType === ActivityType.REPAIR
+    && !Boolean((props.task.activity as { checkRepair?: boolean } | undefined)?.checkRepair)
+
+  if (isUncheckedRepair) {
+    return true
+  }
+
+  return Boolean(props.task.activity?.isCompleted)
+})
+
+const isFinishLocked = computed(() => !isFinishUnlocked.value)
+
 const canEvaluateFinish = computed(() =>
   props.task?.finishType === FinishType.IMMEDIATE
   || props.task?.finishType === FinishType.AFTER_DATABASE_UPDATE
   || props.task?.finishType === FinishType.SELECT_OPTIONS
   || props.task?.finishType === FinishType.TYPE_CORRECT
+  || props.task?.finishType === FinishType.VARIABLE_CONSTRAINT
 )
 
 const finishLabel = computed(() => {
@@ -523,6 +585,7 @@ const finishLabel = computed(() => {
     case FinishType.AFTER_DATABASE_UPDATE: return t('task_finish_after_db')
     case FinishType.SELECT_OPTIONS: return t('task_finish_select_options')
     case FinishType.TYPE_CORRECT: return t('task_finish_type_correct')
+    case FinishType.VARIABLE_CONSTRAINT: return t('task_finish_variable_constraint')
     default: return t('task_finish')
   }
 })

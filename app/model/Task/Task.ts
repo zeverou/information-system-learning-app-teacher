@@ -1,5 +1,6 @@
 import type { IActivity } from "./Activity/IActivity";
 import { ActivityType } from "./Activity/ActivityType";
+import type { ComponentContainsConstraint } from "./Activity/ComponentContainsCheck";
 import { RepairActivity } from "./Activity/RepairActivity";
 import { SelectActivity } from "./Activity/SelectActivity";
 import { SelectOptionsActivity } from "./Activity/SelectOptionsActivity";
@@ -13,6 +14,7 @@ import { Component } from "../Component";
 import type { IFinish } from "./Finish/IFinish";
 import { SelectOptionsFinish } from "./Finish/SelectOptionsFinish";
 import { TypeCorrectFinish } from "./Finish/TypeCorrectFinish";
+import { VariableConstraintFinish } from "./Finish/VariableConstraintFinish";
 import type { Option } from "./Option";
 
 export class Task {
@@ -86,19 +88,22 @@ export class Task {
     }
 
     return data.map((component: any) => {
-      if (component?.variables) {
+      // Legacy schema support: previously, component properties like html/js/sql might have been nested under `variables` alongside `error-component-name`.
+      // The current schema stores html/js/sql at the component root level.
+      if (component?.variables && (typeof component.variables.html === 'string' || component.variables.sql)) {
         return Component.fromJSON({
           id: component.id ?? "",
           name: component["error-component-name"] ?? component.name ?? component.id ?? "",
           description: component.description ?? "",
-          html: component.variables.html ?? "",
-          css: component.variables.css ?? "",
-          js: component.variables.js ?? "",
-          js_click: component.variables.js_click ?? "",
-          sql: Task.normalizeSql(component.variables.sql),
-          sql_click: component.variables.sql_click ?? {},
+          html: component.variables.html ?? component.html ?? "",
+          css: component.variables.css ?? component.css ?? "",
+          js: component.variables.js ?? component.js ?? "",
+          js_click: component.variables.js_click ?? component.js_click ?? "",
+          sql: Task.normalizeSql(component.variables.sql ?? component.sql),
+          sql_click: component.variables.sql_click ?? component.sql_click ?? {},
           tags: component.tags ?? [],
           edited: component.edited ?? false,
+          variables: component.variables
         });
       }
 
@@ -142,7 +147,13 @@ export class Task {
         break;
       case ActivityType.REPAIR:
       default:
-        instance = new RepairActivity(activityDescription, components, label);
+        instance = new RepairActivity(
+          activityDescription,
+          components,
+          label,
+          Boolean(activity?.checkRepair ?? activity?.checkRepairComponents),
+          Task.normalizeComponentContainsConstraints(activity?.repairChecks ?? activity?.componentContainsConstraints)
+        );
     }
     instance.substituteAfterActivity = substituteAfterActivity;
     return instance;
@@ -175,6 +186,13 @@ export class Task {
       case FinishType.TYPE_CORRECT:
         taskFinish = new TypeCorrectFinish(description, finish?.correctAnswer ?? "", label);
         break;
+      case FinishType.VARIABLE_CONSTRAINT:
+        taskFinish = new VariableConstraintFinish(
+          description,
+          label,
+          Array.isArray(finish?.constraints) ? finish.constraints : []
+        );
+        break;
       case FinishType.IMMEDIATE:
       default:
         taskFinish = new ImmediateFinish(description, label);
@@ -205,6 +223,20 @@ export class Task {
     return `option-${Date.now()}-${Math.random().toString(36).slice(2)}` as GUID;
   }
 
+  private static normalizeComponentContainsConstraints(data: any): ComponentContainsConstraint[] {
+    if (!Array.isArray(data)) {
+      return []
+    }
+
+    return data.map((constraint: any) => ({
+      id: constraint?.id ? String(constraint.id) : undefined,
+      componentId: String(constraint?.componentId ?? ''),
+      componentName: constraint?.componentName ?? undefined,
+      operator: constraint?.operator === 'not-contains' ? 'not-contains' : 'contains',
+      text: String(constraint?.text ?? '')
+    }))
+  }
+
   private static parseActivityType(value: unknown): ActivityType {
     if (value === ActivityType.SELECT || value === ActivityType.SELECT_OPTIONS || value === ActivityType.REPAIR) {
       return value;
@@ -218,7 +250,8 @@ export class Task {
       value === FinishType.IMMEDIATE ||
       value === FinishType.AFTER_DATABASE_UPDATE ||
       value === FinishType.SELECT_OPTIONS ||
-      value === FinishType.TYPE_CORRECT
+      value === FinishType.TYPE_CORRECT ||
+      value === FinishType.VARIABLE_CONSTRAINT
     ) {
       return value;
     }

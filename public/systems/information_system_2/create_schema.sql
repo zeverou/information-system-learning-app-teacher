@@ -182,9 +182,9 @@ INSERT INTO kniha_jidel (id_jidla, datum) VALUES
 (10,'2025-07-30'),(20,'2025-07-30'),(30,'2025-07-30');
 
 INSERT INTO turnusy (id_turnusu, datum_od, datum_do, kapacita) VALUES
-(1,'2025-07-01','2025-07-10',15),
-(2,'2025-07-11','2025-07-20',15),
-(3,'2025-07-21','2025-07-30',15);
+(1,'2025-07-04','2025-07-16',15),
+(2,'2025-07-11','2025-07-19',15),
+(3,'2025-08-21','2025-08-27',15);
 
 INSERT INTO vedouci (id_vedouciho, jmeno, email, rodne_cislo, telefon, adresa, vek) VALUES
 (1,'Petr Novotný','petr.novotny@example.com','750101/1234','+420 601 111 111','Hlavní 1, Praha, 110 00',35),

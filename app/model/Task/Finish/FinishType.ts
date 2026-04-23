@@ -24,5 +24,10 @@ export enum FinishType {
     /**
      * Represents an activity where the user needs to type the correct answer.
      */
-    TYPE_CORRECT = 'type-correct'
+    TYPE_CORRECT = 'type-correct',
+
+    /**
+     * Task is completed when component variable constraints are satisfied.
+     */
+    VARIABLE_CONSTRAINT = 'variable-constraint'
 }

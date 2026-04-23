@@ -1,4 +1,4 @@
-import { ComponentVariables } from './ComponentVariables';
+import { ComponentVariables, Variable } from './ComponentVariables';
 
 /**
  * A class representing a UI component.
@@ -67,10 +67,24 @@ export class Component {
 
     public static fromJSON(data: any): Component {
         const component = new Component(data)
-        if (!component.variables || typeof component.variables.generalVariables === 'undefined') {
-            component.variables = new ComponentVariables()
-        }
+        component.variables = Component.parseVariables(data?.variables)
         return component
+    }
+
+    private static parseVariables(data: any): ComponentVariables {
+        const variables = new ComponentVariables()
+        variables.generalVariables = Component.parseVariableList(data?.generalVariables)
+        variables.sqlVariables = Component.parseVariableList(data?.sqlVariables)
+        variables.jsVariables = Component.parseVariableList(data?.jsVariables)
+        return variables
+    }
+
+    private static parseVariableList(data: any): Variable[] {
+        if (!Array.isArray(data)) {
+            return []
+        }
+
+        return data.map(variable => new Variable(variable?.name ?? '', variable?.variable ?? ''))
     }
 
     public static arrayFromJSON(data: any[]): Component[] {
@@ -89,7 +103,8 @@ export class Component {
             sql: this.sql,
             sql_click: this.sql_click,
             tags: this.tags,
-            edited: this.edited
+            edited: this.edited,
+            variables: this.variables
         }
     }
 

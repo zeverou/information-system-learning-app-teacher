@@ -10,7 +10,12 @@
     "sql": {},
     "sql_click": {},
     "tags": [],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "statistika-max-vek-ucastnika",
@@ -33,18 +38,23 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "statistika-max-ucastniku-turnusu",
     "name": "Statistika – Max. účastníků na turnus",
     "description": "Zobrazuje maximální počet účastníků zapsaných v jednom turnusu.",
-    "html": "\n  <div id=\"statistika-max-ucastniku-turnusu-card\">\n    <div id=\"statistika-max-ucastniku-turnusu-icon\">#</div>\n    <div id=\"statistika-max-ucastniku-turnusu-content\">\n      <div id=\"statistika-max-ucastniku-turnusu-number\">max_pocet_ucastniku_turnusu</div>\n      <div id=\"statistika-max-ucastniku-turnusu-label\">max. účastníků v turnusu</div>\n    </div>\n  </div>\n  ",
+    "html": "\n  <div id=\"statistika-max-ucastniku-turnusu-card\">\n    <div id=\"statistika-max-ucastniku-turnusu-icon\">#</div>\n    <div id=\"statistika-max-ucastniku-turnusu-content\">\n      <div id=\"statistika-max-ucastniku-turnusu-number\">maximalni_pocet_zapsanych</div>\n      <div id=\"statistika-max-ucastniku-turnusu-label\">max. účastníků v turnusu</div>\n    </div>\n  </div>\n  ",
     "css": "\n#statistika-max-ucastniku-turnusu-card {\n  background-color: #ffffff;\n  border: 1px solid #cccccc;\n  border-radius: 8px;\n  padding: 16px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  width: 100%;\n  max-width: 400px;\n}\n\n#statistika-max-ucastniku-turnusu-icon {\n  font-size: 32px;\n  font-weight: 700;\n  color: #111111;\n}\n\n#statistika-max-ucastniku-turnusu-number {\n  font-size: 28px;\n  font-weight: bold;\n  color: #111111;\n}\n\n#statistika-max-ucastniku-turnusu-label {\n  font-size: 13px;\n  color: #666666;\n  margin-top: 4px;\n}\n",
     "js": "",
     "js_click": "",
     "sql": {
-      "statistika-max-ucastniku-turnusu": "SELECT COALESCE(MAX(participant_count), 0) AS max_pocet_ucastniku_turnusu FROM (SELECT COUNT(tu.id_ucastnika) AS participant_count FROM turnusy t LEFT JOIN turnusy_ucastnici tu ON t.id_turnusu = tu.id_turnusu GROUP BY t.id_turnusu)"
+      "statistika-max-ucastniku-turnusu": "SELECT MAX(pocet_zapsanych) as maximalni_pocet_zapsanych FROM (SELECT COUNT(*) AS pocet_zapsanych FROM turnusy_ucastnici GROUP BY id_turnusu);"
     },
     "sql_click": {},
     "tags": [
@@ -56,7 +66,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "statistika-jidel",
@@ -77,18 +92,23 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "statistika-min-ucastniku-turnusu",
     "name": "Statistika – Min. účastníků na turnus",
     "description": "Zobrazuje minimální počet účastníků zapsaných v jednom turnusu.",
-    "html": "\n  <div id=\"statistika-min-ucastniku-turnusu-card\">\n    <div id=\"statistika-min-ucastniku-turnusu-icon\">MIN</div>\n    <div id=\"statistika-min-ucastniku-turnusu-content\">\n      <div id=\"statistika-min-ucastniku-turnusu-number\">min_pocet_ucastniku_turnusu</div>\n      <div id=\"statistika-min-ucastniku-turnusu-label\">min. účastníků v turnusu</div>\n    </div>\n  </div>\n  ",
+    "html": "\n  <div id=\"statistika-min-ucastniku-turnusu-card\">\n    <div id=\"statistika-min-ucastniku-turnusu-icon\">MIN</div>\n    <div id=\"statistika-min-ucastniku-turnusu-content\">\n      <div id=\"statistika-min-ucastniku-turnusu-number\">minimalni_pocet_zapsanych</div>\n      <div id=\"statistika-min-ucastniku-turnusu-label\">min. účastníků v turnusu</div>\n    </div>\n  </div>\n  ",
     "css": "\n#statistika-min-ucastniku-turnusu-card {\n  background-color: #ffffff;\n  border: 1px solid #cccccc;\n  border-radius: 8px;\n  padding: 16px;\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  width: 100%;\n  max-width: 400px;\n}\n\n#statistika-min-ucastniku-turnusu-icon {\n  font-size: 22px;\n  font-weight: 700;\n  color: #111111;\n}\n\n#statistika-min-ucastniku-turnusu-number {\n  font-size: 28px;\n  font-weight: bold;\n  color: #111111;\n}\n\n#statistika-min-ucastniku-turnusu-label {\n  font-size: 13px;\n  color: #666666;\n  margin-top: 4px;\n}\n",
     "js": "",
     "js_click": "",
     "sql": {
-      "statistika-min-ucastniku-turnusu": "SELECT COALESCE(MIN(participant_count), 0) AS min_pocet_ucastniku_turnusu FROM (SELECT COUNT(tu.id_ucastnika) AS participant_count FROM turnusy t LEFT JOIN turnusy_ucastnici tu ON t.id_turnusu = tu.id_turnusu GROUP BY t.id_turnusu)"
+      "statistika-min-ucastniku-turnusu": "SELECT MIN(pocet_zapsanych) as minimalni_pocet_zapsanych FROM (SELECT COUNT(*) AS pocet_zapsanych FROM turnusy_ucastnici GROUP BY id_turnusu);"
     },
     "sql_click": {},
     "tags": [
@@ -100,7 +120,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "statistika-ucastniku",
@@ -121,7 +146,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "statistika-turnusu",
@@ -142,7 +172,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "statistika-vedoucich",
@@ -163,7 +198,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "statistika-celkem-ucasti-turnusu",
@@ -186,7 +226,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "hlavni-karta-systemu",
@@ -205,7 +250,12 @@
       "html",
       "css"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-tlacitko-pridat-jidlo-osobe",
@@ -228,7 +278,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-vstup-datum-jidlo-osobe",
@@ -249,7 +304,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-vstup-jidlo-jidlo-osobe",
@@ -270,7 +330,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-vstup-osoba-jidlo-osobe",
@@ -291,7 +356,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-vstup-turnus-jidlo-osobe",
@@ -312,7 +382,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-hlavicka-dne",
@@ -332,7 +407,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-pocet-jidel-dne",
@@ -352,7 +432,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-pocet-porci-dne",
@@ -372,7 +457,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-lide-jidla",
@@ -393,7 +483,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-vedouci-jidla",
@@ -414,7 +509,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-alergeny-jidla",
@@ -435,7 +535,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-doba-podavani-jidla",
@@ -455,7 +560,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-radek-jidla",
@@ -475,7 +585,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-datum-turnusu",
@@ -495,7 +610,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-hlavicka-turnusu",
@@ -512,7 +632,12 @@
       "html",
       "css"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-pocet-jidel-turnusu",
@@ -532,7 +657,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-pocet-porci-turnusu",
@@ -552,7 +682,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-tlacitko-odebrat-jidlo-osobe",
@@ -574,7 +709,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-vstup-datum-odebrat-jidlo-osobe",
@@ -595,7 +735,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-vstup-jidlo-odebrat-jidlo-osobe",
@@ -616,7 +761,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-vstup-osoba-odebrat-jidlo-osobe",
@@ -637,7 +787,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "jidelnicek-vstup-turnus-odebrat-jidlo-osobe",
@@ -658,7 +813,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-btn-ulozit-jidlo",
@@ -681,7 +841,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-alergeny-jidla",
@@ -702,7 +867,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-doba-podavani",
@@ -723,7 +893,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-nazev-jidla",
@@ -744,7 +919,38 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
+  },
+  {
+    "id": "filtr-jidel",
+    "name": "Filtr jídel",
+    "description": "Textové pole pro filtrování jídel podle názvu.",
+    "html": "\n<div id=\"filtr-jidel\">\n  <span id=\"filtr-jidel-ikona\">⌕</span>\n  <input\n    type=\"text\"\n    id=\"system-filtr_jidel\"\n    placeholder=\"Název jídla\"\n    autocomplete=\"off\"\n  />\n</div>\n",
+    "css": "\n#filtr-jidel {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  width: 260px;\n  padding: 8px 12px;\n  border: 1px solid #065f46;\n  border-radius: 8px;\n  background-color: #ffffff;\n}\n\n#filtr-jidel-ikona {\n  color: #065f46;\n  font-size: 18px;\n  line-height: 1;\n  flex-shrink: 0;\n}\n\n#system-filtr_jidel {\n  width: 100%;\n  min-width: 0;\n  border: 0;\n  outline: none;\n  background: transparent;\n  color: #111827;\n  font-size: 14px;\n}\n\n#system-filtr_jidel::placeholder {\n  color: #9ca3af;\n}\n",
+    "js": "",
+    "js_click": "",
+    "sql": {
+      "jidla-filtrovani-podle-nazvu": "\nSELECT j.id_jidla AS id_jidla_filtr_jidel\nFROM jidla j\nWHERE TRIM('filtr_jidel') = ''\n   OR LOWER(j.jmeno) LIKE '%' || LOWER(TRIM('filtr_jidel')) || '%'\nORDER BY j.jmeno COLLATE NOCASE, j.id_jidla\n"
+    },
+    "sql_click": {},
+    "tags": [
+      "jídla",
+      "filtr",
+      "html",
+      "css",
+      "sql"
+    ],
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "seznam-alergenu-jidla",
@@ -765,7 +971,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "karta-jidla",
@@ -785,14 +996,19 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "celkovy-pocet-jidel",
     "name": "Celkový počet jídel",
     "description": "Zobrazuje celkový počet jídel ve widgetu nástrojové lišty.",
     "html": "\n<div id=\"widget-poctu-jidel\">\n  <span id=\"ikona-poctu-jidel\">🍴</span>\n  <span id=\"popisek-poctu-jidel\">Celkový počet jídel: celkovy_pocet_jidel</span>\n</div>\n",
-    "css": "\n#widget-poctu-jidel {\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  padding: 6px 16px;\n  background: #f0fdf4;\n  border: 1px solid #bbf7d0;\n  border-radius: 10px;\n  color: #15803d;\n  font-size: 13px;\n  font-weight: 600;\n}\n\n#ikona-poctu-jidel {\n  font-size: 15px;\n}\n",
+    "css": "\n#widget-poctu-jidel {\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  padding: 6px 16px;\n  background: #18181b;\n  border: 1px solid #3f3f46;\n  border-radius: 10px;\n  color: #e4e4e7;\n  font-size: 13px;\n  font-weight: 500;\n}\n\n#ikona-poctu-jidel {\n  font-size: 15px;\n}\n\n#popisek-poctu-jidel {\n  color: #34d399;\n  font-weight: 700;\n}\n",
     "js": "",
     "js_click": "",
     "sql": {
@@ -805,7 +1021,40 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
+  },
+  {
+    "id": "razeni-jidel",
+    "name": "Řazení jídel",
+    "description": "Výběr řazení jídel podle názvu, doby podávání nebo počtu alergenů.",
+    "html": "\n<div id=\"razeni-jidel\">\n  <label for=\"system-razeni_jidel\">Řadit:</label>\n  <select id=\"system-razeni_jidel\">\n    <option value=\"nazev\" selected>Název</option>\n    <option value=\"doba\">Doba podávání</option>\n    <option value=\"alergeny\">Počet alergenů</option>\n  </select>\n</div>\n",
+    "css": "\n#razeni-jidel {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 8px 12px;\n  border: 1px solid #065f46;\n  border-radius: 8px;\n  background-color: #ffffff;\n}\n\n#razeni-jidel label {\n  font-size: 13px;\n  font-weight: 600;\n  color: #065f46;\n  white-space: nowrap;\n}\n\n#system-razeni_jidel {\n  min-width: 110px;\n  border: 0;\n  outline: none;\n  background: transparent;\n  color: #111827;\n  font-size: 14px;\n}\n",
+    "js": "",
+    "js_click": "",
+    "sql": {
+      "jidla-serazeni-podle-nazvu": "\nSELECT j.id_jidla AS id_jidla_razeni_nazev\nFROM jidla j\nORDER BY j.jmeno COLLATE NOCASE, j.id_jidla\n",
+      "jidla-serazeni-podle-doby-podavani": "\nSELECT j.id_jidla AS id_jidla_razeni_doba\nFROM jidla j\nORDER BY j.doba_podavani COLLATE NOCASE, j.id_jidla\n",
+      "jidla-serazeni-podle-poctu-alergenu": "\nSELECT\n  j.id_jidla AS id_jidla_razeni_alergeny,\n  COUNT(ja.id_alergenu) AS pocet_alergenu_razeni_jidla\nFROM jidla j\nLEFT JOIN jidla_alergeny ja\n  ON ja.id_jidla = j.id_jidla\nGROUP BY j.id_jidla\nORDER BY COUNT(ja.id_alergenu), j.id_jidla\n"
+    },
+    "sql_click": {},
+    "tags": [
+      "jídla",
+      "řazení",
+      "sql",
+      "html",
+      "css"
+    ],
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "smazat-jidlo",
@@ -825,7 +1074,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "btn-ulozit-jidlo",
@@ -847,7 +1101,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-alergeny-jidla",
@@ -868,7 +1127,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-doba-podavani",
@@ -885,7 +1149,12 @@
       "html",
       "css"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-nazev-jidla",
@@ -903,7 +1172,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-btn-ulozit-ucastnika",
@@ -928,7 +1202,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-adresa-ucastnika",
@@ -949,18 +1228,24 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-alergeny-ucastnika",
     "name": "Vstup – Edit alergeny účastníka",
     "description": "Vícenásobný výběr alergenů účastníka. Vyžaduje generalVariable: idUcastnika.",
-    "html": "\n<div class=\"form-radek\">\n  <label for=\"edit-vstup_alergeny_ucastnika-idUcastnika\">Alergeny:</label>\n  <div id=\"edit-vstup_alergeny_ucastnika-idUcastnika\" class=\"vyber-checkboxu\">\n    moznosti_alergenu_edit_ucastnika\n  </div>\n  <input type=\"hidden\" id=\"system-edit_vstup_alergeny_ucastnika-idUcastnika\" name=\"system-edit_vstup_alergeny_ucastnika\" />\n</div>\n",
+    "html": "\n<div class=\"form-radek\">\n  <label for=\"edit-vstup_alergeny_ucastnika-idUcastnika\">Alergeny:</label>\n  <div id=\"edit-vstup_alergeny_ucastnika-idUcastnika\" class=\"vyber-checkboxu\"></div>\n  <input type=\"hidden\" id=\"system-edit_vstup_alergeny_ucastnika-idUcastnika\" name=\"system-edit_vstup_alergeny_ucastnika\" />\n</div>\n",
     "css": "\n.form-radek { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }\n.form-radek label { font-size: 13px; font-weight: 600; color: #374151; }\n.vyber-checkboxu { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px; min-width: 280px; max-height: 150px; overflow-y: auto; background: #ffffff; }\n.volba-radek { display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 4px; font-size: 14px; font-weight: 400; cursor: pointer; }\n.volba-radek:hover { background: #f3f4f6; }\n.volba-radek input { width: 16px; height: 16px; }\n",
-    "js": "\nconst checkboxesAlergenuEditUcastnika = document.querySelectorAll('#edit-vstup_alergeny_ucastnika-' + idUcastnika + ' input[type=\"checkbox\"]');\nconst hiddenAlergenyEditUcastnika = document.querySelector('#system-edit_vstup_alergeny_ucastnika-' + idUcastnika);\n\nfunction syncAlergenyEditUcastnika() {\n  if (!hiddenAlergenyEditUcastnika) return;\n\n  const hodnoty = Array.from(checkboxesAlergenuEditUcastnika)\n    .filter(function(checkbox) { return checkbox.checked; })\n    .map(function(checkbox) { return checkbox.value; });\n\n  hiddenAlergenyEditUcastnika.value = hodnoty.length > 0 ? hodnoty.join(',') : 'NULL';\n  hiddenAlergenyEditUcastnika.dispatchEvent(new Event('input', { bubbles: true }));\n}\n\nif (checkboxesAlergenuEditUcastnika.length > 0) {\n  syncAlergenyEditUcastnika();\n\n  checkboxesAlergenuEditUcastnika.forEach(function(checkbox) {\n    checkbox.addEventListener('change', syncAlergenyEditUcastnika);\n  });\n}\n",
+    "js": "\nconst vyberAlergenuEditUcastnika = document.querySelector('#edit-vstup_alergeny_ucastnika-' + idUcastnika);\nconst hiddenAlergenyEditUcastnika = document.querySelector('#system-edit_vstup_alergeny_ucastnika-' + idUcastnika);\nconst vybraneIdAlergenuEditUcastnika = typeof vybrane_id_alergenu_ucastnika === 'undefined'\n  ? []\n  : (Array.isArray(vybrane_id_alergenu_ucastnika) ? vybrane_id_alergenu_ucastnika : [vybrane_id_alergenu_ucastnika]);\nconst vsechnaIdAlergenuEditUcastnika = typeof id_alergenu === 'undefined'\n  ? []\n  : (Array.isArray(id_alergenu) ? id_alergenu : [id_alergenu]);\nconst vsechnaJmenaAlergenuEditUcastnika = typeof jmeno_alergenu === 'undefined'\n  ? []\n  : (Array.isArray(jmeno_alergenu) ? jmeno_alergenu : [jmeno_alergenu]);\n\nif (vyberAlergenuEditUcastnika) {\n  const vybrenaIdSet = new Set(vybraneIdAlergenuEditUcastnika.map(function(id) { return String(id); }));\n  const moznostiAlergenuEditUcastnika = vsechnaIdAlergenuEditUcastnika.map(function(id, index) {\n    const checked = vybrenaIdSet.has(String(id)) ? ' checked' : '';\n    const jmeno = vsechnaJmenaAlergenuEditUcastnika[index] ?? '';\n    return '<label class=\"volba-radek\"><input type=\"checkbox\" value=\"' + id + '\"' + checked + '> ' + jmeno + '</label>';\n  }).join('');\n\n  vyberAlergenuEditUcastnika.innerHTML = moznostiAlergenuEditUcastnika;\n}\n\nfunction syncAlergenyEditUcastnika() {\n  if (!hiddenAlergenyEditUcastnika) return;\n  if (!vyberAlergenuEditUcastnika) return;\n\n  const checkboxesAlergenuEditUcastnika = vyberAlergenuEditUcastnika.querySelectorAll('input[type=\"checkbox\"]');\n  const hodnoty = Array.from(checkboxesAlergenuEditUcastnika)\n    .filter(function(checkbox) { return checkbox.checked; })\n    .map(function(checkbox) { return checkbox.value; });\n\n  hiddenAlergenyEditUcastnika.value = hodnoty.length > 0 ? hodnoty.join(',') : 'NULL';\n  hiddenAlergenyEditUcastnika.dispatchEvent(new Event('input', { bubbles: true }));\n}\n\nif (vyberAlergenuEditUcastnika) {\n  const checkboxesAlergenuEditUcastnika = vyberAlergenuEditUcastnika.querySelectorAll('input[type=\"checkbox\"]');\n  syncAlergenyEditUcastnika();\n\n  checkboxesAlergenuEditUcastnika.forEach(function(checkbox) {\n    if (checkbox.dataset.editAlergenyUcastnikaChange === '1') return;\n    checkbox.dataset.editAlergenyUcastnikaChange = '1';\n    checkbox.addEventListener('change', syncAlergenyEditUcastnika);\n  });\n}\n",
     "js_click": "",
     "sql": {
-      "nacistAlergenyUcastnika": "SELECT COALESCE((SELECT GROUP_CONCAT('<label class=\"volba-radek\"><input type=\"checkbox\" value=\"' || a.id_alergenu || '\"' || CASE WHEN ua.id_ucastnika IS NULL THEN '' ELSE ' checked' END || '> ' || a.jmeno || '</label>', '') FROM alergeny a LEFT JOIN ucastnici_alergeny ua ON ua.id_alergenu = a.id_alergenu AND ua.id_ucastnika = idUcastnika ORDER BY a.id_alergenu), '') AS moznosti_alergenu_edit_ucastnika"
+      "nacistVybraneAlergenyUcastnika": "SELECT ua.id_alergenu AS vybrane_id_alergenu_ucastnika\nFROM ucastnici_alergeny ua\nWHERE ua.id_ucastnika = idUcastnika\nORDER BY ua.id_alergenu",
+      "nacistVsechnyAlergeny": "SELECT a.id_alergenu AS id_alergenu, a.jmeno AS jmeno_alergenu\nFROM alergeny a\nORDER BY a.id_alergenu"
     },
     "sql_click": {},
     "tags": [
@@ -970,7 +1255,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-email-ucastnika",
@@ -991,7 +1281,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-jmeno-ucastnika",
@@ -1012,7 +1307,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-telefon-ucastnika",
@@ -1033,7 +1333,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-turnusy-ucastnika",
@@ -1055,7 +1360,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-vek-ucastnika",
@@ -1076,7 +1386,38 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
+  },
+  {
+    "id": "filtr-ucastniku",
+    "name": "Filtr účastníků",
+    "description": "Textové pole pro filtrování účastníků podle jména nebo emailu.",
+    "html": "\n<div id=\"filtr-ucastniku\">\n  <span id=\"filtr-ucastniku-ikona\">⌕</span>\n  <input\n    type=\"text\"\n    id=\"system-filtr_ucastniku\"\n    placeholder=\"Jméno nebo email\"\n    autocomplete=\"off\"\n  />\n</div>\n",
+    "css": "\n#filtr-ucastniku {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  width: 260px;\n  padding: 8px 12px;\n  border: 1px solid #0e7490;\n  border-radius: 8px;\n  background-color: #ffffff;\n}\n\n#filtr-ucastniku-ikona {\n  color: #0e7490;\n  font-size: 18px;\n  line-height: 1;\n  flex-shrink: 0;\n}\n\n#system-filtr_ucastniku {\n  width: 100%;\n  min-width: 0;\n  border: 0;\n  outline: none;\n  background: transparent;\n  color: #111827;\n  font-size: 14px;\n}\n\n#system-filtr_ucastniku::placeholder {\n  color: #9ca3af;\n}\n",
+    "js": "",
+    "js_click": "",
+    "sql": {
+      "ucastnici-filtrovani-podle-jmena-emailu": "\nSELECT u.id_ucastnika AS id_ucastnika_filtr_ucastniku\nFROM ucastnici u\nWHERE TRIM('filtr_ucastniku') = ''\n   OR LOWER(u.jmeno) LIKE '%' || LOWER(TRIM('filtr_ucastniku')) || '%'\n   OR LOWER(u.email) LIKE '%' || LOWER(TRIM('filtr_ucastniku')) || '%'\nORDER BY u.jmeno COLLATE NOCASE, u.id_ucastnika\n"
+    },
+    "sql_click": {},
+    "tags": [
+      "účastníci",
+      "filtr",
+      "html",
+      "css",
+      "sql"
+    ],
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "stitek-alergenu-ucastnika",
@@ -1097,7 +1438,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "karta-ucastnika",
@@ -1117,7 +1463,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "stitek-turnusu-ucastnika",
@@ -1137,7 +1488,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "celkova-kapacita-ucastniku",
@@ -1158,7 +1514,41 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
+  },
+  {
+    "id": "razeni-ucastniku",
+    "name": "Řazení účastníků",
+    "description": "Výběr řazení účastníků podle jména, věku, emailu nebo počtu alergenů.",
+    "html": "\n<div id=\"razeni-ucastniku\">\n  <label for=\"system-razeni_ucastniku\">Řadit:</label>\n  <select id=\"system-razeni_ucastniku\">\n    <option value=\"jmeno\" selected>Jméno</option>\n    <option value=\"vek\">Věk</option>\n    <option value=\"email\">Email</option>\n    <option value=\"alergeny\">Počet alergenů</option>\n  </select>\n</div>\n",
+    "css": "\n#razeni-ucastniku {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 8px 12px;\n  border: 1px solid #0e7490;\n  border-radius: 8px;\n  background-color: #ffffff;\n}\n\n#razeni-ucastniku label {\n  font-size: 13px;\n  font-weight: 600;\n  color: #0e7490;\n  white-space: nowrap;\n}\n\n#system-razeni_ucastniku {\n  min-width: 110px;\n  border: 0;\n  outline: none;\n  background: transparent;\n  color: #111827;\n  font-size: 14px;\n}\n",
+    "js": "",
+    "js_click": "",
+    "sql": {
+      "ucastnici-serazeni-podle-jmena": "\nSELECT u.id_ucastnika AS id_ucastnika_razeni_jmeno\nFROM ucastnici u\nORDER BY u.jmeno COLLATE NOCASE, u.id_ucastnika\n",
+      "ucastnici-serazeni-podle-veku": "\nSELECT u.id_ucastnika AS id_ucastnika_razeni_vek\nFROM ucastnici u\nORDER BY u.vek, u.id_ucastnika\n",
+      "ucastnici-serazeni-podle-emailu": "\nSELECT u.id_ucastnika AS id_ucastnika_razeni_email\nFROM ucastnici u\nORDER BY u.email COLLATE NOCASE, u.id_ucastnika\n",
+      "ucastnici-serazeni-podle-poctu-alergenu": "\nSELECT\n  u.id_ucastnika AS id_ucastnika_razeni_alergeny,\n  COUNT(ua.id_alergenu) AS pocet_alergenu_razeni_ucastnika\nFROM ucastnici u\nLEFT JOIN ucastnici_alergeny ua\n  ON ua.id_ucastnika = u.id_ucastnika\nGROUP BY u.id_ucastnika\nORDER BY COUNT(ua.id_alergenu), u.id_ucastnika\n"
+    },
+    "sql_click": {},
+    "tags": [
+      "účastníci",
+      "řazení",
+      "sql",
+      "html",
+      "css"
+    ],
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "smazat-ucastnika",
@@ -1179,7 +1569,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "btn-ulozit-ucastnika",
@@ -1202,7 +1597,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-adresa-ucastnika",
@@ -1220,7 +1620,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-alergeny-ucastnika",
@@ -1241,7 +1646,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-email-ucastnika",
@@ -1259,7 +1669,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-jmeno-ucastnika",
@@ -1277,7 +1692,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-telefon-ucastnika",
@@ -1295,7 +1715,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-turnusy-ucastnika",
@@ -1317,7 +1742,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-vek-ucastnika",
@@ -1335,7 +1765,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "btn-ulozit",
@@ -1356,7 +1791,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "btn-zrusit",
@@ -1373,7 +1813,12 @@
       "html",
       "css"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-datum-do",
@@ -1391,7 +1836,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-datum-od",
@@ -1409,7 +1859,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-kapacita",
@@ -1427,7 +1882,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "btn-zrusit",
@@ -1444,7 +1904,12 @@
       "html",
       "css"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "kapacita-turnusu",
@@ -1465,7 +1930,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-kapacita",
@@ -1483,7 +1953,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-datum-od",
@@ -1501,7 +1976,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "datum-turnusu",
@@ -1521,7 +2001,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-datum-do",
@@ -1539,7 +2024,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "pocet-dni-turnusu",
@@ -1559,7 +2049,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "smazat-turnus",
@@ -1579,7 +2074,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-btn-zrusit",
@@ -1596,7 +2096,12 @@
       "html",
       "css"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-kapacita",
@@ -1617,7 +2122,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-datum-od",
@@ -1638,7 +2148,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-datum-do",
@@ -1659,7 +2174,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-btn-ulozit",
@@ -1680,7 +2200,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "stitek-poctu-ucastniku-turnusu",
@@ -1700,7 +2225,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "seznam-ucastniku-turnusu",
@@ -1721,7 +2251,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "btn-ulozit",
@@ -1742,7 +2277,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "stitek-stavu-turnusu",
@@ -1764,7 +2304,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "stitek-poctu-vedoucich-turnusu",
@@ -1784,7 +2329,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "seznam-vedoucich-turnusu",
@@ -1805,7 +2355,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-btn-ulozit-vedouciho",
@@ -1830,7 +2385,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-adresa-vedouciho",
@@ -1851,7 +2411,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-alergeny-vedouciho",
@@ -1872,7 +2437,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-email-vedouciho",
@@ -1893,7 +2463,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-jmeno-vedouciho",
@@ -1914,7 +2489,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-telefon-vedouciho",
@@ -1935,7 +2515,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-turnusy-vedouciho",
@@ -1957,7 +2542,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "edit-vstup-vek-vedouciho",
@@ -1978,7 +2568,41 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
+  },
+  {
+    "id": "razeni-vedoucich",
+    "name": "Řazení vedoucích",
+    "description": "Výběr řazení vedoucích podle jména, věku, emailu nebo počtu alergenů.",
+    "html": "\n<div id=\"razeni-vedoucich\">\n  <label for=\"system-razeni_vedoucich\">Řadit:</label>\n  <select id=\"system-razeni_vedoucich\">\n    <option value=\"jmeno\" selected>Jméno</option>\n    <option value=\"vek\">Věk</option>\n    <option value=\"email\">Email</option>\n    <option value=\"alergeny\">Počet alergenů</option>\n  </select>\n</div>\n",
+    "css": "\n#razeni-vedoucich {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 8px 12px;\n  border: 1px solid #d8b4fe;\n  border-radius: 8px;\n  background-color: #ffffff;\n}\n\n#razeni-vedoucich label {\n  font-size: 13px;\n  font-weight: 600;\n  color: #4c1d95;\n  white-space: nowrap;\n}\n\n#system-razeni_vedoucich {\n  min-width: 110px;\n  border: 0;\n  outline: none;\n  background: transparent;\n  color: #111827;\n  font-size: 14px;\n}\n",
+    "js": "",
+    "js_click": "",
+    "sql": {
+      "vedouci-serazeni-podle-jmena": "\nSELECT v.id_vedouciho AS id_vedouciho_razeni_jmeno\nFROM vedouci v\nORDER BY v.jmeno COLLATE NOCASE, v.id_vedouciho\n",
+      "vedouci-serazeni-podle-veku": "\nSELECT v.id_vedouciho AS id_vedouciho_razeni_vek\nFROM vedouci v\nORDER BY v.vek, v.id_vedouciho\n",
+      "vedouci-serazeni-podle-emailu": "\nSELECT v.id_vedouciho AS id_vedouciho_razeni_email\nFROM vedouci v\nORDER BY v.email COLLATE NOCASE, v.id_vedouciho\n",
+      "vedouci-serazeni-podle-poctu-alergenu": "\nSELECT\n  v.id_vedouciho AS id_vedouciho_razeni_alergeny,\n  COUNT(va.id_alergenu) AS pocet_alergenu_razeni_vedouciho\nFROM vedouci v\nLEFT JOIN vedouci_alergeny va\n  ON va.id_vedouciho = v.id_vedouciho\nGROUP BY v.id_vedouciho\nORDER BY COUNT(va.id_alergenu), v.id_vedouciho\n"
+    },
+    "sql_click": {},
+    "tags": [
+      "vedoucí",
+      "řazení",
+      "sql",
+      "html",
+      "css"
+    ],
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "smazat-vedouciho",
@@ -1999,7 +2623,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "stitek-alergenu-vedouciho",
@@ -2020,7 +2649,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "karta-vedouciho",
@@ -2040,7 +2674,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "stitek-turnusu-vedouciho",
@@ -2060,13 +2699,18 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "celkovy-pocet-vedoucich",
     "name": "Celkový počet vedoucích",
     "description": "Zobrazuje celkový počet vedoucích ve widgetu nástrojové lišty.",
-    "html": "\n<div id=\"widget-poctu-vedoucich\">\n  <span id=\"ikona-poctu-vedoucich\">👨‍🏫</span>\n  <span id=\"popisek-poctu-vedoucich\">Vedoucích: celkovy_pocet_vedoucich</span>\n</div>\n",
+    "html": "\n<div id=\"widget-poctu-vedoucich\">\n  <span id=\"ikona-poctu-vedoucich\">👨‍🏫</span>\n  <span id=\"popisek-poctu-vedoucich\">Celkový počet vedoucích: celkovy_pocet_vedoucich</span>\n</div>\n",
     "css": "\n#widget-poctu-vedoucich {\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  padding: 6px 16px;\n  background: #18181b;\n  border: 1px solid #3f3f46;\n  border-radius: 10px;\n  color: #e4e4e7;\n  font-size: 13px;\n  font-weight: 500;\n}\n\n#ikona-poctu-vedoucich {\n  font-size: 15px;\n}\n\n#popisek-poctu-vedoucich {\n  color: #a78bfa;\n  font-weight: 700;\n}\n",
     "js": "",
     "js_click": "",
@@ -2080,7 +2724,12 @@
       "css",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "btn-ulozit-vedouciho",
@@ -2103,7 +2752,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-adresa-vedouciho",
@@ -2121,7 +2775,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-alergeny-vedouciho",
@@ -2142,7 +2801,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-email-vedouciho",
@@ -2160,7 +2824,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-jmeno-vedouciho",
@@ -2178,7 +2847,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-telefon-vedouciho",
@@ -2196,7 +2870,12 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-turnusy-vedouciho",
@@ -2218,7 +2897,12 @@
       "js",
       "sql"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   },
   {
     "id": "vstup-vek-vedouciho",
@@ -2236,6 +2920,11 @@
       "css",
       "js"
     ],
-    "edited": false
+    "edited": false,
+    "variables": {
+      "generalVariables": [],
+      "sqlVariables": [],
+      "jsVariables": []
+    }
   }
 ]
