@@ -3,7 +3,7 @@ import type { Component } from "../../Component";
 
 export class SelectActivity implements IActivity {
     constructor(
-        public description: string,
+        public description: string | undefined,
         public activityComponents: Component[],
         public label?: string,
     ) { }

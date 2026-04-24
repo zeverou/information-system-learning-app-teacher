@@ -27,7 +27,13 @@
           <UInput v-model="taskForm.title" :placeholder="t('task_title_placeholder')" class="w-full" />
         </UFormField>
 
-        <UFormField :label="t('task_description_label')">
+        <UFormField>
+          <template #label>
+            <span>{{ t('task_description_label') }}</span>
+            <span class="ml-1 font-normal text-gray-400 dark:text-gray-500">
+              ({{ t('task_optional_suffix') }})
+            </span>
+          </template>
           <UTextarea
             v-model="taskForm.description"
             :placeholder="t('task_description_placeholder')"
@@ -249,7 +255,13 @@
           </h3>
 
           <div class="grid gap-4">
-            <UFormField :label="t('task_activity_label_opt')">
+            <UFormField>
+              <template #label>
+                <span>{{ t('task_activity_label_opt') }}</span>
+                <span class="ml-1 font-normal text-gray-400 dark:text-gray-500">
+                  ({{ t('task_optional_suffix') }})
+                </span>
+              </template>
               <UInput v-model="taskForm.activityLabel" :placeholder="t('task_activity_label_placeholder')" class="w-full" />
             </UFormField>
 
@@ -321,7 +333,13 @@
               </div>
             </UFormField>
 
-            <UFormField :label="t('task_activity_description')">
+            <UFormField>
+              <template #label>
+                <span>{{ t('task_activity_description') }}</span>
+                <span class="ml-1 font-normal text-gray-400 dark:text-gray-500">
+                  ({{ t('task_optional_suffix') }})
+                </span>
+              </template>
               <UTextarea
                 v-model="taskForm.activityDescription"
                 :placeholder="t('task_activity_description_placeholder')"
@@ -424,11 +442,23 @@
           </h3>
 
           <div class="grid gap-4">
-            <UFormField :label="t('task_finish_label_opt')">
+            <UFormField>
+              <template #label>
+                <span>{{ t('task_finish_label_opt') }}</span>
+                <span class="ml-1 font-normal text-gray-400 dark:text-gray-500">
+                  ({{ t('task_optional_suffix') }})
+                </span>
+              </template>
               <UInput v-model="taskForm.finishLabel" :placeholder="t('task_finish_label_placeholder')" class="w-full" />
             </UFormField>
 
-            <UFormField :label="t('task_finish_description_label')">
+            <UFormField>
+              <template #label>
+                <span>{{ t('task_finish_description_label') }}</span>
+                <span class="ml-1 font-normal text-gray-400 dark:text-gray-500">
+                  ({{ t('task_optional_suffix') }})
+                </span>
+              </template>
               <UTextarea
                 v-model="taskForm.finishDescription"
                 :placeholder="t('task_finish_description_placeholder')"
@@ -1017,7 +1047,7 @@ function buildTaskUpdate(selectedTask: Task): Task {
       checkQuery: taskForm.finishCheckQuery,
       constraints: taskForm.finishVariableConstraints.map(toVariableConstraint)
     },
-    taskForm.finishDescription
+    taskForm.finishDescription || undefined
   )
 
   return {
@@ -1029,7 +1059,7 @@ function buildTaskUpdate(selectedTask: Task): Task {
     activity: {
       ...(selectedTask.activity ?? {}),
       label: taskForm.activityLabel || undefined,
-      description: taskForm.activityDescription || taskForm.description,
+      description: taskForm.activityDescription || undefined,
       activityComponents: selectedTask.activity?.activityComponents ?? selectedTask.errorComponents ?? [],
       checkRepair: taskForm.activityType === ActivityType.REPAIR ? taskForm.activityCheckRepair : false,
       repairChecks: taskForm.activityType === ActivityType.REPAIR && taskForm.activityCheckRepair

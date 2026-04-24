@@ -7,7 +7,7 @@ export class RepairActivity implements IActivity {
     public substituteAfterActivity: boolean = false
 
     constructor(
-        public description: string,
+        public description: string | undefined,
         public activityComponents: Component[],
         public label?: string,
         public checkRepair: boolean = false,

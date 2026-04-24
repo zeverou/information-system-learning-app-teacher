@@ -2,7 +2,7 @@ import type { Component } from "../../Component";
 
 export interface IActivity {
     label?: string;
-    description: string;
+    description?: string;
     activityComponents: Component[];
     isCompleted?: boolean;
     substituteAfterActivity?: boolean;

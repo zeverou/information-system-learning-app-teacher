@@ -126,11 +126,11 @@ export class Task {
   private static createActivity(
     activityType: ActivityType,
     activity: any,
-    description: string,
+    _description: string,
     activityComponents: Component[],
     substituteAfterActivity: boolean = false
   ): IActivity {
-    const activityDescription = activity?.description ?? description;
+    const activityDescription = activity?.description;
     const parsedComponents = Task.parseComponents(activity?.activityComponents);
     const components = parsedComponents.length > 0 ? parsedComponents : activityComponents;
     const label = activity?.label;
@@ -162,7 +162,7 @@ export class Task {
   public static createFinish(
     finishType: FinishType,
     finish: any,
-    fallbackDescription: string
+    fallbackDescription?: string
   ): IFinish {
     const description = finish?.description ?? fallbackDescription;
     const label = finish?.label;

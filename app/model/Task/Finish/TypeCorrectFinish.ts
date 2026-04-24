@@ -5,7 +5,7 @@ export class TypeCorrectFinish implements IFinish {
     public isComplete: boolean = false;
 
     constructor(
-        public description: string,
+        public description: string | undefined,
         public correctAnswer: string,
         public label?: string,
     ) { }

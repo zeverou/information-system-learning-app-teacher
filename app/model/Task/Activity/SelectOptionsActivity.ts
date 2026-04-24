@@ -5,7 +5,7 @@ import type { Option } from "../Option";
 
 export class SelectOptionsActivity implements IActivity {
     constructor(
-        public description: string,
+        public description: string | undefined,
         public activityComponents: Component[],
         public label?: string,
         public options: Option[] = []

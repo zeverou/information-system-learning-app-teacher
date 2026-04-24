@@ -3,7 +3,7 @@ export type FinishEvaluationContext = {
 }
 
 export interface IFinish {
-    description: string;
+    description?: string;
     label?: string;
     isComplete: boolean;
     evaluate(input?: unknown, context?: FinishEvaluationContext): boolean | Promise<boolean>;

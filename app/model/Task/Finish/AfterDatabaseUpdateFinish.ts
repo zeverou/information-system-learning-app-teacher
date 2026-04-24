@@ -7,7 +7,7 @@ export class AfterDatabaseUpdateFinish implements IFinish {
     public isComplete: boolean = false;
     
     constructor(
-            public description: string,
+            public description: string | undefined,
             public label?: string,
             public checkQuery: string = "",
         ) { }
