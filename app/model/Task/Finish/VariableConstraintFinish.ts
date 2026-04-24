@@ -35,23 +35,34 @@ export class VariableConstraintFinish implements IFinish {
         const evaluationInput = input as VariableConstraintEvaluationInput | undefined;
 
         if (!this.constraints.length) {
+            console.log('[VariableConstraintFinish.evaluate] no constraints 🔴');
             this.isComplete = false;
             return this.isComplete;
         }
 
         this.isComplete = this.constraints.every(constraint => {
             const variable = findVariableValue(constraint, evaluationInput);
+            console.log(`[VariableConstraintFinish.evaluate] checking constraint: ${constraint.variableName} ${constraint.operator} ${constraint.value} | actual variable value:`, variable);
             if (typeof variable === 'undefined') {
                 return false;
             }
 
             if (Array.isArray(variable)) {
-                return variable.some(value => compareValues(value, constraint.value, constraint.operator));
+                const someMatch = variable.some(value => {
+                    const match = compareValues(value, constraint.value, constraint.operator);
+                    if (match) console.log(`[VariableConstraintFinish.evaluate] matched array value:`, value, '🟢');
+                    return match;
+                });
+                if (!someMatch) console.log(`[VariableConstraintFinish.evaluate] no match in array:`, variable, '🔴');
+                return someMatch;
             }
 
-            return compareValues(variable, constraint.value, constraint.operator);
+            const match = compareValues(variable, constraint.value, constraint.operator);
+            console.log(`[VariableConstraintFinish.evaluate] match single value:`, variable, match ? '🟢' : '🔴');
+            return match;
         });
 
+        console.log('[VariableConstraintFinish.evaluate] all constraints met:', this.isComplete, this.isComplete ? '🟢' : '🔴');
         return this.isComplete;
     }
 }

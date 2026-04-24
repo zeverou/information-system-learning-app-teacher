@@ -17,6 +17,7 @@ export class AfterDatabaseUpdateFinish implements IFinish {
         const query = this.checkQuery.trim();
 
         if (!db || !query || !/^select\b/i.test(query)) {
+            console.log('[AfterDatabaseUpdateFinish.evaluate] invalid setup. db:', !!db, '| query:', query, '🔴');
             this.isComplete = false;
             return this.isComplete;
         }
@@ -28,6 +29,9 @@ export class AfterDatabaseUpdateFinish implements IFinish {
             : [];
 
         this.isComplete = result.result === OperationResultType.SUCCESS && rows.length > 0;
+        
+        console.log('[AfterDatabaseUpdateFinish.evaluate] query executed:', query, '| result:', result.result, '| rowCount:', rows.length, this.isComplete ? '🟢' : '🔴');
+
         return this.isComplete;
     }
 }

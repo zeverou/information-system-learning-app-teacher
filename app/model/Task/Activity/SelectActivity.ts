@@ -18,7 +18,7 @@ export class SelectActivity implements IActivity {
     check(input: string[]): void {
         console.log("CHECK - SELECT ACTIVITY")
         const allComponentsIds = this.activityComponents.map(component => component.id);
-        console.log('[SelectActivity.check] correct IDs:', allComponentsIds, '| input:', input);
         this.isCompleted = input.length === allComponentsIds.length && input.every(id => allComponentsIds.includes(id));
+        console.log('[SelectActivity.check] correct IDs:', allComponentsIds, '| input:', input, this.isCompleted ? '🟢' : '🔴');
     }
 }

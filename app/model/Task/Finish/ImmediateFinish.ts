@@ -11,6 +11,7 @@ export class ImmediateFinish implements IFinish {
     
     public evaluate(_input?: unknown, context?: FinishEvaluationContext): boolean {
         this.isComplete = Boolean(context?.activityCompleted);
+        console.log('[ImmediateFinish.evaluate] context.activityCompleted:', Boolean(context?.activityCompleted), this.isComplete ? '🟢' : '🔴');
         return this.isComplete;
     }
 }

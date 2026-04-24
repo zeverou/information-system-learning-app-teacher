@@ -168,10 +168,14 @@
           </HoverHint>
         </span>
       </template>
-      <div v-if="selectedComponents.length" class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2 items-center">
         <UBadge v-for="component in selectedComponents" :key="component.id" color="neutral" variant="subtle"
           class="flex items-center gap-1 font-mono pr-1">
           <span>{{ component.name }}</span>
+          <HoverHint :text="t('task_export_component_action')">
+            <UButton icon="i-lucide-copy" color="neutral" variant="ghost" size="xs" class="shrink-0"
+              @click.stop="exportSelectedComponent(component.id)" />
+          </HoverHint>
           <HoverHint :text="t('task_edit_component_action')">
             <UButton icon="i-lucide-pencil" color="neutral" variant="ghost" size="xs" class="shrink-0"
               @click.stop="startEditingComponent(component.id)" />
@@ -181,10 +185,20 @@
               @click.stop="removeSelectedComponent(component.id)" />
           </HoverHint>
         </UBadge>
+        <p v-if="!selectedComponents.length" class="text-sm text-gray-500 dark:text-gray-400 mr-2">
+          {{ t('task_no_components') }}
+        </p>
+        <UBadge
+          as="button"
+          color="neutral"
+          variant="outline"
+          class="flex items-center gap-1 font-mono cursor-pointer border-dashed hover:bg-gray-50 dark:hover:bg-gray-800"
+          @click="showPasteComponentModal = true"
+        >
+          <UIcon name="i-lucide-plus" class="w-3 h-3" />
+          {{ t('task_add_component_json') }}
+        </UBadge>
       </div>
-      <p v-else class="text-sm text-gray-500 dark:text-gray-400">
-        {{ t('task_no_components') }}
-      </p>
     </UFormField>
 
     <div v-if="editingComponent" class="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
@@ -539,6 +553,43 @@
         </UFormField>
     </div>
   </div>
+
+  <UModal v-model:open="showPasteComponentModal" :title="t('task_add_component_json')" :ui="{ content: 'w-[560px]' }">
+    <template #body>
+      <div class="flex flex-col gap-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          {{ t('task_add_component_json_desc') }}
+        </p>
+        <UTextarea
+          v-model="pasteComponentJsonText"
+          :placeholder="`{ &quot;id&quot;: &quot;...&quot;, &quot;name&quot;: &quot;...&quot;, &quot;html&quot;: &quot;...&quot; }`"
+          :rows="10"
+          class="font-mono w-full"
+        />
+        <p v-if="pasteComponentError" class="text-sm text-red-500">
+          {{ pasteComponentError }}
+        </p>
+      </div>
+    </template>
+    <template #footer>
+      <div class="flex justify-end gap-2">
+        <UButton
+          color="neutral"
+          variant="ghost"
+          @click="showPasteComponentModal = false"
+        >
+          {{ t('cancel') }}
+        </UButton>
+        <UButton
+          color="primary"
+          :disabled="!pasteComponentJsonText.trim()"
+          @click="handlePasteComponent"
+        >
+          {{ t('task_paste_json') }}
+        </UButton>
+      </div>
+    </template>
+  </UModal>
 </template>
 
 <script setup lang="ts">
@@ -713,6 +764,54 @@ const editingComponentId = ref<string | null>(null)
 const isEditingComponentValid = ref(true)
 const editComponentBodyRef = ref<InstanceType<typeof EditComponentBody> | null>(null)
 const editingComponent = ref<SystemComponent | null>(null)
+
+const showPasteComponentModal = ref(false)
+const pasteComponentJsonText = ref('')
+const pasteComponentError = ref('')
+
+function handlePasteComponent() {
+  pasteComponentError.value = ''
+  try {
+    const data = JSON.parse(pasteComponentJsonText.value)
+    const newComponents = Array.isArray(data) ? data : [data]
+
+    for (const c of newComponents) {
+      if (!c || !c.id) {
+        throw new Error(t('task_invalid_component_json'))
+      }
+    }
+    const validComponents = newComponents.map(c => SystemComponent.fromJSON(c))
+
+    const selectedTask = selectedTaskFromSettings.value
+    if (selectedTask) {
+      const updatedErrorComponents = [...(selectedTask.errorComponents || [])]
+      const updatedActivityComponents = [...((selectedTask.activity?.activityComponents ?? selectedTask.errorComponents) || [])]
+
+      for (const comp of validComponents) {
+        if (!updatedErrorComponents.some(existing => existing.id === comp.id)) {
+          updatedErrorComponents.push(comp)
+        }
+        if (!updatedActivityComponents.some(existing => existing.id === comp.id)) {
+          updatedActivityComponents.push(comp)
+        }
+      }
+
+      emit('update:selectedTask', {
+        ...selectedTask,
+        errorComponents: updatedErrorComponents,
+        activity: {
+          ...(selectedTask.activity ?? {}),
+          activityComponents: updatedActivityComponents
+        }
+      })
+    }
+
+    showPasteComponentModal.value = false
+    pasteComponentJsonText.value = ''
+  } catch (err: any) {
+    pasteComponentError.value = err.message || t('task_invalid_component_json')
+  }
+}
 
 defineModel<string>({ default: '' })
 
@@ -987,6 +1086,23 @@ watch(
   },
   { immediate: true }
 )
+
+const toast = useToast()
+
+function exportSelectedComponent(componentId: string) {
+  const selectedTask = selectedTaskFromSettings.value
+  const component = selectedTask?.errorComponents?.find(c => c.id === componentId)
+  if (component) {
+    // create clean instance to avoid serializing vue proxies directly if any
+    const cleanComponent = SystemComponent.fromJSON(JSON.parse(JSON.stringify(component)))
+    navigator.clipboard.writeText(JSON.stringify(cleanComponent.toJSON(), null, 2))
+    toast.add({
+      title: t('copy_id_toast_success'),
+      color: 'green',
+      icon: 'i-lucide-check-circle'
+    })
+  }
+}
 
 function removeSelectedComponent(componentId: string) {
   const selectedTask = selectedTaskFromSettings.value

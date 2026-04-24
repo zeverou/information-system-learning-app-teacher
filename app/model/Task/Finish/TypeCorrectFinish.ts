@@ -12,6 +12,7 @@ export class TypeCorrectFinish implements IFinish {
 
     public evaluate(input: unknown = ""): boolean {
         this.isComplete = String(input).trim() === this.correctAnswer.trim();
+        console.log('[TypeCorrectFinish.evaluate] expected:', this.correctAnswer.trim(), '| actual:', String(input).trim(), this.isComplete ? '🟢' : '🔴');
         return this.isComplete;
     }
 }

@@ -307,8 +307,8 @@ function evaluateActivity() {
     const activity = task.activity as SelectActivity
     const selectedIds = Array.from(highlightStore.selectedHighlightedComponentsIds)
     const correctIds = activity.activityComponents.map((c: any) => c.id)
-    console.log('[SELECT] correct IDs:', correctIds, '| input:', selectedIds)
     isCorrect = selectedIds.length === correctIds.length && selectedIds.every(id => correctIds.includes(id))
+    console.log('[SELECT] correct IDs:', correctIds, '| input:', selectedIds, isCorrect ? '🟢' : '🔴')
     activity.isCompleted = isCorrect
   } else if (task.activityType === ActivityType.SELECT_OPTIONS) {
     const activity = task.activity as SelectOptionsActivity
@@ -316,8 +316,8 @@ function evaluateActivity() {
       .map((o: any, i: number) => o.isCorrect ? i : -1)
       .filter((i: number) => i !== -1)
     const selectedIndices = [...selectedActivityOptionIndices.value]
-    console.log('[SELECT_OPTIONS] correct indices:', correctIndices, '| selected indices:', selectedIndices)
     isCorrect = selectedIndices.length === correctIndices.length && selectedIndices.every(i => correctIndices.includes(i))
+    console.log('[SELECT_OPTIONS] correct indices:', correctIndices, '| selected indices:', selectedIndices, isCorrect ? '🟢' : '🔴')
     activity.isCompleted = isCorrect
   } else if (task.activityType === ActivityType.REPAIR) {
     isCorrect = isTaskActivityCompleted(task)
