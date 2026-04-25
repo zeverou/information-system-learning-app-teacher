@@ -1,5 +1,20 @@
 <template>
   <div class="flex flex-col gap-4">
+    <UFormField>
+      <template #label>
+        <span>{{ t('task_level_count') }}</span>
+        <span class="ml-1 font-normal text-gray-500 dark:text-gray-400">
+          ({{ t('task_level_count_info') }})
+        </span>
+      </template>
+      <UInput
+        v-model.number="systemLevelCount"
+        type="number"
+        min="1"
+        class="w-[8rem] max-w-full"
+      />
+    </UFormField>
+
     <div class="flex flex-wrap items-center gap-2">
       <!--
         <UButton
@@ -21,15 +36,6 @@
           {{ t('task_import_all') }}
         </UButton>
       -->
-
-        <UButton
-          icon="i-lucide-file-json"
-          color="neutral"
-          variant="soft"
-          @click="showImportModal = true"
-        >
-          {{ t('task_add_from_json') }}
-        </UButton>
 
         <ModernHoverPopover
           :title="previewStudentView ? t('task_preview_student_title') : t('task_preview_editor_title')"
@@ -64,7 +70,7 @@
       :description="visiblePagesMismatchDescription"
     />
 
-    <div v-if="tasks.length" class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2">
       <UBadge
         v-for="task in tasks"
         :key="task.id"
@@ -87,6 +93,16 @@
           />
         </HoverHint>
       </UBadge>
+      <UBadge
+        as="button"
+        color="neutral"
+        variant="outline"
+        class="flex cursor-pointer items-center gap-1.5 border-dashed px-3 py-1 transition hover:bg-gray-50 dark:hover:bg-gray-800"
+        @click="showImportModal = true"
+      >
+        <UIcon name="i-lucide-file-json" class="h-3.5 w-3.5" />
+        {{ t('task_add_from_json') }}
+      </UBadge>
     </div>
 
     <TaskStudentDetail
@@ -97,7 +113,6 @@
       v-else
       :selected-task="selectedTask"
       @update:selected-task="handleTaskUpdate"
-      @update:level-count="handleLevelCountUpdate"
     />
 
     <UModal v-model:open="showImportModal" :title="t('task_import_title')" :ui="{ content: 'w-[560px]' }">
@@ -208,6 +223,7 @@ const { t } = useI18n()
 const systemsStore = useSystemsStore()
 const globalSettings = useGlobalSettingsStore()
 const selectedTask = ref<Task | null>(null)
+const systemLevelCount = ref(1)
 const tasks = computed(() => systemsStore.selectedSystem?.tasks ?? [])
 const inconsistentLevelVisiblePages = computed(() => {
   const system = systemsStore.selectedSystem
@@ -230,6 +246,18 @@ watch(() => globalSettings.selectedTaskId, (id) => {
   if (selectedTask.value?.id === id) return
   selectedTask.value = tasks.value.find(t => t.id === id) ?? null
 }, { immediate: true })
+
+watch(
+  () => systemsStore.selectedSystem?.levelCount,
+  (levelCount) => {
+    systemLevelCount.value = normalizeLevelCount(levelCount)
+  },
+  { immediate: true }
+)
+
+watch(systemLevelCount, (levelCount) => {
+  handleLevelCountUpdate(levelCount)
+})
 
 const importFromJson = async () => {
   importError.value = ''
@@ -344,13 +372,16 @@ const handleLevelCountUpdate = (levelCount: number) => {
     return
   }
 
-  const normalizedLevelCount = Math.max(1, Math.floor(Number(levelCount) || 1))
+  const normalizedLevelCount = normalizeLevelCount(levelCount)
   if (system.levelCount === normalizedLevelCount) {
     return
   }
 
   system.levelCount = normalizedLevelCount
   system.currentRound = Math.min(system.currentRound, system.levelCount)
+  system.tasks.forEach((task) => {
+    task.round = Math.min(normalizeTaskLevel(task.round), system.levelCount)
+  })
 
   queueSystemPersist(system)
 }
@@ -394,6 +425,16 @@ async function persistSystemNow(system: InformationSystem) {
 
   refreshDefaultTasks(system)
   await systemsStore.updateSystem(system)
+}
+
+function normalizeLevelCount(value: unknown): number {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? Math.max(1, Math.floor(parsed)) : 1
+}
+
+function normalizeTaskLevel(value: unknown): number {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? Math.max(1, Math.floor(parsed)) : 1
 }
 
 onBeforeUnmount(() => {

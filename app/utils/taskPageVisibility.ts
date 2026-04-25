@@ -53,8 +53,17 @@ export function systemAllowsPageForTaskContext(
   return currentLevelAllowsPage(system, pageRoute)
 }
 
+export function availableVisiblePages(
+  system: InformationSystem,
+  task: Task | null | undefined,
+  databaseName = 'Database'
+): Page[] {
+  return systemVisiblePages(system, databaseName)
+    .filter(page => systemAllowsPageForTaskContext(system, task, page.route))
+}
+
 export function firstTaskAllowedPage(system: InformationSystem, task: Task | null | undefined): Page | null {
-  return systemVisiblePages(system).find(page => systemAllowsPageForTaskContext(system, task, page.route)) ?? null
+  return availableVisiblePages(system, task)[0] ?? null
 }
 
 function currentLevelAllowsPage(system: InformationSystem, pageRoute: string): boolean {

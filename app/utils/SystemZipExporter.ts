@@ -26,11 +26,23 @@ export class SystemZipExporter {
       }
     }
 
-    if (system.database?.sqlJsDatabase) {
-      zip.file('create_schema.sql', SystemZipExporter.dumpDatabase(system.database.sqlJsDatabase))
+    const createSchemaSql = SystemZipExporter.createSchemaSql(system)
+    if (createSchemaSql.trim()) {
+      zip.file('create_schema.sql', createSchemaSql)
     }
 
     return zip.generateAsync({ type: 'blob' })
+  }
+
+  private static createSchemaSql(system: InformationSystem): string {
+    if (system.database?.sqlJsDatabase) {
+      const dumpedSql = SystemZipExporter.dumpDatabase(system.database.sqlJsDatabase)
+      if (SystemZipExporter.hasSchemaContent(dumpedSql)) {
+        return dumpedSql
+      }
+    }
+
+    return system.createSchemaSql ?? ''
   }
 
   private static createConfig(system: InformationSystem) {
@@ -113,6 +125,11 @@ export class SystemZipExporter {
     }
 
     return `${statements.join('\n').trim()}\n`
+  }
+
+  private static hasSchemaContent(sql: string): boolean {
+    return /\bCREATE\s+(TABLE|INDEX|TRIGGER|VIEW)\b/i.test(sql)
+      || /\bINSERT\s+INTO\b/i.test(sql)
   }
 
   private static selectRows(db: Database, sql: string): Record<string, unknown>[] {

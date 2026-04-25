@@ -21,6 +21,7 @@ interface StoredSystem {
     defaultComponents: any[];
     databaseBinary: Uint8Array | null;
     defaultDatabaseBinary: Uint8Array | null;
+    createSchemaSql?: string;
     score: { mistakesCount: number; score: number } | null;
     currentRound?: number;
     levelCount?: number;
@@ -86,6 +87,7 @@ export class IndexedDbStorage {
                 defaultComponents: JSON.parse(JSON.stringify(system.defaultComponents)),
                 databaseBinary,
                 defaultDatabaseBinary,
+                createSchemaSql: system.createSchemaSql,
                 score: { mistakesCount: system.score.mistakesCount, score: system.score.score },
                 currentRound: system.currentRound,
                 levelCount: system.levelCount,
@@ -136,6 +138,7 @@ export class IndexedDbStorage {
                 defaultComponents: JSON.parse(JSON.stringify(system.defaultComponents)),
                 databaseBinary,
                 defaultDatabaseBinary,
+                createSchemaSql: system.createSchemaSql,
                 score: { mistakesCount: system.score.mistakesCount, score: system.score.score },
                 currentRound: system.currentRound,
                 levelCount: system.levelCount,
@@ -176,6 +179,7 @@ export class IndexedDbStorage {
             defaultTasks: (record.defaultTasks ?? record.tasks ?? []).map((t: any) => Task.fromJSON(t)),
             actualComponents: Component.arrayFromJSON(record.actualComponents ?? []),
             defaultComponents: Component.arrayFromJSON(record.defaultComponents ?? []),
+            createSchemaSql: record.createSchemaSql,
             score,
             currentRound: Number(record.currentRound ?? 1),
             levelCount: Number(record.levelCount ?? 1),

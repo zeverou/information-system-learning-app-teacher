@@ -24,7 +24,7 @@
         </div>
 
         <UFormField :label="t('task_title_label')">
-          <UInput v-model="taskForm.title" :placeholder="t('task_title_placeholder')" class="w-full" />
+          <UInput v-model="taskForm.title" :placeholder="t('task_title_placeholder')" class="w-[24rem] max-w-full" />
         </UFormField>
 
         <UFormField>
@@ -67,20 +67,6 @@
           </p>
         </UFormField>
 
-        <UFormField>
-          <template #label>
-            <span>{{ t('task_level_count') }}</span>
-            <span class="ml-1 font-normal text-gray-500 dark:text-gray-400">
-              ({{ t('task_level_count_info') }})
-            </span>
-          </template>
-          <UInput
-            v-model.number="systemLevelCount"
-            type="number"
-            min="1"
-            class="w-full"
-          />
-        </UFormField>
       </div>
 
       <div class="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
@@ -141,7 +127,7 @@
                 ({{ t('task_points_reward_info') }})
               </span>
             </template>
-            <UInput v-model.number="taskForm.pointsReward" type="number" min="0" class="w-full" />
+            <UInput v-model.number="taskForm.pointsReward" type="number" min="0" class="w-[8rem] max-w-full" />
           </UFormField>
 
           <UFormField>
@@ -151,7 +137,7 @@
                 ({{ t('task_fail_penalty_info') }})
               </span>
             </template>
-            <UInput v-model.number="taskForm.failPenalty" type="number" min="0" class="w-full" />
+            <UInput v-model.number="taskForm.failPenalty" type="number" min="0" class="w-[8rem] max-w-full" />
           </UFormField>
         </div>
       </div>
@@ -262,7 +248,7 @@
                   ({{ t('task_optional_suffix') }})
                 </span>
               </template>
-              <UInput v-model="taskForm.activityLabel" :placeholder="t('task_activity_label_placeholder')" class="w-full" />
+              <UInput v-model="taskForm.activityLabel" :placeholder="t('task_activity_label_placeholder')" class="w-[24rem] max-w-full" />
             </UFormField>
 
             <UFormField>
@@ -315,11 +301,11 @@
               </template>
               <div class="space-y-3">
                 <div v-for="(option, index) in taskForm.activityOptions" :key="`activity-option-${index}`"
-                  class="flex items-center gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-800">
+                  class="flex flex-wrap items-center gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-800">
                   <span class="w-6 text-sm font-medium text-gray-500 dark:text-gray-400">
                     {{ index + 1 }}.
                   </span>
-                  <UInput v-model="option.text" :placeholder="t('task_option_text_placeholder')" class="flex-1" />
+                  <UInput v-model="option.text" :placeholder="t('task_option_text_placeholder')" class="w-[20rem] max-w-full" />
                   <UButton :icon="option.isCorrect ? 'i-lucide-check' : 'i-lucide-x'"
                     :color="option.isCorrect ? 'green' : 'red'" variant="soft" size="sm" class="shrink-0"
                     @click="toggleActivityOptionCorrect(index)" />
@@ -406,7 +392,7 @@
                   <UInput
                     v-model="constraint.text"
                     :placeholder="t('task_component_contains_text_placeholder')"
-                    class="w-full"
+                    class="w-[16rem] max-w-full"
                   />
                   <UButton
                     icon="i-lucide-trash-2"
@@ -449,7 +435,7 @@
                   ({{ t('task_optional_suffix') }})
                 </span>
               </template>
-              <UInput v-model="taskForm.finishLabel" :placeholder="t('task_finish_label_placeholder')" class="w-full" />
+              <UInput v-model="taskForm.finishLabel" :placeholder="t('task_finish_label_placeholder')" class="w-[24rem] max-w-full" />
             </UFormField>
 
             <UFormField>
@@ -494,11 +480,11 @@
               </template>
               <div class="space-y-3">
                 <div v-for="(option, index) in taskForm.finishOptions" :key="`finish-option-${index}`"
-                  class="flex items-center gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-800">
+                  class="flex flex-wrap items-center gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-800">
                   <span class="w-6 text-sm font-medium text-gray-500 dark:text-gray-400">
                     {{ index + 1 }}.
                   </span>
-                  <UInput v-model="option.text" :placeholder="t('task_option_text_placeholder')" class="flex-1" />
+                  <UInput v-model="option.text" :placeholder="t('task_option_text_placeholder')" class="w-[20rem] max-w-full" />
                   <UButton :icon="option.isCorrect ? 'i-lucide-check' : 'i-lucide-x'"
                     :color="option.isCorrect ? 'green' : 'red'" variant="soft" size="sm" class="shrink-0"
                     @click="toggleFinishOptionCorrect(index)" />
@@ -513,7 +499,7 @@
             </UFormField>
 
             <UFormField v-if="taskForm.finishType === FinishType.TYPE_CORRECT" :label="t('task_finish_correct_answer')">
-              <UInput v-model="taskForm.finishCorrectAnswer" :placeholder="t('task_correct_answer_placeholder')" class="w-full" />
+              <UInput v-model="taskForm.finishCorrectAnswer" :placeholder="t('task_correct_answer_placeholder')" class="w-[24rem] max-w-full" />
             </UFormField>
 
             <UFormField v-if="taskForm.finishType === FinishType.AFTER_DATABASE_UPDATE" :label="t('task_finish_check_query')">
@@ -556,7 +542,7 @@
                   <UInput
                     v-model="constraint.value"
                     :placeholder="t('task_variable_constraint_value_placeholder')"
-                    class="w-full"
+                    class="w-[16rem] max-w-full"
                   />
                   <UButton
                     icon="i-lucide-trash-2"
@@ -883,7 +869,6 @@ defineModel<string>({ default: '' })
 const emit = defineEmits<{
   (e: 'submit' | 'evaluate'): void
   (e: 'update:selectedTask', value: Task): void
-  (e: 'update:levelCount', value: number): void
 }>()
 
 const createDefaultForm = (): TaskDetailForm => ({
@@ -922,7 +907,9 @@ const { t } = useI18n()
 watch(
   () => systemsStore.selectedSystem?.levelCount,
   (levelCount) => {
-    systemLevelCount.value = normalizeLevelCount(levelCount)
+    const normalizedLevelCount = normalizeLevelCount(levelCount)
+    systemLevelCount.value = normalizedLevelCount
+    taskForm.round = Math.min(normalizeTaskLevel(taskForm.round), normalizedLevelCount)
   },
   { immediate: true }
 )
@@ -1023,12 +1010,6 @@ watch(
   },
   { deep: true }
 )
-
-watch(systemLevelCount, (levelCount) => {
-  const normalizedLevelCount = normalizeLevelCount(levelCount)
-  taskForm.round = Math.min(normalizeTaskLevel(taskForm.round), normalizedLevelCount)
-  emit('update:levelCount', normalizedLevelCount)
-})
 
 function buildTaskUpdate(selectedTask: Task): Task {
   const finish = Task.createFinish(

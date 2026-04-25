@@ -147,6 +147,8 @@ import { OperationResultType } from "~/utils/OperationResultType";
 /* 2. Stores */
 const globalSettingsStore = useGlobalSettingsStore();
 const systemsStore = useSystemsStore();
+const { prepareSystem } = usePrepareSystem();
+const { pushFirstAvailablePage } = useAvailableSystemPages();
 
 /* 3. Context hooks */
 const { t } = useI18n();
@@ -220,27 +222,19 @@ async function onTogglePublicSystems(value: boolean) {
 
 async function navigateToSystem(id: string) {
   console.log("Navigating to system " + id);
-  systemsStore.selectedSystemId = id;
-
-  const system = systemsStore.getSystemById(id);
-  if (!system) {
-    console.error("System not found for system " + id);
+  if (!(await prepareSystem(id))) {
     return;
   }
 
-  if (!(await DatabaseWrapper.isDatabaseInitialized(system.database))) {
-    console.log("Initializing DB for system " + id);
-    await system.database.initializeDatabase();
-  } else {
-    console.error("System or database not found for system " + id);
-  }
-
-  console.log("Navigating to dashboard...");
-  router.push(`/systems/${id}/dashboard`);
+  console.log("Navigating to first available page...");
+  await pushFirstAvailablePage(null);
 }
 
-function navigateToDesigner(id: string) {
-  systemsStore.selectedSystemId = id;
+async function navigateToDesigner(id: string) {
+  if (!(await prepareSystem(id))) {
+    return;
+  }
+
   const system = systemsStore.getSystemById(id);
   const firstSystemRoute = system?.pages?.[0]?.route
     ? `/systems/${id}${system.pages[0].route}`

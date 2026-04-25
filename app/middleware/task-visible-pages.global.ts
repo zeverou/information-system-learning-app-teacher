@@ -1,5 +1,5 @@
 import {
-  firstTaskAllowedPage,
+  availableVisiblePages,
   systemVisiblePages,
   systemPageRouteFromPath,
   systemAllowsPageForTaskContext,
@@ -35,7 +35,7 @@ export default defineNuxtRouteMiddleware((to) => {
     return
   }
 
-  const fallbackPage = firstTaskAllowedPage(system, selectedTask)
+  const fallbackPage = availableVisiblePages(system, selectedTask)[0]
 
   if (fallbackPage) {
     return navigateTo(`/systems/${systemId}${fallbackPage.route}`, { replace: true })

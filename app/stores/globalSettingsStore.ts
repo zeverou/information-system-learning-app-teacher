@@ -28,7 +28,7 @@ export const useGlobalSettingsStore = defineStore('globalSettings', () => {
         new CsLanguage()
     ]
 
-    const teacherMode: Ref<boolean> = ref(true)
+    const teacherMode: Ref<boolean> = ref(false)
     const teacherHighlightEnabled: Ref<boolean> = ref(true)
     const loadSystemsFromPublicFolder: Ref<boolean> = ref(true)
     const selectedComponents: Ref<Set<string>> = ref(new Set())

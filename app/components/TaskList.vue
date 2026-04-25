@@ -110,6 +110,7 @@ const globalSettings = useGlobalSettingsStore()
 const route = useRoute()
 const selectedTask = ref<Task | null>(null)
 const currentRound = computed(() => systemsStore.selectedSystem?.currentRound ?? 1)
+const { pushFirstAvailablePage } = useAvailableSystemPages()
 
 const currentSystemPageRoute = computed(() => {
   const systemId = systemsStore.selectedSystemId
@@ -138,18 +139,20 @@ function isTaskVisibleOnCurrentPage(task: Task): boolean {
   return taskAllowsPage(task, currentSystemPageRoute.value)
 }
 
-function openTask(task: Task) {
+async function openTask(task: Task) {
   if (isTaskLocked(task)) {
     return
   }
 
   if (globalSettings.teacherMode) {
     globalSettings.selectedTaskId = task.id
+    await pushFirstAvailablePage(task)
     return
   }
 
   globalSettings.selectedTaskId = task.id
   selectedTask.value = task
+  await pushFirstAvailablePage(task)
 }
 
 function closeTask() {

@@ -67,6 +67,11 @@ export class InformationSystem {
   public configData?: any;
 
   /**
+   * Original create_schema.sql source used as a fallback when exporting.
+   */
+  public createSchemaSql?: string;
+
+  /**
    * The student's score for this system.
    */
   public score: Score;
@@ -93,6 +98,7 @@ export class InformationSystem {
     defaultComponents = [],
     database = null,
     configData,
+    createSchemaSql,
     score,
     currentRound = 1,
     levelCount = 1,
@@ -108,6 +114,7 @@ export class InformationSystem {
     defaultComponents?: Component[];
     database?: DatabaseWrapper | null;
     configData?: any;
+    createSchemaSql?: string;
     score?: Score;
     currentRound?: number;
     levelCount?: number;
@@ -123,6 +130,7 @@ export class InformationSystem {
     this.defaultComponents = defaultComponents;
     this.database = database;
     this.configData = configData;
+    this.createSchemaSql = createSchemaSql;
     this.score = score ?? new Score();
     this.currentRound = currentRound;
     this.levelCount = levelCount;
@@ -142,6 +150,7 @@ export class InformationSystem {
       pages: configData.pages ?? [],
       currentRound: Number(configData.currentRound ?? 1),
       levelCount: Number(configData.levelCount ?? 1),
+      createSchemaSql: typeof configData.createSchemaSql === 'string' ? configData.createSchemaSql : undefined,
       configData,
     });
   }
@@ -169,6 +178,7 @@ export class InformationSystem {
         pages,
         currentRound: Number(configData.currentRound ?? 1),
         levelCount: Number(configData.levelCount ?? 1),
+        createSchemaSql: Object.entries(filesContents).find(([path]) => path.endsWith('create_schema.sql'))?.[1],
         configData,
       });
 
