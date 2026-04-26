@@ -3,6 +3,7 @@ import { InformationSystem } from '~/model/InformationSystem'
 import { OperationResultType } from '~/utils/OperationResultType'
 import type { GUID } from '~/model/GUID'
 import type { InformationSystem as InformationSystemType } from '~/model/InformationSystem'
+import { getPageLoadSource } from '~/utils/pageLoadSource'
 
 /**
  * Loads InformationSystem instances from ZIP files or unpacked folders listed in
@@ -86,8 +87,11 @@ export function usePreloadedSystems() {
             'config.json': loader.jsonConfigFileContent ?? '',
             'system_components.json': loader.jsonComponentsContent ?? '',
             ...loader.csvFilesContent,
-            ...loader.vueFilesContent,
             ...loader.sqlFilesContent,
+        }
+
+        if (getPageLoadSource() === 'system') {
+            Object.assign(filesContents, loader.vueFilesContent)
         }
 
         const systemResult = await InformationSystem.loadSystem(filesContents)
@@ -119,20 +123,22 @@ export function usePreloadedSystems() {
             filesContents['create_schema.sql'] = optionalEntries[1]
         }
 
-        const vueFiles = Array.from(
-            new Set(
-                (configData.pages ?? [])
-                    .map(page => page.vueFile?.trim())
-                    .filter((vueFile): vueFile is string => Boolean(vueFile))
+        if (getPageLoadSource() === 'system') {
+            const vueFiles = Array.from(
+                new Set(
+                    (configData.pages ?? [])
+                        .map(page => page.vueFile?.trim())
+                        .filter((vueFile): vueFile is string => Boolean(vueFile))
+                )
             )
-        )
 
-        const vueEntries = await Promise.all(
-            vueFiles.map(async vueFile => [vueFile, await fetchRequiredTextFile(`${basePath}/${vueFile}`, `${directoryName}/${vueFile}`)] as const)
-        )
+            const vueEntries = await Promise.all(
+                vueFiles.map(async vueFile => [vueFile, await fetchRequiredTextFile(`${basePath}/${vueFile}`, `${directoryName}/${vueFile}`)] as const)
+            )
 
-        for (const [vueFile, content] of vueEntries) {
-            filesContents[vueFile] = content
+            for (const [vueFile, content] of vueEntries) {
+                filesContents[vueFile] = content
+            }
         }
 
         const systemResult = await InformationSystem.loadSystem(filesContents)

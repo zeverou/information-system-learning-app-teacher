@@ -5,6 +5,8 @@
     "appearance_settings": "Appearance Settings",
     "task_menu_sidebar": "Show Task Menu as Sidebar",
     "task_menu_sidebar_description": "Toggle between sidebar and floating menu for tasks.",
+    "bypass_page_visibility": "Bypass page visibility",
+    "bypass_page_visibility_description": "Show all system pages regardless of task level restrictions.",
     "enter_system": "Enter System",
     "dashboard": "Dashboard",
     "tables": "Tables",

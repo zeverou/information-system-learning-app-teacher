@@ -170,6 +170,7 @@ import { IndexedDbHandler } from '~/utils/IndexedDbHandler'
 import { OperationResultType } from '~/utils/OperationResultType'
 import { DATABASE_PAGE_ROUTE, systemAllowsPageForTaskContext } from '~/utils/taskPageVisibility'
 import { Task } from '~/model/Task/Task'
+import { Component } from '~/model/Component'
 
 const highlightStore = useHighlightStore()
 const systemsStore = useSystemsStore()
@@ -242,9 +243,7 @@ function openTaskDesignerForTask(taskId: string) {
 async function refreshComponents() {
     const system = systemsStore.selectedSystem;
     if (!system) return;
-    // TODO 
-    //system.actualComponents = JSON.parse(JSON.stringify(system.defaultComponents));
-    system.actualComponents = useComponentStore().defaultComponents.map(c => ({ ...c }));
+    system.actualComponents = system.defaultComponents.map(c => Component.fromJSON(JSON.parse(JSON.stringify(c))));
     await systemsStore.updateSystem(system);
     toast.add({ title: t('component_refresh_success') || 'Components refreshed', color: 'primary', icon: 'i-lucide-check-circle' });
 }

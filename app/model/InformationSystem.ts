@@ -6,6 +6,8 @@ import type { GUID } from "./GUID";
 import type { Page } from "./Page";
 import { Score } from "./Score";
 import { useComponentStore } from "~/stores/componentStore";
+import { getComponentLoadSource } from "~/utils/componentLoadSource";
+import { getPageLoadSource } from "~/utils/pageLoadSource";
 
 /**
  * Represents an information system, encapsulating its configuration, data tables, tasks, and component mappings.
@@ -165,9 +167,10 @@ export class InformationSystem {
 
     try {
       const configData = JSON.parse(configContent);
+      const loadPagesFromSystem = getPageLoadSource() === 'system';
       const pages: Page[] = (configData.pages || []).map((page: Page) => ({
         ...page,
-        vueSource: filesContents[page.vueFile] ?? null,
+        vueSource: loadPagesFromSystem ? filesContents[page.vueFile] ?? null : undefined,
       }));
       const system = new InformationSystem({
         id: configData.id as GUID,
@@ -209,28 +212,27 @@ export class InformationSystem {
       //   }
       // }
 
-      // Load default components from system_components.json if present
-      /*
-      const componentsEntry = Object.entries(filesContents).find(([path]) => path.endsWith('system_components.json'));
-      if (componentsEntry) {
-        try {
-          const componentsData = JSON.parse(componentsEntry[1]);
-          system.defaultComponents = Component.arrayFromJSON(componentsData);
-          // If this is a fresh load, initialize actual components from defaults
-          if (system.actualComponents.length === 0) {
-            system.actualComponents = Component.arrayFromJSON(JSON.parse(JSON.stringify(componentsData)));
+      if (getComponentLoadSource() === 'system') {
+        const componentsEntry = Object.entries(filesContents).find(([path]) => path.endsWith('system_components.json'));
+        if (componentsEntry?.[1]?.trim()) {
+          try {
+            const componentsData = JSON.parse(componentsEntry[1]);
+            system.defaultComponents = Component.arrayFromJSON(componentsData);
+            if (system.actualComponents.length === 0) {
+              system.actualComponents = InformationSystem.cloneComponents(system.defaultComponents);
+            }
+          } catch (e) {
+            console.warn("Failed to parse system_components.json", e);
           }
-        } catch (e) {
-          console.warn("Failed to parse system_components.json", e);
+        } else {
+          console.warn("system_components.json not found or empty; no default components were loaded from the system.");
         }
-      }
-      */
-
-      // Temporarily use componentStore as the source of default components
-      const componentStore = useComponentStore();
-      system.defaultComponents = [...componentStore.defaultComponents];
-      if (system.actualComponents.length === 0) {
-        system.actualComponents = componentStore.defaultComponents.map(c => Component.fromJSON(JSON.parse(JSON.stringify(c))));
+      } else {
+        const componentStore = useComponentStore();
+        system.defaultComponents = InformationSystem.cloneComponents(componentStore.defaultComponents);
+        if (system.actualComponents.length === 0) {
+          system.actualComponents = InformationSystem.cloneComponents(componentStore.defaultComponents);
+        }
       }
 
       return new Operation(OperationResultType.SUCCESS, "System loaded successfully.", system);
@@ -244,5 +246,8 @@ export class InformationSystem {
 
   }
 
+  private static cloneComponents(components: Component[]): Component[] {
+    return components.map(component => Component.fromJSON(JSON.parse(JSON.stringify(component))));
+  }
 
 }

@@ -31,6 +31,7 @@ export const useGlobalSettingsStore = defineStore('globalSettings', () => {
     const teacherMode: Ref<boolean> = ref(false)
     const teacherHighlightEnabled: Ref<boolean> = ref(true)
     const loadSystemsFromPublicFolder: Ref<boolean> = ref(true)
+    const bypassPageVisibility: Ref<boolean> = ref(true)
     const selectedComponents: Ref<Set<string>> = ref(new Set())
     const selectedTaskId: Ref<GUID | null> = ref(null)
     const errorComponentIds: Ref<string[]> = ref([])
@@ -44,6 +45,7 @@ export const useGlobalSettingsStore = defineStore('globalSettings', () => {
         teacherMode,
         teacherHighlightEnabled,
         loadSystemsFromPublicFolder,
+        bypassPageVisibility,
         selectedComponents,
         selectedTaskId,
         errorComponentIds,

@@ -31,6 +31,7 @@ import { ref, watch } from 'vue'
 import { SystemZipLoader } from '~/utils/SystemZipLoader'
 import { InformationSystem } from '~/model/InformationSystem'
 import { useSystemsStore } from '~/stores/systemsStore'
+import { getPageLoadSource } from '~/utils/pageLoadSource'
 
 /* 3. Context hooks */
 const { t } = useI18n()
@@ -85,8 +86,10 @@ async function onUpload(close: () => void) {
             'config.json': loader.value.jsonConfigFileContent ?? '',
             'system_components.json': loader.value.jsonComponentsContent ?? '',
             ...loader.value.csvFilesContent,
-            ...loader.value.vueFilesContent,
             ...loader.value.sqlFilesContent,
+        }
+        if (getPageLoadSource() === 'system') {
+            Object.assign(filesContents, loader.value.vueFilesContent)
         }
         const loadResult = await InformationSystem.loadSystem(filesContents)
         if (loadResult.result === OperationResultType.SUCCESS && loadResult.data) {

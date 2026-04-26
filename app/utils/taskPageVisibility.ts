@@ -46,6 +46,10 @@ export function systemAllowsPageForTaskContext(
   task: Task | null | undefined,
   pageRoute: string
 ): boolean {
+  if (useGlobalSettingsStore().bypassPageVisibility) {
+    return true
+  }
+
   if (task) {
     return taskAllowsPage(task, pageRoute)
   }

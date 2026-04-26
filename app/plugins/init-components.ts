@@ -1,7 +1,13 @@
 import { Component } from '~/model/Component'
+import { getComponentLoadSource } from '~/utils/componentLoadSource'
 
 export default defineNuxtPlugin(async (_nuxtApp) => {
+    if (getComponentLoadSource() !== 'directory') {
+        return
+    }
+
     const store = useComponentStore()
+    store.clearComponents()
     
     const modules = import.meta.glob('~/model/SystemComponents/**/*.ts')
     for (const path in modules) {
@@ -16,7 +22,8 @@ export default defineNuxtPlugin(async (_nuxtApp) => {
     }
 
     const systemsStore = useSystemsStore()
-        for (const system of systemsStore.systems) {
-            system.actualComponents = store.defaultComponents.map(c => Component.fromJSON(JSON.parse(JSON.stringify(c))))
-        }
+    for (const system of systemsStore.systems) {
+        system.defaultComponents = store.defaultComponents.map(c => Component.fromJSON(JSON.parse(JSON.stringify(c))))
+        system.actualComponents = store.defaultComponents.map(c => Component.fromJSON(JSON.parse(JSON.stringify(c))))
+    }
 })

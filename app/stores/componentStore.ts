@@ -12,9 +12,14 @@ export const useComponentStore = defineStore('components', () => {
         }
     }
 
+    function clearComponents() {
+        defaultComponents.value = []
+    }
+
     return {
         defaultComponents,
-        registerComponent
+        registerComponent,
+        clearComponents
     }
 
 },

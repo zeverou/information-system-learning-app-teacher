@@ -88,7 +88,7 @@ export class Component {
     }
 
     public static arrayFromJSON(data: any[]): Component[] {
-        return data.map(c => new Component(c))
+        return data.map(c => Component.fromJSON(c))
     }
 
     public toJSON() {

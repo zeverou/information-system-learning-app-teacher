@@ -24,6 +24,14 @@ function generateSystemsManifest() {
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
+  runtimeConfig: {
+    public: {
+      appMode: process.env.APP_MODE ?? '',
+      singleSystem: process.env.SINGLE_SYSTEM?.toLowerCase() !== 'false',
+      loadComponentsFrom: process.env.LOAD_COMPONENTS_FROM ?? 'system',
+      loadPagesFrom: process.env.LOAD_PAGES_FROM ?? 'system',
+    },
+  },
   colorMode: {
     preference: 'light',
     fallback: 'light',

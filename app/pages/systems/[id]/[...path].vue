@@ -4,6 +4,7 @@ import { shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSystemsStore } from '~/stores/systemsStore'
 import { compileSFC } from '~/utils/compileComponent'
+import { getPageLoadSource } from '~/utils/pageLoadSource'
 
 const route = useRoute()
 const systemsStore = useSystemsStore()
@@ -22,7 +23,9 @@ if (!system) {
     if (!page) {
         error.value = `Page ${pagePath} not found`
     } else if (!page.vueSource) {
-        error.value = `No source for page ${pagePath}`
+        error.value = getPageLoadSource() === 'directory'
+            ? `No static Nuxt page found for ${pagePath}`
+            : `No source for page ${pagePath}`
     } else {
         try {
             DynamicPage.value = await compileSFC(page.vueSource, page.name)

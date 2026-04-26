@@ -322,6 +322,8 @@
     "dark_mode_description": "Přepíná vzhled aplikace mezi světlým a tmavým režimem.",
     "task_menu_sidebar": "Zobrazit úkoly jako postranní panel",
     "task_menu_sidebar_description": "Přepíná zobrazení úkolů mezi postranním panelem a horní lištou.",
+    "bypass_page_visibility": "Obejít viditelnost stránek",
+    "bypass_page_visibility_description": "Zobrazí všechny stránky systému bez ohledu na omezení úrovní úkolů.",
     "appearance_settings": "Nastavení vzhledu",
     "task_round": "Úroveň",
     "task_level": "Úroveň",
