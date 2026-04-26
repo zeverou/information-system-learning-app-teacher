@@ -121,12 +121,8 @@ function withVars(comp: any, vars: Variable[]) {
     return clone;
 }
 
-const route = useRoute();
-const systemsStore = useSystemsStore();
 const { t } = useI18n();
-const systemId = route.params.id as string;
-
-systemsStore.selectedSystemId = systemId;
+const { route, systemsStore, systemId } = useSyncSystemId();
 
 const sessionIds = ref<number[]>([]);
 const createModalOpen = ref(false);

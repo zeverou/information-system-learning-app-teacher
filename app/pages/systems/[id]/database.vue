@@ -79,17 +79,9 @@ import { DatabaseHandler } from '~/utils/DatabaseHandler'
 import { DatabaseWrapper } from '~/utils/DatabaseWrapper'
 import { OperationResultType } from '~/utils/OperationResultType'
 
-const route = useRoute()
-const systemsStore = useSystemsStore()
 const { t } = useI18n()
 const toast = useToast()
-
-
-
-// Ensure selectedSystemId is set if navigating directly
-if (!systemsStore.selectedSystemId && route.params.id) {
-    systemsStore.selectedSystemId = route.params.id as string
-}
+const { route, systemsStore, systemId } = useSyncSystemId()
 
 const tableNames = ref<string[]>([])
 // default = 1st table

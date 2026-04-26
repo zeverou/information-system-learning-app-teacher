@@ -1,8 +1,27 @@
 <template>
-  <div class="modern-hover-popover">
+  <div
+    ref="triggerRef"
+    class="modern-hover-popover"
+    @mouseenter="showPopover"
+    @mouseleave="hidePopover"
+    @focusin="showPopover"
+    @focusout="hidePopover"
+  >
     <slot />
+  </div>
 
-    <div class="modern-hover-popover__panel" role="tooltip">
+  <Teleport to="body">
+    <div
+      v-show="isOpen"
+      ref="panelRef"
+      class="modern-hover-popover__panel"
+      :class="[
+        { 'modern-hover-popover__panel--visible': isOpen },
+        `modern-hover-popover__panel--${position.placement}`
+      ]"
+      :style="panelStyle"
+      role="tooltip"
+    >
       <div class="modern-hover-popover__icon">
         <UIcon :name="icon" class="modern-hover-popover__icon-symbol" />
       </div>
@@ -15,10 +34,12 @@
         </div>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
+import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
+
 withDefaults(defineProps<{
   title?: string
   description?: string
@@ -26,6 +47,67 @@ withDefaults(defineProps<{
 }>(), {
   icon: 'i-heroicons-information-circle'
 })
+
+const triggerRef = ref<HTMLElement | null>(null)
+const panelRef = ref<HTMLElement | null>(null)
+const isOpen = ref(false)
+const position = ref({
+  top: 0,
+  left: 0,
+  arrowLeft: 0,
+  placement: 'bottom' as 'top' | 'bottom'
+})
+
+const viewportPadding = 16
+const offset = 10
+
+const panelStyle = computed(() => ({
+  top: `${position.value.top}px`,
+  left: `${position.value.left}px`,
+  '--popover-arrow-left': `${position.value.arrowLeft}px`
+}))
+
+async function showPopover() {
+  isOpen.value = true
+  await nextTick()
+  updatePosition()
+  window.addEventListener('scroll', updatePosition, true)
+  window.addEventListener('resize', updatePosition)
+}
+
+function hidePopover() {
+  isOpen.value = false
+  window.removeEventListener('scroll', updatePosition, true)
+  window.removeEventListener('resize', updatePosition)
+}
+
+function updatePosition() {
+  if (!triggerRef.value || !panelRef.value) {
+    return
+  }
+
+  const triggerRect = triggerRef.value.getBoundingClientRect()
+  const panelRect = panelRef.value.getBoundingClientRect()
+  const centeredLeft = triggerRect.left + triggerRect.width / 2 - panelRect.width / 2
+  const left = Math.min(
+    window.innerWidth - panelRect.width - viewportPadding,
+    Math.max(viewportPadding, centeredLeft)
+  )
+  const bottomTop = triggerRect.bottom + offset
+  const topTop = triggerRect.top - panelRect.height - offset
+  const hasBottomSpace = bottomTop + panelRect.height <= window.innerHeight - viewportPadding
+  const top = hasBottomSpace ? bottomTop : Math.max(viewportPadding, topTop)
+  const triggerCenter = triggerRect.left + triggerRect.width / 2
+
+  position.value = {
+    top,
+    left,
+    arrowLeft: Math.min(panelRect.width - 12, Math.max(12, triggerCenter - left)),
+    placement: hasBottomSpace ? 'bottom' : 'top'
+  }
+}
+
+onBeforeUnmount(hidePopover)
 </script>
 
 <style scoped>
@@ -35,10 +117,8 @@ withDefaults(defineProps<{
 }
 
 .modern-hover-popover__panel {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 50%;
-  z-index: 40;
+  position: fixed;
+  z-index: 12000;
   display: flex;
   width: min(22rem, calc(100vw - 2rem));
   gap: 0.75rem;
@@ -50,27 +130,39 @@ withDefaults(defineProps<{
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.08);
   opacity: 0;
   pointer-events: none;
-  transform: translateX(-50%) translateY(-4px) scale(0.98);
+  transform: translateY(-4px) scale(0.98);
   transform-origin: top center;
   transition: opacity 150ms ease, transform 150ms ease;
 }
 
-.modern-hover-popover:hover .modern-hover-popover__panel,
-.modern-hover-popover:focus-within .modern-hover-popover__panel {
+.modern-hover-popover__panel--visible {
   opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
+  transform: translateY(0) scale(1);
 }
 
-.modern-hover-popover__panel::before {
+.modern-hover-popover__panel--bottom::before {
   content: "";
   position: absolute;
   top: -5px;
-  left: 50%;
+  left: var(--popover-arrow-left, 50%);
   width: 10px;
   height: 10px;
   background: rgba(255, 255, 255, 0.96);
   border-left: 1px solid rgba(229, 231, 235, 0.92);
   border-top: 1px solid rgba(229, 231, 235, 0.92);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.modern-hover-popover__panel--top::before {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: var(--popover-arrow-left, 50%);
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  border-right: 1px solid rgba(229, 231, 235, 0.92);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.92);
   transform: translateX(-50%) rotate(45deg);
 }
 
@@ -118,7 +210,8 @@ withDefaults(defineProps<{
     box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.24);
   }
 
-  .modern-hover-popover__panel::before {
+  .modern-hover-popover__panel--bottom::before,
+  .modern-hover-popover__panel--top::before {
     background: rgba(17, 24, 39, 0.96);
     border-color: rgba(55, 65, 81, 0.92);
   }

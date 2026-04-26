@@ -76,16 +76,12 @@ definePageMeta({
   fullscreenSystemPage: true,
 });
 
-const route = useRoute();
 const router = useRouter();
-const systemsStore = useSystemsStore();
-const systemId = route.params.id as string;
 const { t } = useI18n();
+const { route, systemsStore, systemId } = useSyncSystemId();
 const downloadModalOpen = ref(false);
 const downloadLoading = ref(false);
 const downloadError = ref("");
-
-systemsStore.selectedSystemId = systemId;
 
 const firstSystemRoute = computed(() => {
   const firstPageRoute = systemsStore.selectedSystem?.pages?.[0]?.route;

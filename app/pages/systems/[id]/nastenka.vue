@@ -22,14 +22,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import ComponentWrapper from '~/components/ComponentWrapper.vue';
-import { useSystemsStore } from '~/stores/systemsStore';
-import { useRoute } from 'vue-router';
-
-const route = useRoute();
-const systemsStore = useSystemsStore();
-const systemId = route.params.id as string;
-
-systemsStore.selectedSystemId = systemId;
+const { systemsStore } = useSyncSystemId();
 
 const dashboardHeroCard = computed(() => systemsStore.getComponentById('hlavni-karta-systemu'));
 const participantsStat = computed(() => systemsStore.getComponentById('statistika-ucastniku'));
