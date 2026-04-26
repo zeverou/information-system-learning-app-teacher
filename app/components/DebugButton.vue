@@ -223,9 +223,9 @@ function selectPage(page: Page) {
 
 function logPages() {
     if (systemStore.selectedSystem) {
-        console.log('--- REGISTERED PAGES ---')
+        //console.log('--- REGISTERED PAGES ---')
         console.table(systemStore.selectedSystem.pages)
-        console.log('Full data:', systemStore.selectedSystem.pages)
+        //console.log('Full data:', systemStore.selectedSystem.pages)
     }
 }
 </script>

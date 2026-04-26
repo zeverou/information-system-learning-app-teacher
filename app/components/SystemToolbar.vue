@@ -208,9 +208,9 @@ async function printTableData() {
 async function IsDbNull() {
     const system = systemsStore.selectedSystem;
     if (system) {
-        console.log(system.database === null ? "Database is null." : "Database is not null.");
+        //console.log(system.database === null ? "Database is null." : "Database is not null.");
     } else {
-        console.log("No system selected.");
+        //console.log("No system selected.");
     }
 }
 

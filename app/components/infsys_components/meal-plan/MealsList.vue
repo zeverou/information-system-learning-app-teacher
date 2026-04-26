@@ -26,11 +26,11 @@ const mealListQuery = computed(() => mealListComponent.value?.sql?.['sql-1'] || 
 const actualMealListQuery = computed(() => ComponentHandler.getComponentValue(componentId, 'sql-1', mealListQuery.value))
 
 function helperMethod() {
-    console.log("Meal List Component:", mealListComponent.value)
-    console.log("Meal List Query:", mealListQuery.value)
-    console.log("Actual Meal List Query:", actualMealListQuery.value)
-    console.log("Session ID Prop:", props.sessionId)
-    console.log("Date Prop:", props.date)
+    //console.log("Meal List Component:", mealListComponent.value)
+    //console.log("Meal List Query:", mealListQuery.value)
+    //console.log("Actual Meal List Query:", actualMealListQuery.value)
+    //console.log("Session ID Prop:", props.sessionId)
+    //console.log("Date Prop:", props.date)
 }
 
 

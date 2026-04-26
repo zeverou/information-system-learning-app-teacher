@@ -35,6 +35,9 @@ function stripImports(code: string): string {
 }
 
 export async function compileSFC(source: string, id: string): Promise<any> {
+
+    console.log('Compiling component with id:', id)
+
     const { descriptor } = parse(source)
 
     const compiledScript = compileScript(descriptor, {

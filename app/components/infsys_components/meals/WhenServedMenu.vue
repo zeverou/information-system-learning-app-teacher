@@ -59,9 +59,9 @@ const system = selectedSystemStore.selectedSystem
 
 const whenServedComponent = computed(() => {
     const component = componentCodeStore.getComponentById(componentId) || componentCodeStore.getDefaultComponent(componentId)
-    console.log("WhenServed component:", component)
-    console.log("Component SQL:", component?.sql?.['sql'])
-    console.log("Table name for meals:", system?.db?.getTableName('meals'))
+    //console.log("WhenServed component:", component)
+    //console.log("Component SQL:", component?.sql?.['sql'])
+    //console.log("Table name for meals:", system?.db?.getTableName('meals'))
     return component
 })
 const correctSqlQuery = computed(() => {
@@ -73,46 +73,46 @@ const correctSqlQuery = computed(() => {
 const sqlQuery = computed(() => {
     const sql = correctSqlQuery.value ?? '';
     const value = ComponentHandler.getComponentValue(componentId, 'sql', sql)
-    console.log("ComponentHandler result:", value)
+    //console.log("ComponentHandler result:", value)
     return value
 })
 
 // Get unique when_served values
 const whenServedValues = computed(() => {
     const _ = selectedSystemStore.dbNumber;
-    console.log("Computing whenServedValues, dbNumber:", _)
+    //console.log("Computing whenServedValues, dbNumber:", _)
 
     if (!system?.db || typeof system?.db?.query !== "function") {
-        console.log("No database available")
+        //console.log("No database available")
         return []
     }
 
-    console.log("SQL Query:", sqlQuery.value)
+    //console.log("SQL Query:", sqlQuery.value)
     const queryResult = system?.db.query(sqlQuery.value)
 
-    console.log("QUERY: ", sqlQuery.value)
-    console.log("RESULT: ", queryResult);
+    //console.log("QUERY: ", sqlQuery.value)
+    //console.log("RESULT: ", queryResult);
 
     if (queryResult?.success && queryResult.results.length > 0) {
         // Get unique when_served values
         const uniqueValues = [...new Set(queryResult.results.map(row => row.when_served))]
-        console.log("Unique values:", uniqueValues)
+        //console.log("Unique values:", uniqueValues)
         return uniqueValues
     }
-    console.log("No results or query failed")
+    //console.log("No results or query failed")
     return []
 })
 
 // Options for the select menu
 const whenServedOptions = computed(() => {
     const options = [{ label: t('all_meals'), value: 'all' }]
-    console.log("When served values:", whenServedValues.value)
+    //console.log("When served values:", whenServedValues.value)
     whenServedValues.value.forEach(value => {
         if (value && value.trim()) {
             options.push({ label: value, value: value })
         }
     })
-    console.log("Final options:", options)
+    //console.log("Final options:", options)
     return options
 })
 

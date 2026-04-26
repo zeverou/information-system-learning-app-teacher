@@ -188,10 +188,10 @@ export class InformationSystem {
       // Initialize the database with the config data and CSV contents
       // initialize using create_schema.sql
       const sqlEntry = Object.entries(filesContents).find(([path]) => path.endsWith('create_schema.sql'));
-      console.log("Found SQL entry for database initialization:", sqlEntry);
+      //console.log("Found SQL entry for database initialization:", sqlEntry);
       if (sqlEntry) {
         const dbResult = await SqljsDatabaseFactory.createDatabaseFromSql(sqlEntry[1]);
-        console.log("Database creation from SQL result:", dbResult);
+        //console.log("Database creation from SQL result:", dbResult);
         if (dbResult.result === OperationResultType.SUCCESS && dbResult.data) {
           system.database = DatabaseWrapper.fromInstance(dbResult.data);
         } else {

@@ -47,7 +47,7 @@ const system = selectedSystemStore.selectedSystem;
 /* 9. Computed */
 
 const mealsComponent = computed(() => componentCodeStore.getComponentById(componentId) || componentCodeStore.getDefaultComponent(componentId))
-console.log("Meals Component:", mealsComponent.value)
+//console.log("Meals Component:", mealsComponent.value)
 
 const correctSqlQuery = computed(() => mealsComponent.value?.sql?.['sql'] || '')
 const correctHtmlTemplate = computed(() => mealsComponent.value?.html?.['html']  || '')

@@ -4,7 +4,7 @@ export function usePrepareSystem() {
   const systemsStore = useSystemsStore()
 
   async function prepareSystem(id: string): Promise<boolean> {
-    console.log('Preparing system ' + id)
+    //console.log('Preparing system ' + id)
     systemsStore.selectedSystemId = id
 
     const system = systemsStore.getSystemById(id)
@@ -19,7 +19,7 @@ export function usePrepareSystem() {
     }
 
     if (!(await DatabaseWrapper.isDatabaseInitialized(system.database))) {
-      console.log('Initializing DB for system ' + id)
+      //console.log('Initializing DB for system ' + id)
       await system.database.initializeDatabase()
     }
 

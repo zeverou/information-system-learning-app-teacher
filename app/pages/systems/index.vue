@@ -221,12 +221,12 @@ async function onTogglePublicSystems(value: boolean) {
 }
 
 async function navigateToSystem(id: string) {
-  console.log("Navigating to system " + id);
+  //console.log("Navigating to system " + id);
   if (!(await prepareSystem(id))) {
     return;
   }
 
-  console.log("Navigating to first available page...");
+  //console.log("Navigating to first available page...");
   await pushFirstAvailablePage(null);
 }
 

@@ -203,7 +203,7 @@ function validateActionModal() {
 }
 
 async function executeActionSql(sql: string) {
-  console.log('Executing SQL:', sql);
+  //console.log('Executing SQL:', sql);
   if (!db) {
     throw new Error('Database is not ready.');
   }

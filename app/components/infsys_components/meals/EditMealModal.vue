@@ -167,7 +167,7 @@ const whenServedOptions = computed(() => {
 
 const currentAllergens = computed(() => {
     const _ = selectedSystemStore.dbNumber
-    console.log("Current Allergens for meal ID", editMeal.value.id)
+    //console.log("Current Allergens for meal ID", editMeal.value.id)
 
     const query = currentMealAllergensQuery.value
     const system = selectedSystemStore.selectedSystem
@@ -176,14 +176,14 @@ const currentAllergens = computed(() => {
     }
     const result = system.db.query(query, [editMeal.value.id])?.results || []
     const allergenIds = result.map((row: any) => row.allergen_id)
-    console.log("Current Allergens for meal ID", editMeal.value.id, ":", allergenIds)
-    console.log("Query used:", query)
-    console.log("Parameters:", [editMeal.value.id])
+    //console.log("Current Allergens for meal ID", editMeal.value.id, ":", allergenIds)
+    //console.log("Query used:", query)
+    //console.log("Parameters:", [editMeal.value.id])
     return allergenIds
 })
 
 function helperMethod() {
-    console.log("Current Allergens:", currentAllergens.value)
+    //console.log("Current Allergens:", currentAllergens.value)
 }
 
 // When served options

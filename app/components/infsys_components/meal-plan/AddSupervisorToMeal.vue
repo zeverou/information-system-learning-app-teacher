@@ -154,8 +154,8 @@ function loadSupervisors() {
 
     try {
         const result = system.db.query(actualSupervisorQuery.value)
-        console.log("XX QUERY:", actualSupervisorQuery.value)
-        console.log("XX RESULT:", result)
+        //console.log("XX QUERY:", actualSupervisorQuery.value)
+        //console.log("XX RESULT:", result)
         if (result?.success && result.results) {
             supervisorOptions.value = result.results.map((supervisor: any) => ({
                 label: supervisor.name,

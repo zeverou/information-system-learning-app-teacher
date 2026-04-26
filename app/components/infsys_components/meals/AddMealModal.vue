@@ -196,14 +196,14 @@ const handleAddMeal = async (mealData: any) => {
             color: 'green'
         })
 
-        console.log("Meal allergens:", mealData.allergens)
+        //console.log("Meal allergens:", mealData.allergens)
 
         // Get the last inserted row id
         const result = system.db.query("SELECT last_insert_rowid() as id");
 
         
         const lastId = result.results[0].id
-        console.log("Last inserted meal ID:", lastId)
+        //console.log("Last inserted meal ID:", lastId)
 
 
         // Inserting allergens

@@ -48,7 +48,7 @@ const props = defineProps<{
 function openEditor() {
   highlightStore.isEditModeActive = true;
   highlightStore.selectedComponentId = props.componentId ?? '';
-  console.log("EditComponentModalOpenButton.vue: Edit mode activated", highlightStore.isEditModeActive);
+  //console.log("EditComponentModalOpenButton.vue: Edit mode activated", highlightStore.isEditModeActive);
 }
 
 /* 12. Lifecycle */

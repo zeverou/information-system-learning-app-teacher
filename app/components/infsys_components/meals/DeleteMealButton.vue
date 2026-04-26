@@ -63,7 +63,7 @@ function deleteMeal() {
         const result4 = system?.db.exec(actualDeleteMealsSupervisorsQuery.value, [props.mealId])
 
         selectedSystemStore.incrementDbNumber()
-        console.log("SQL: ", actualDeleteMealQuery, "PARAMS: ", [props.mealId])
+        //console.log("SQL: ", actualDeleteMealQuery, "PARAMS: ", [props.mealId])
         toast.add({
             title: t('delete_meal_success'),
             color: 'primary',

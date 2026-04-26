@@ -74,7 +74,7 @@ async function onSubmit() {
   }
 
   isSubmitting.value = true
-  console.log('Form submitted with data:', localFormState.value)
+  //console.log('Form submitted with data:', localFormState.value)
 
   try {
     // Transform array fields to JSON string before saving
@@ -106,7 +106,7 @@ async function onSubmit() {
       query = `UPDATE ${selectedSystemStore.selectedSystem.db.getTableName(props.selectedTableName)} SET ${setClause} WHERE id = '${id}'`
     }
 
-    console.log("SQL Query: ", query)
+    //console.log("SQL Query: ", query)
     const result = selectedSystemStore.selectedSystem.db.query(query)
 
     if (result.success) {

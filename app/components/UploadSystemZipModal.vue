@@ -53,9 +53,9 @@ watch(selectedFile, async (file) => {
         return
     }
     const result: Operation<SystemZipLoader | null> = await SystemZipLoader.create(file);
-    console.log("ZIP OP STATUS: " + result.toString())
+    //console.log("ZIP OP STATUS: " + result.toString())
     if (result.result === OperationResultType.SUCCESS && result.data) {
-        console.log(":)")
+        //console.log(":)")
         loader.value = result.data
         try {
             const config = JSON.parse(result.data.jsonConfigFileContent ?? '{}')

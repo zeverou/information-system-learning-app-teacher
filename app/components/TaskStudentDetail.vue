@@ -299,7 +299,7 @@ function evaluateActivity() {
   const task = props.task
   if (!task?.activity) return
 
-  console.log('[evaluateActivity] task.substituteAfterActivity:', (task as any).substituteAfterActivity, '| task.activity.substituteAfterActivity:', (task.activity as any).substituteAfterActivity)
+  //console.log('[evaluateActivity] task.substituteAfterActivity:', (task as any).substituteAfterActivity, '| task.activity.substituteAfterActivity:', (task.activity as any).substituteAfterActivity)
 
   let isCorrect = false
 
@@ -308,7 +308,7 @@ function evaluateActivity() {
     const selectedIds = Array.from(highlightStore.selectedHighlightedComponentsIds)
     const correctIds = activity.activityComponents.map((c: any) => c.id)
     isCorrect = selectedIds.length === correctIds.length && selectedIds.every(id => correctIds.includes(id))
-    console.log('[SELECT] correct IDs:', correctIds, '| input:', selectedIds, isCorrect ? '🟢' : '🔴')
+    //console.log('[SELECT] correct IDs:', correctIds, '| input:', selectedIds, isCorrect ? '🟢' : '🔴')
     activity.isCompleted = isCorrect
   } else if (task.activityType === ActivityType.SELECT_OPTIONS) {
     const activity = task.activity as SelectOptionsActivity
@@ -317,7 +317,7 @@ function evaluateActivity() {
       .filter((i: number) => i !== -1)
     const selectedIndices = [...selectedActivityOptionIndices.value]
     isCorrect = selectedIndices.length === correctIndices.length && selectedIndices.every(i => correctIndices.includes(i))
-    console.log('[SELECT_OPTIONS] correct indices:', correctIndices, '| selected indices:', selectedIndices, isCorrect ? '🟢' : '🔴')
+    //console.log('[SELECT_OPTIONS] correct indices:', correctIndices, '| selected indices:', selectedIndices, isCorrect ? '🟢' : '🔴')
     activity.isCompleted = isCorrect
   } else if (task.activityType === ActivityType.REPAIR) {
     isCorrect = isTaskActivityCompleted(task)
@@ -328,19 +328,19 @@ function evaluateActivity() {
 
   if (isCorrect) {
     const activity = task.activity as any
-    console.log('[evaluateActivity] full task.activity:', JSON.parse(JSON.stringify(activity)))
-    console.log('[evaluateActivity] full task keys:', Object.keys(task as any))
+    //console.log('[evaluateActivity] full task.activity:', JSON.parse(JSON.stringify(activity)))
+    //console.log('[evaluateActivity] full task keys:', Object.keys(task as any))
     const substitute = activity?.substituteAfterActivity || (task as any).substituteAfterActivity
-    console.log('[evaluateActivity] substitute resolved to:', substitute)
+    //console.log('[evaluateActivity] substitute resolved to:', substitute)
     if (substitute) {
       const ids: string[] = (activity.activityComponents ?? []).map((c: any) => c.id).filter(Boolean)
-      console.log('[evaluateActivity] adding to solvedComponentIds:', ids)
+      //console.log('[evaluateActivity] adding to solvedComponentIds:', ids)
       for (const id of ids) {
         if (!globalSettings.solvedComponentIds.includes(id)) {
           globalSettings.solvedComponentIds.push(id)
         }
       }
-      console.log('[evaluateActivity] solvedComponentIds after:', [...globalSettings.solvedComponentIds])
+      //console.log('[evaluateActivity] solvedComponentIds after:', [...globalSettings.solvedComponentIds])
     }
   }
 

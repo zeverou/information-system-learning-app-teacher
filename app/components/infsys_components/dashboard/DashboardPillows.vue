@@ -72,7 +72,7 @@ const props = defineProps<{
 /* 12. Lifecycle */
 onMounted(() => {
   // This is where you can perform any setup after the component is mounted
-  console.log('Dashboard Pillows component mounted with session progress:', props.sessionProgress)
+  //console.log('Dashboard Pillows component mounted with session progress:', props.sessionProgress)
 })
 
 /* 13. defineExpose (if needed) */

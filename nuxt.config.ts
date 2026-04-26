@@ -2,6 +2,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
+const loadPagesFrom = process.env.NUXT_PUBLIC_LOAD_PAGES_FROM ?? 'system'
+
 function generateSystemsManifest() {
   return {
     name: 'generate-systems-manifest',
@@ -16,13 +18,9 @@ function generateSystemsManifest() {
         .map(entry => entry.name)
 
       fs.writeFileSync(path.join(systemsDir, 'manifest.json'), JSON.stringify({ systems }, null, 2))
-      console.log(`[systems-manifest] Found ${systems.length} system(s):`, systems)
+      //console.log(`[systems-manifest] Found ${systems.length} system(s):`, systems)
     }
   }
-}
-
-function shouldLoadPagesFromSystem() {
-  return String(process.env.LOAD_PAGES_FROM ?? 'system').trim().toLowerCase() !== 'directory'
 }
 
 function isStaticSystemContentPage(file?: string) {
@@ -43,7 +41,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   hooks: {
     'pages:extend'(pages) {
-      if (!shouldLoadPagesFromSystem()) {
+      if (String(loadPagesFrom).trim().toLowerCase() === 'directory') {
         return
       }
 
@@ -66,10 +64,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      appMode: process.env.APP_MODE ?? '',
-      singleSystem: process.env.SINGLE_SYSTEM?.toLowerCase() !== 'false',
-      loadComponentsFrom: process.env.LOAD_COMPONENTS_FROM ?? 'system',
-      loadPagesFrom: process.env.LOAD_PAGES_FROM ?? 'system',
+      appMode: process.env.NUXT_PUBLIC_APP_MODE ?? '',
+      singleSystem: process.env.NUXT_PUBLIC_SINGLE_SYSTEM ?? 'true',
+      loadComponentsFrom: process.env.NUXT_PUBLIC_LOAD_COMPONENTS_FROM ?? 'system',
+      loadPagesFrom,
     },
   },
   colorMode: {

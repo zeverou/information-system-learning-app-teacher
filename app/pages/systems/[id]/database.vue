@@ -98,7 +98,7 @@ watch(value, async (tableName) => {
     const db = systemsStore.selectedSystem?.database
     if (!db) return
     tableQueryResult.value = await db.query(`SELECT * FROM "${tableName}"`)
-    console.log("Table query result: ", tableQueryResult.value)
+    //console.log("Table query result: ", tableQueryResult.value)
 })
 const isDbReady = ref(false)
 const isInitializing = ref(false)
@@ -138,16 +138,16 @@ async function handleExecuteQuery() {
         const system = systemsStore.selectedSystem
         if (system && system.database) {
             queryResult.value = await system.database.query(query.value)
-            console.log("Query result: ", queryResult.value);
+            //console.log("Query result: ", queryResult.value);
             if (queryResult.value.data && queryResult.value.data.length > 0) {
-                console.log("Query result[0]: ", (queryResult.value.data[0] as any).lc);
+                //console.log("Query result[0]: ", (queryResult.value.data[0] as any).lc);
             }
 
             const tableColumnMapResult = await DatabaseHandler.getTableColumnMap(system.database.sqlJsDatabase);
             const x = SqlHandler.GetSqlVariableNames(query.value, tableColumnMapResult.data ?? {}, queryResult.value.data ?? []);
-            console.log("Len: ", x.length)
+            //console.log("Len: ", x.length)
             for (const variable of x) {
-                console.log(variable.toString())
+                //console.log(variable.toString())
             }
 
             const isMutation = /^\s*(?:DROP|CREATE|ALTER|INSERT|UPDATE|DELETE|REPLACE)\b/i.test(query.value);
@@ -163,8 +163,8 @@ async function handleExecuteQuery() {
 
 async function handleCheckReady() {
     const system = systemsStore.selectedSystem
-    console.log("Is system missing: ", !system)
-    console.log("Is database missing: ", !system?.database)
+    //console.log("Is system missing: ", !system)
+    //console.log("Is database missing: ", !system?.database)
 }
 
 async function handleInitialize() {

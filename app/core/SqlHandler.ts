@@ -75,20 +75,20 @@ export class SqlHandler {
         cleanedSql = cleanedSql.replace(/,/g, ' , ');
         cleanedSql = cleanedSql.replace(/\s+/g, ' ').trim();
 
-        console.log("Cleaned SQL: >" + cleanedSql + "<");
+        //console.log("Cleaned SQL: >" + cleanedSql + "<");
 
         // split into parts
         const parts: string[] = cleanedSql.split(" ");
         if (parts.length === 0) {
-            console.log("No parts found in SQL query.");
+            //console.log("No parts found in SQL query.");
             return [];
         }
 
-        console.log("SQL query parts: ", parts);
+        //console.log("SQL query parts: ", parts);
 
         // if is does not start with SELECT, then return empty array
         if (parts[0] !== "select") {
-            console.log("SQL query does not start with SELECT.");
+            //console.log("SQL query does not start with SELECT.");
             return [];
         }
 
@@ -96,11 +96,11 @@ export class SqlHandler {
         const asIndexes: number[] = parts
             .map((v, i) => (v === "as" ? i : -1))
             .filter(i => i !== -1);
-        console.log(asIndexes);
+        //console.log(asIndexes);
 
         // indexes of everything after AS
         const afterAsIndexes: number[] = asIndexes.map(i => i + 1);
-        console.log(afterAsIndexes);
+        //console.log(afterAsIndexes);
 
         // indexes of all tables in the query
         const sqlKeywordsBeforeTable = ['from', 'join'];
@@ -113,7 +113,7 @@ export class SqlHandler {
                 return hasCorrectContext ? i : -1;
             })
             .filter(i => i !== -1);
-        console.log(tableIndexes);
+        //console.log(tableIndexes);
 
         // To fix the "all column names with no distinction between tables" issue, 
         // we isolate the tables that are actually used in the query.

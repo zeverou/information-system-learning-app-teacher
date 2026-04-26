@@ -31,7 +31,7 @@ async function generateComponentsJson() {
     const components = [];
     const searchDir = __dirname;
 
-    console.log(`Scanning for components in: ${searchDir}`);
+    //console.log(`Scanning for components in: ${searchDir}`);
 
     function walk(dir) {
         const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -60,7 +60,7 @@ async function generateComponentsJson() {
                             // Check if it has a name to ensure it's a valid component instance
                             if (componentData && componentData.id) {
                                 components.push(componentData);
-                                console.log(`  Found component: ${componentData.name} (${componentData.id})`);
+                                //console.log(`  Found component: ${componentData.name} (${componentData.id})`);
                             }
                         }
                     }
@@ -81,7 +81,7 @@ async function generateComponentsJson() {
     fs.mkdirSync(outputDir, { recursive: true });
     fs.writeFileSync(outputFilePath, JSON.stringify(components, null, 2), 'utf-8');
 
-    console.log(`\nSuccess! Generated ${components.length} components into ${outputFilePath}`);
+    //console.log(`\nSuccess! Generated ${components.length} components into ${outputFilePath}`);
 }
 
 // Execute the generation

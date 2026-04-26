@@ -82,21 +82,21 @@ const data = computed(() => {
 
 const autoColumns = computed<TableColumn<any>[]>(() => {
     const keys = props.columnNames
-    console.log("KEYS:", keys)
+    //console.log("KEYS:", keys)
 
     const columns: TableColumn<any>[] = keys.map(key => ({
         id: key,
         header: () => getHeader(key, key)
     }))
 
-    console.log("COLUMNS:", columns)
+    //console.log("COLUMNS:", columns)
 
     // remove columns: id, turnus_id, rodné_číslo
     // const filteredColumns = columns.filter(col => !['id', 'turnus_id', 'rodné_číslo'].includes(col.accessorKey || ''))
 
     // print data for column=Alergeny
     if (props.columnNames.includes('alergeny')) {
-        console.log("Data for Alergeny:", data.value.map(row => row.Alergeny))
+        //console.log("Data for Alergeny:", data.value.map(row => row.Alergeny))
     }
 
     // Add action column at the end
@@ -250,7 +250,7 @@ function handleSort(field: string) {
     // Generate SQL for debugging/logging
     if (newOrder) {
         const sqlOrderBy = generateSqlOrderBy(field, newOrder)
-        console.log('Generated SQL ORDER BY:', sqlOrderBy)
+        //console.log('Generated SQL ORDER BY:', sqlOrderBy)
     }
 }
 
@@ -337,7 +337,7 @@ function openEditorForColumn(col: any) {
 
 function applyChanges() {
     // The applyChanges logic is now handled by the EditComponentModal component itself
-    console.log('Changes applied via EditComponentModal')
+    //console.log('Changes applied via EditComponentModal')
 }
 
 function handleTableSelect(tableName: string) {
@@ -398,8 +398,8 @@ function getDaysLength(from: string, to: string): number | '' {
 /* 11. Lifecycle */
 onMounted(() => {
     const highlightStore = useHighlightStore()
-    console.log("HIGHLIGHT  ON:", highlightStore.isHighlightMode)
-    console.log(highlightStore.highlightHandler.getHighlightedElements)
+    //console.log("HIGHLIGHT  ON:", highlightStore.isHighlightMode)
+    //console.log(highlightStore.highlightHandler.getHighlightedElements)
 })
 
 /* 12. defineExpose */

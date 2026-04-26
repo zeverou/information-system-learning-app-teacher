@@ -57,10 +57,10 @@ const allergens = computed(() => {
         return []
     }
     const queryResult = system?.db.query(sqlQuery.value, [props.mealId])
-    console.log("QUERY:", sqlQuery.value, props.mealId)
-    console.log("RESULT:", queryResult)
+    //console.log("QUERY:", sqlQuery.value, props.mealId)
+    //console.log("RESULT:", queryResult)
     if (queryResult?.success && queryResult.results.length > 0) {
-        console.log(queryResult.results);
+        //console.log(queryResult.results);
         return queryResult.results.map(row => ({
             id: row.allergen_id
         }))
@@ -74,8 +74,8 @@ function getAllergenName(allergenId: number): string {
     }
 
     const queryResult = system?.db.query(allergensQuery.value, [allergenId])
-    console.log("ALLERGEN QUERY:", allergensQuery.value, allergenId)
-    console.log("ALLERGEN RESULT:", queryResult)
+    //console.log("ALLERGEN QUERY:", allergensQuery.value, allergenId)
+    //console.log("ALLERGEN RESULT:", queryResult)
     if (queryResult?.success && queryResult.results.length > 0) {
         const allergen = queryResult.results[0]
         return allergen.name

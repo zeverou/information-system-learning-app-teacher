@@ -3,9 +3,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const globalSettings = useGlobalSettingsStore();
   const systemsStore = useSystemsStore();
   const { pushFirstAvailablePage } = useAvailableSystemPages();
+  globalSettings.syncTeacherModeFromRuntimeConfig();
+  const singleSystem = String(config.public.singleSystem ?? 'true').trim().toLowerCase() !== 'false';
 
   // We only restrict navigation in Student Mode when singleSystem is true
-  if (globalSettings.teacherMode || config.public.singleSystem === false) {
+  if (globalSettings.teacherMode || !singleSystem) {
     return;
   }
 

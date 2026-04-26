@@ -23,7 +23,7 @@ export class SelectOptionsFinish implements IFinish {
             && selectedOptionIds.size === correctOptionIds.length
             && correctOptionIds.every(id => selectedOptionIds.has(id));
 
-        console.log('[SelectOptionsFinish.evaluate] expected:', correctOptionIds, '| actual:', Array.from(selectedOptionIds), this.isComplete ? '🟢' : '🔴');
+        //console.log('[SelectOptionsFinish.evaluate] expected:', correctOptionIds, '| actual:', Array.from(selectedOptionIds), this.isComplete ? '🟢' : '🔴');
 
         return this.isComplete;
     }

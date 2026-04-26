@@ -239,15 +239,15 @@ const mealAllergenListQuery = computed(() => mealPlanMealAllergenListComponent.v
 const actualMealAllergenListQuery = computed(() => ComponentHandler.getComponentValue("meal-plan-meal-allergen-list", 'sql-1', mealAllergenListQuery.value))
 
 function getMealAllergenNames(mealId: number) {
-    console.log("DEBUG: getMealAllergenNames called with mealId:", mealId);
+    //console.log("DEBUG: getMealAllergenNames called with mealId:", mealId);
     if (!system?.db || typeof system?.db?.query !== "function") {
         return []
     }
 
     try {
         const result = system.db.query(actualMealAllergenListQuery.value, [mealId])
-        console.log("XXX Meal Allergen Query:", actualMealAllergenListQuery.value, mealId)
-        console.log("XXX Meal Allergen Result:", result)
+        //console.log("XXX Meal Allergen Query:", actualMealAllergenListQuery.value, mealId)
+        //console.log("XXX Meal Allergen Result:", result)
         if (result?.success && result.results) {
             return result.results.map((row: any) => row.name)
         }
@@ -309,7 +309,7 @@ function getMealsGroupedByType(sessionId: number, date: string) {
         grouped[key].push(meal);
     }
 
-    console.log("GROUPED: ", grouped);
+    //console.log("GROUPED: ", grouped);
     return grouped;
 }
 
@@ -397,11 +397,11 @@ function getMealName(mealInfo: string): string {
 }
 
 function deleteParticipant(participant: any) {
-    console.log('Deleting participant with ID:', participant.participantId || participant.id || 'No ID found');
+    //console.log('Deleting participant with ID:', participant.participantId || participant.id || 'No ID found');
 }
 
 function removeParticipantFromMeal(participant: any, mealInfo: string, sessionId: number, date: string) {
-    console.log('Removing participant from meal:', participant.participantName, 'from', mealInfo);
+    //console.log('Removing participant from meal:', participant.participantName, 'from', mealInfo);
 
     // Find the meal in the data structure
     const sessionMeals = mealsMap.value[sessionId];
@@ -421,7 +421,7 @@ function removeParticipantFromMeal(participant: any, mealInfo: string, sessionId
 
             if (participantIndex !== -1) {
                 meal.participants.splice(participantIndex, 1);
-                console.log('Participant removed successfully from database and UI');
+                //console.log('Participant removed successfully from database and UI');
 
                 // Force reactivity update
                 mealsMap.value = { ...mealsMap.value };
@@ -450,8 +450,8 @@ function removeParticipantFromMeal(participant: any, mealInfo: string, sessionId
         }
     } else {
         console.warn('Missing participant ID or meal ID for database deletion');
-        console.log('Participant:', participant);
-        console.log('Meal:', meal);
+        //console.log('Participant:', participant);
+        //console.log('Meal:', meal);
         toast.add({
             title: t('meal_participant_removed_error'),
             color: 'red',
@@ -461,7 +461,7 @@ function removeParticipantFromMeal(participant: any, mealInfo: string, sessionId
 }
 
 function removeSupervisorFromMeal(supervisor: any, mealInfo: string, sessionId: number, date: string) {
-    console.log('Removing supervisor from meal:', supervisor.supervisorName, 'from', mealInfo);
+    //console.log('Removing supervisor from meal:', supervisor.supervisorName, 'from', mealInfo);
 
     // Find the meal in the data structure
     const sessionMeals = mealsMap.value[sessionId];
@@ -481,7 +481,7 @@ function removeSupervisorFromMeal(supervisor: any, mealInfo: string, sessionId: 
 
             if (supervisorIndex !== -1) {
                 meal.supervisors.splice(supervisorIndex, 1);
-                console.log('Supervisor removed successfully from database and UI');
+                //console.log('Supervisor removed successfully from database and UI');
 
                 // Force reactivity update
                 mealsMap.value = { ...mealsMap.value };
@@ -510,8 +510,8 @@ function removeSupervisorFromMeal(supervisor: any, mealInfo: string, sessionId: 
         }
     } else {
         console.warn('Missing supervisor ID or meal ID for database deletion');
-        console.log('Supervisor:', supervisor);
-        console.log('Meal:', meal);
+        //console.log('Supervisor:', supervisor);
+        //console.log('Meal:', meal);
         toast.add({
             title: t('meal_supervisor_removed_error'),
             color: 'red',
@@ -521,7 +521,7 @@ function removeSupervisorFromMeal(supervisor: any, mealInfo: string, sessionId: 
 }
 
 onMounted(() => {
-    console.log("onMounted: System:", selectedSystemStore.selectedSystem);
+    //console.log("onMounted: System:", selectedSystemStore.selectedSystem);
     if (selectedSystemStore.selectedSystem) {
         loadData();
     }
@@ -529,27 +529,27 @@ onMounted(() => {
 
 // Watch for database availability and load meal plan data
 watch(() => selectedSystemStore.selectedSystem?.db, (newDb) => {
-    console.log("Database availability changed:", !!newDb);
+    //console.log("Database availability changed:", !!newDb);
     if (newDb) {
-        console.log("Database available, loading meal plan data");
+        //console.log("Database available, loading meal plan data");
         loadData();
     }
 })
 
 // Watch for system changes and load meal plan data
 watch(() => selectedSystemStore.selectedSystem, (newSystem) => {
-    console.log("System changed:", newSystem?.id || "null");
+    //console.log("System changed:", newSystem?.id || "null");
     if (newSystem?.db) {
-        console.log("System with database available, loading meal plan data");
+        //console.log("System with database available, loading meal plan data");
         loadData();
     }
 })
 
 function loadData() {
     const currentSystem = selectedSystemStore.selectedSystem;
-    console.log("Loading data");
-    console.log("Meal Plan List Component:", mealPlanListComponent.value);
-    console.log("Actual Query:", actualMealPlanListQuery.value);
+    //console.log("Loading data");
+    //console.log("Meal Plan List Component:", mealPlanListComponent.value);
+    //console.log("Actual Query:", actualMealPlanListQuery.value);
 
     if (!currentSystem?.db || typeof currentSystem?.db?.query !== "function") {
         console.warn("Database not available or query method missing.");
@@ -559,22 +559,22 @@ function loadData() {
     // Query for sessions
     const sessionQuery = ComponentHandler.getComponentValue(componentId, 'sql-1', mealPlanListComponent.value?.sql?.['sql-1'] || '');
     const sessionResult = currentSystem.db.query(sessionQuery);
-    console.log("Session Query Result:", sessionResult);
+    //console.log("Session Query Result:", sessionResult);
     if (sessionResult.success && sessionResult.results) {
         for (const row of sessionResult.results) {
             const dates = getDateArray(row.from_date, row.to_date);
             dateMap.value[row.session_id] = dates;
         }
-        console.log("Date Map:", dateMap.value);
+        //console.log("Date Map:", dateMap.value);
     }
 
     // Query for meals with participants
     const participantResult = currentSystem.db.query(actualMealPlanListQuery.value);
-    console.log("Participant Meal Query Result:", participantResult);
+    //console.log("Participant Meal Query Result:", participantResult);
 
     // Query for meals with supervisors
     const supervisorResult = currentSystem.db.query(actualSupervisorQuery.value);
-    console.log("Supervisor Meal Query Result:", supervisorResult);
+    //console.log("Supervisor Meal Query Result:", supervisorResult);
 
     if ((participantResult.success && participantResult.results) || (supervisorResult.success && supervisorResult.results)) {
         // Reset meals map
@@ -582,13 +582,13 @@ function loadData() {
 
         // Process participant data
         if (participantResult.success && participantResult.results) {
-            console.log("DEBUG: Processing participant results:", participantResult.results);
+            //console.log("DEBUG: Processing participant results:", participantResult.results);
             for (const row of participantResult.results) {
-                console.log("DEBUG: Processing row:", row);
+                //console.log("DEBUG: Processing row:", row);
                 const sessionId = row.session_id;
                 const date = row.date_served;
                 const mealId = row.meal_id;
-                console.log("DEBUG: Extracted mealId:", mealId);
+                //console.log("DEBUG: Extracted mealId:", mealId);
 
                 if (!mealsMap.value[sessionId]) {
                     mealsMap.value[sessionId] = {};
@@ -608,7 +608,7 @@ function loadData() {
                         supervisors: [],
                         allergens: []
                     };
-                    console.log("DEBUG: Created new meal:", meal);
+                    //console.log("DEBUG: Created new meal:", meal);
                     mealsMap.value[sessionId][date].push(meal);
                 }
 
@@ -625,13 +625,13 @@ function loadData() {
 
         // Process supervisor data
         if (supervisorResult.success && supervisorResult.results) {
-            console.log("DEBUG: Processing supervisor results:", supervisorResult.results);
+            //console.log("DEBUG: Processing supervisor results:", supervisorResult.results);
             for (const row of supervisorResult.results) {
-                console.log("DEBUG: Processing supervisor row:", row);
+                //console.log("DEBUG: Processing supervisor row:", row);
                 const sessionId = row.session_id;
                 const date = row.date_served;
                 const mealId = row.meal_id;
-                console.log("DEBUG: Extracted supervisor mealId:", mealId);
+                //console.log("DEBUG: Extracted supervisor mealId:", mealId);
 
                 if (!mealsMap.value[sessionId]) {
                     mealsMap.value[sessionId] = {};
@@ -651,7 +651,7 @@ function loadData() {
                         supervisors: [],
                         allergens: []
                     };
-                    console.log("DEBUG: Created new meal for supervisor:", meal);
+                    //console.log("DEBUG: Created new meal for supervisor:", meal);
                     mealsMap.value[sessionId][date].push(meal);
                 }
 
@@ -666,7 +666,7 @@ function loadData() {
             }
         }
 
-        console.log("Meals Map:", mealsMap.value);
+        //console.log("Meals Map:", mealsMap.value);
     }
 }
 
@@ -678,11 +678,11 @@ function getAllergensForMeal(mealId: number) {
 
     try {
         const queryResult = system.db.query(actualAllergenQuery.value, [mealId])
-        console.log("Allergen QUERY:", actualAllergenQuery.value, mealId)
-        console.log("Allergen RESULT:", queryResult)
+        //console.log("Allergen QUERY:", actualAllergenQuery.value, mealId)
+        //console.log("Allergen RESULT:", queryResult)
 
         if (queryResult?.success && queryResult.results.length > 0) {
-            console.log("Allergen results:", queryResult.results);
+            //console.log("Allergen results:", queryResult.results);
             return queryResult.results.map((row: any) => row.name)
         }
     } catch (error) {
