@@ -101,7 +101,7 @@
           <div class="flex items-start justify-between gap-2">
             <div class="flex min-w-0 flex-col gap-1">
               <span class="font-medium text-sm text-gray-900 dark:text-white leading-snug">{{ task.title }}</span>
-              <span class="text-xs font-medium text-gray-500 dark:text-gray-400">
+              <span v-if="!globalSettings.teacherMode" class="text-xs font-medium text-gray-500 dark:text-gray-400">
                 {{ t('task_level') }} {{ task.round }}
               </span>
             </div>

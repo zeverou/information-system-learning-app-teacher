@@ -505,5 +505,11 @@
     "js_user_code_comment": "Here is your code:",
     "upload_from_zip": "Upload from ZIP archive",
     "choose_from_suggestions": "Choose from pre-made systems",
-    "no_suggestions_available": "No suggestions are available at this time."
+    "no_suggestions_available": "No suggestions are available at this time.",
+    "edit_system": "Edit System",
+    "system_id": "System ID",
+    "system_name": "System Name",
+    "system_description": "Description",
+    "system_already_exists": "A system with this ID already exists",
+    "or": "OR"
 }

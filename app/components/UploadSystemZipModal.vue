@@ -159,16 +159,41 @@ async function onUpload(close: () => void) {
         if (selectedPreloadedSystem.value) {
             const sysToClone = selectedPreloadedSystem.value
 
-            // Clone JSON using serialization to avoid reference issues
-            const sysJson = JSON.parse(JSON.stringify(sysToClone))
-            const newSys = InformationSystem.fromJSON(sysJson)
-            
-            const resolved = resolveCollision(newSys)
-            newSys.id = resolved.newId
-            newSys.name = resolved.newName
+            // Reconstruct filesContents from the already-loaded system,
+            // mirroring exactly what the manifest/ZIP loader does.
+            const filesContents: Record<string, string> = {
+                'config.json': JSON.stringify(sysToClone.configData ?? {}),
+            }
 
-            await systemsStore.addSystem(newSys)
-            
+            if (sysToClone.createSchemaSql) {
+                filesContents['create_schema.sql'] = sysToClone.createSchemaSql
+            }
+
+            if (sysToClone.defaultComponents.length > 0) {
+                filesContents['system_components.json'] = JSON.stringify(sysToClone.defaultComponents)
+            }
+
+            // Re-attach any page vue sources that were loaded from the system
+            if (getPageLoadSource() === 'system') {
+                for (const page of sysToClone.pages ?? []) {
+                    if (page.vueFile && (page as any).vueSource) {
+                        filesContents[page.vueFile] = (page as any).vueSource
+                    }
+                }
+            }
+
+            const loadResult = await InformationSystem.loadSystem(filesContents)
+            if (loadResult.result === OperationResultType.SUCCESS && loadResult.data) {
+                const newSys = loadResult.data
+                const resolved = resolveCollision(newSys)
+                newSys.id = resolved.newId
+                newSys.name = resolved.newName
+
+                await systemsStore.addSystem(newSys)
+            } else {
+                console.error(loadResult.message)
+            }
+
             selectedPreloadedSystem.value = null
             close()
             return

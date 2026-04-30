@@ -511,5 +511,11 @@
     "js_user_code_comment": "Zde je váš kód:",
     "upload_from_zip": "Nahrát ze ZIP archivu",
     "choose_from_suggestions": "Vybrat z návrhů (předpřipravené systémy)",
-    "no_suggestions_available": "Momentálně nejsou k dispozici žádné návrhy."
+    "no_suggestions_available": "Momentálně nejsou k dispozici žádné návrhy.",
+    "edit_system": "Upravit systém",
+    "system_id": "ID systému",
+    "system_name": "Název systému",
+    "system_description": "Popis",
+    "system_already_exists": "Systém s tímto ID již existuje",
+    "or": "NEBO"
 }
