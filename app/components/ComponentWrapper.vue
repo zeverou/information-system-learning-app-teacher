@@ -792,31 +792,6 @@ onBeforeUnmount(() => {
   z-index: 40;
   border-radius: 8px;
   cursor: pointer;
-  animation: glow-light-blue 2s ease-in-out infinite;
-}
-.teacher-mode-overlay.is-selected {
-  animation: glow-blue 2s ease-in-out infinite;
-}
-
-@keyframes glow-light-blue {
-  0%, 100% {
-    background-color: rgba(147, 197, 253, 0.4);
-    box-shadow: 0 0 2px rgba(147, 197, 253, 0.4);
-  }
-  50% {
-    background-color: rgba(147, 197, 253, 0.6);
-    box-shadow: 0 0 16px rgba(147, 197, 253, 0.7);
-  }
-}
-@keyframes glow-blue {
-  0%, 100% {
-    background-color: rgba(239, 68, 68, 0.4);
-    box-shadow: 0 0 0 2px #ef4444, 0 0 2px rgba(239, 68, 68, 0.4);
-  }
-  50% {
-    background-color: rgba(239, 68, 68, 0.6);
-    box-shadow: 0 0 0 2px #ef4444, 0 0 18px rgba(239, 68, 68, 0.9);
-  }
 }
 
 .repaired-overlay {
