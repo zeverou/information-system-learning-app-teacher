@@ -355,11 +355,7 @@ function evaluateActivity() {
     if (substitute) {
       const ids: string[] = (activity.activityComponents ?? []).map((c: any) => c.id).filter(Boolean)
       //console.log('[evaluateActivity] adding to solvedComponentIds:', ids)
-      for (const id of ids) {
-        if (!globalSettings.solvedComponentIds.includes(id)) {
-          globalSettings.solvedComponentIds.push(id)
-        }
-      }
+      addSolvedComponentIds(ids)
       //console.log('[evaluateActivity] solvedComponentIds after:', [...globalSettings.solvedComponentIds])
     }
   }
@@ -488,10 +484,25 @@ function getActivityComponentIds(task: Task): string[] {
 }
 
 function addSolvedComponentIds(componentIds: string[]) {
+  const newlySolvedIds: string[] = []
+
   for (const id of componentIds) {
     if (!globalSettings.solvedComponentIds.includes(id)) {
       globalSettings.solvedComponentIds.push(id)
+      newlySolvedIds.push(id)
     }
+  }
+
+  if (newlySolvedIds.length && import.meta.client) {
+    if (highlightStore.isHighlightActive) {
+      highlightStore.toggleHighlight()
+    } else {
+      highlightStore.clearHighlights()
+    }
+
+    window.dispatchEvent(new CustomEvent('components-repaired', {
+      detail: { componentIds: newlySolvedIds }
+    }))
   }
 }
 

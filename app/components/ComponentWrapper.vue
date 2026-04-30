@@ -84,8 +84,10 @@ const ownedComputedVariableNames = new Set<string>();
 let db: DatabaseWrapper | undefined = undefined;
 let isRefreshingSqlVars = false;
 const componentCodeUpdatedEventName = 'component-code-updated';
+const componentsRepairedEventName = 'components-repaired';
 
 type ComponentCodeUpdatedEvent = CustomEvent<{ componentId: string }>;
+type ComponentsRepairedEvent = CustomEvent<{ componentIds?: string[] }>;
 
 type ActiveInputSnapshot = {
   identifier: string;
@@ -381,12 +383,19 @@ watch(() => props.component.variables?.generalVariables, (newVars) => {
   componentVariables.value.generalVariables = newVars ?? [];
 }, { deep: true, immediate: true });
 
-watch(() => globalSettings.solvedComponentIds.includes(props.component.id), (isSolved, wasSolved) => {
-  if (isSolved && wasSolved === false) {
+function showRepairedOverlay() {
+  isJustRepaired.value = false;
+  void nextTick(() => {
     isJustRepaired.value = true;
     setTimeout(() => {
       isJustRepaired.value = false;
     }, 1500);
+  });
+}
+
+watch(() => globalSettings.solvedComponentIds.includes(props.component.id), (isSolved, wasSolved) => {
+  if (isSolved && wasSolved === false) {
+    showRepairedOverlay();
   }
 }, { immediate: true });
 
@@ -617,6 +626,12 @@ function handleComponentCodeUpdated(event: Event) {
   void refreshComponentCode();
 }
 
+function handleComponentsRepaired(event: Event) {
+  const detail = (event as ComponentsRepairedEvent).detail;
+  if (!detail?.componentIds?.some(id => String(id) === String(props.component.id))) return;
+  showRepairedOverlay();
+}
+
 onMounted(async () => {
   db = systemsStore.selectedSystem?.database ?? undefined;
 
@@ -628,12 +643,14 @@ onMounted(async () => {
 
   if (import.meta.client) {
     window.addEventListener(componentCodeUpdatedEventName, handleComponentCodeUpdated);
+    window.addEventListener(componentsRepairedEventName, handleComponentsRepaired);
   }
 });
 
 onBeforeUnmount(() => {
   if (import.meta.client) {
     window.removeEventListener(componentCodeUpdatedEventName, handleComponentCodeUpdated);
+    window.removeEventListener(componentsRepairedEventName, handleComponentsRepaired);
   }
 
   for (const variableName of ownedSystemVariableNames) {
@@ -768,7 +785,7 @@ onBeforeUnmount(() => {
   outline-offset: 2px;
   background-color: rgba(239, 68, 68, 0.08);
 }
-</style>
+
 .teacher-mode-overlay {
   position: absolute;
   inset: -8px;
@@ -828,3 +845,4 @@ onBeforeUnmount(() => {
     opacity: 0;
   }
 }
+</style>
