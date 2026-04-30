@@ -44,6 +44,14 @@
         </UFormField>
 
         <UFormField :label="t('task_visible_pages')">
+          <UAlert
+            v-if="inconsistentLevelVisiblePages.length"
+            color="red"
+            icon="i-lucide-alert-triangle"
+            :title="t('task_level_visible_pages_mismatch_title')"
+            :description="visiblePagesMismatchDescription"
+            class="mb-3"
+          />
           <div v-if="systemPages.length" class="flex flex-wrap gap-2">
             <UBadge
               v-for="page in systemPages"
@@ -663,6 +671,7 @@ import { FinishType } from '~/model/Task/Finish/FinishType'
 import type { VariableConstraint, VariableConstraintOperator, VariableConstraintScope } from '~/model/Task/Finish/VariableConstraintFinish'
 import { Task } from '~/model/Task/Task'
 import { useSystemsStore } from '~/stores/systemsStore'
+import { inconsistentVisiblePageLevels } from '~/utils/taskLevels'
 import { systemVisiblePages } from '~/utils/taskPageVisibility'
 
 type TaskDetailForm = {
@@ -756,6 +765,16 @@ const systemPages = computed(() => {
   return system ? systemVisiblePages(system, t('database')) : []
 })
 const systemTasks = computed(() => systemsStore.selectedSystem?.tasks ?? [])
+const inconsistentLevelVisiblePages = computed(() => {
+  const system = systemsStore.selectedSystem
+  return system ? inconsistentVisiblePageLevels(system.tasks, systemVisiblePages(system)) : []
+})
+const visiblePagesMismatchDescription = computed(() => {
+  const levels = inconsistentLevelVisiblePages.value.join(', ')
+  return levels
+    ? `${t('task_level_visible_pages_mismatch_description')} ${t('task_levels')}: ${levels}`
+    : t('task_level_visible_pages_mismatch_description')
+})
 const systemLevelCount = ref(1)
 const levelOptions = computed(() =>
   Array.from({ length: normalizeLevelCount(systemLevelCount.value) }, (_, index) => {

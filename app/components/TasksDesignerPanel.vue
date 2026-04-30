@@ -62,14 +62,6 @@
         </UButton>
     </div>
 
-    <UAlert
-      v-if="inconsistentLevelVisiblePages.length"
-      color="red"
-      icon="i-lucide-alert-triangle"
-      :title="t('task_level_visible_pages_mismatch_title')"
-      :description="visiblePagesMismatchDescription"
-    />
-
     <div class="flex flex-wrap gap-2">
       <UBadge
         v-for="task in tasks"
@@ -187,8 +179,6 @@ import type { GUID } from '~/model/GUID'
 import type { InformationSystem } from '~/model/InformationSystem'
 import { Task } from '~/model/Task/Task'
 import { useSystemsStore } from '~/stores/systemsStore'
-import { inconsistentVisiblePageLevels } from '~/utils/taskLevels'
-import { systemVisiblePages } from '~/utils/taskPageVisibility'
 
 const showImportModal = ref(false)
 const importJsonText = ref('')
@@ -225,16 +215,6 @@ const globalSettings = useGlobalSettingsStore()
 const selectedTask = ref<Task | null>(null)
 const systemLevelCount = ref(1)
 const tasks = computed(() => systemsStore.selectedSystem?.tasks ?? [])
-const inconsistentLevelVisiblePages = computed(() => {
-  const system = systemsStore.selectedSystem
-  return system ? inconsistentVisiblePageLevels(system.tasks, systemVisiblePages(system)) : []
-})
-const visiblePagesMismatchDescription = computed(() => {
-  const levels = inconsistentLevelVisiblePages.value.join(', ')
-  return levels
-    ? `${t('task_level_visible_pages_mismatch_description')} ${t('task_levels')}: ${levels}`
-    : t('task_level_visible_pages_mismatch_description')
-})
 let persistSystemTimeout: ReturnType<typeof setTimeout> | null = null
 
 watch(selectedTask, (task) => {
