@@ -508,5 +508,8 @@
     "available_sql_variables": "Dostupné SQL proměnné",
     "available_js_variables": "Dostupné JS proměnné",
     "js_available_constants_comment": "Zde jsou dostupné konstanty:",
-    "js_user_code_comment": "Zde je váš kód:"
+    "js_user_code_comment": "Zde je váš kód:",
+    "upload_from_zip": "Nahrát ze ZIP archivu",
+    "choose_from_suggestions": "Vybrat z návrhů (předpřipravené systémy)",
+    "no_suggestions_available": "Momentálně nejsou k dispozici žádné návrhy."
 }

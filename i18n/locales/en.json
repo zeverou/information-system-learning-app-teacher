@@ -502,5 +502,8 @@
     "available_sql_variables": "Available SQL variables",
     "available_js_variables": "Available JS variables",
     "js_available_constants_comment": "Here are the available constants:",
-    "js_user_code_comment": "Here is your code:"
+    "js_user_code_comment": "Here is your code:",
+    "upload_from_zip": "Upload from ZIP archive",
+    "choose_from_suggestions": "Choose from pre-made systems",
+    "no_suggestions_available": "No suggestions are available at this time."
 }
