@@ -7,6 +7,7 @@
       'teacher-outline--selected': globalSettings.teacherMode && globalSettings.teacherHighlightEnabled && globalSettings.selectedComponents?.has(props.component.id),
     }]">
     <div :class="['content-container', { 'edit-mode': isEditEnabled }]">
+      <div v-if="isJustRepaired" class="repaired-overlay"></div>
 
       <div v-if="!globalSettings.teacherMode">
         <span v-if="isEditEnabled" class="edit-icon" @click.stop="handleEdit">
@@ -74,6 +75,7 @@ const isSubmittingActionModal = ref(false);
 const actionModalError = ref('');
 const modalFormState = reactive<Record<string, string | number>>({});
 const wrapperRef = ref<HTMLElement | null>(null);
+const isJustRepaired = ref(false);
 
 const componentVariables = ref<ComponentVariables>(new ComponentVariables());
 const { systemInputVariables, upsertSystemInputVariable, upsertSystemComputedVariable, removeSystemInputVariable } = useSystemInputVariables();
@@ -378,6 +380,22 @@ watch(systemInputVariables, () => {
 watch(() => props.component.variables?.generalVariables, (newVars) => {
   componentVariables.value.generalVariables = newVars ?? [];
 }, { deep: true, immediate: true });
+
+watch(() => globalSettings.solvedComponentIds.includes(props.component.id), (isSolved, wasSolved) => {
+  if (isSolved && wasSolved === false) {
+    isJustRepaired.value = true;
+    setTimeout(() => {
+      isJustRepaired.value = false;
+    }, 1500);
+  }
+}, { immediate: true });
+
+watch(() => [props.component.html, props.component.css, props.component.js, props.component.sql], async (newVals, oldVals) => {
+  const changed = newVals.some((val, i) => val !== oldVals[i]);
+  if (changed) {
+    await refreshComponentCode();
+  }
+});
 
 watch(() => systemsStore.selectedSystem?.database?.dbNumber, async () => {
   if (!db || !props.component.sql || isRefreshingSqlVars) return;
@@ -781,5 +799,32 @@ onBeforeUnmount(() => {
   50% {
     background-color: rgba(239, 68, 68, 0.6);
     box-shadow: 0 0 0 2px #ef4444, 0 0 18px rgba(239, 68, 68, 0.9);
+  }
+}
+
+.repaired-overlay {
+  position: absolute;
+  inset: -8px;
+  z-index: 40;
+  border-radius: 8px;
+  pointer-events: none;
+  animation: glow-emerald 1.5s ease-out forwards;
+}
+
+@keyframes glow-emerald {
+  0% {
+    background-color: rgba(16, 185, 129, 0.6);
+    box-shadow: 0 0 4px rgba(16, 185, 129, 0.6), 0 0 16px rgba(16, 185, 129, 0.8);
+    opacity: 1;
+  }
+  70% {
+    background-color: rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 2px rgba(16, 185, 129, 0.2);
+    opacity: 1;
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+    opacity: 0;
   }
 }

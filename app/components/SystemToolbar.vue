@@ -273,6 +273,7 @@ const { t } = useI18n();
 const toast = useToast();
 const route = useRoute();
 const preloadedSystems = usePreloadedSystems();
+const { pushFirstAvailablePage } = useAvailableSystemPages();
 
 const resetPopoverOpen = ref(false);
 const exitPopoverOpen = ref(false);
@@ -399,6 +400,7 @@ async function confirmRefreshSystem() {
 
   if (refreshDatabaseEnabled.value && refreshTasksEnabled.value) {
     await refreshSystem();
+    await pushFirstAvailablePage(null);
     return;
   }
 
@@ -411,6 +413,8 @@ async function confirmRefreshSystem() {
   if (refreshDatabaseEnabled.value) {
     await refreshDatabase();
   }
+
+  await pushFirstAvailablePage(null);
 }
 
 async function refreshTasks() {
@@ -425,6 +429,7 @@ async function refreshTasks() {
   system.currentRound = 1;
   // Clear solved component IDs
   globalSettings.solvedComponentIds = [];
+  globalSettings.selectedTaskId = null;
   await systemsStore.updateSystem(system);
   toast.add({
     title: t("refresh_tasks_success"),
