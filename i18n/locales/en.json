@@ -451,6 +451,7 @@
     "task_editor_view": "Editor View",
     "task_student_preview": "Student Preview",
     "task_new_task": "New Task",
+    "task_options_menu": "Options",
     "task_create_task": "Create Task",
     "task_remove_task_action": "Remove task",
     "task_remove_task_description": "Deletes this task from the system.",

@@ -11,16 +11,6 @@
               {{ t('task_detail_description') }}
             </p>
           </div>
-
-          <UButton
-            icon="i-lucide-download"
-            color="neutral"
-            variant="soft"
-            size="sm"
-            @click="downloadTaskJson"
-          >
-            {{ t('task_download_json') }}
-          </UButton>
         </div>
 
         <UFormField :label="t('task_title_label')">
@@ -1238,19 +1228,6 @@ async function saveEditedComponent() {
   }
 
   stopEditingComponent()
-}
-
-function downloadTaskJson() {
-  const task = selectedTaskFromSettings.value ?? props.selectedTask
-  if (!task) return
-  const json = JSON.stringify(task, null, 2)
-  const blob = new Blob([json], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `task-${task.id}.json`
-  a.click()
-  URL.revokeObjectURL(url)
 }
 
 function addActivityOption() {

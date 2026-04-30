@@ -3,53 +3,34 @@
         <!-- <DebugButton /> -->
 
         <!-- In teacher mode: wrap tasks button with a hover popover showing task list -->
-        <UButton
-            v-if="globalSettings.teacherMode"
+        <UButton v-if="globalSettings.teacherMode"
             :icon="globalSettings.teacherHighlightEnabled ? 'i-lucide-eye' : 'i-lucide-eye-off'"
             :color="globalSettings.teacherHighlightEnabled ? 'sky' : 'neutral'"
-            :variant="globalSettings.teacherHighlightEnabled ? 'soft' : 'ghost'"
-            size="md"
-            @click="globalSettings.teacherHighlightEnabled = !globalSettings.teacherHighlightEnabled"
-        />
+            :variant="globalSettings.teacherHighlightEnabled ? 'soft' : 'ghost'" size="md"
+            @click="globalSettings.teacherHighlightEnabled = !globalSettings.teacherHighlightEnabled" />
 
-        <div
-            v-if="globalSettings.teacherMode"
-            class="relative"
-            @mouseenter="taskPopoverOpen = true"
-            @mouseleave="taskPopoverOpen = false"
-        >
-            <UButton
-                icon="i-lucide-clipboard-list"
-                color="sky"
-                variant="subtle"
-                size="md"
-                @click="openTaskDesigner"
-            >
+        <div v-if="globalSettings.teacherMode" class="relative" @mouseenter="taskPopoverOpen = true"
+            @mouseleave="taskPopoverOpen = false">
+            <UButton icon="i-lucide-clipboard-list" color="sky" variant="subtle" size="md" @click="openTaskDesigner">
                 <span class="mobile-hidden">{{ t('tasks') }}</span>
             </UButton>
             <div v-show="taskPopoverOpen" class="task-popover">
                 <div class="task-popover-inner">
-                <button
-                    class="task-popover-item task-popover-item--designer"
-                    @click="openTaskDesigner"
-                >
-                    <UIcon name="i-lucide-pencil-ruler" class="w-4 h-4 shrink-0" />
-                    {{ t('go_to_designer') }}
-                </button>
-                <div class="task-popover-separator" />
-                <button
-                    v-for="task in systemsStore.selectedSystem?.tasks ?? []"
-                    :key="task.id"
-                    class="task-popover-item"
-                    :class="{ 'task-popover-item--active': globalSettings.selectedTaskId === task.id }"
-                    @click="openTaskDesignerForTask(task.id)"
-                >
-                    <UIcon name="i-lucide-circle-dot" class="w-3.5 h-3.5 shrink-0 opacity-60" />
-                    <span class="truncate">{{ task.title || t('task_untitled') }}</span>
-                </button>
-                <div v-if="!(systemsStore.selectedSystem?.tasks?.length)" class="task-popover-empty">
-                    {{ t('task_list_empty') }}
-                </div>
+                    <button class="task-popover-item task-popover-item--designer" @click="openTaskDesigner">
+                        <UIcon name="i-lucide-pencil-ruler" class="w-4 h-4 shrink-0" />
+                        {{ t('go_to_designer') }}
+                    </button>
+                    <div class="task-popover-separator" />
+                    <button v-for="task in systemsStore.selectedSystem?.tasks ?? []" :key="task.id"
+                        class="task-popover-item"
+                        :class="{ 'task-popover-item--active': globalSettings.selectedTaskId === task.id }"
+                        @click="openTaskDesignerForTask(task.id)">
+                        <UIcon name="i-lucide-circle-dot" class="w-3.5 h-3.5 shrink-0 opacity-60" />
+                        <span class="truncate">{{ task.title || t('task_untitled') }}</span>
+                    </button>
+                    <div v-if="!(systemsStore.selectedSystem?.tasks?.length)" class="task-popover-empty">
+                        {{ t('task_list_empty') }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,7 +96,10 @@
             <!-- <SettingsDrawer /> -->
         </div>
 
-        <UPopover v-model:open="resetPopoverOpen" arrow>
+        <UButton block :label="$t('refresh_system')" size="md" color="green" variant="ghost" icon="i-lucide-refresh-cw"
+            @click="refreshSystem" />
+
+        <!-- <UPopover v-model:open="resetPopoverOpen" arrow>
             <UButton icon="i-heroicons-arrow-path" color="primary" variant="subtle" size="md">
                 <span class="mobile-hidden">{{ $t('refresh_system') }}</span>
             </UButton>
@@ -131,9 +115,10 @@
                         icon="i-heroicons-circle-stack" @click="refreshDatabase" class="justify-start" />
                 </div>
             </template>
-        </UPopover>
+        </UPopover> -->
 
-        <UButton v-if="globalSettings.teacherMode" icon="i-heroicons-arrow-right-on-rectangle" color="red" variant="subtle" size="md" @click="leaveSystem">
+        <UButton v-if="globalSettings.teacherMode" icon="i-heroicons-arrow-right-on-rectangle" color="red"
+            variant="subtle" size="md" @click="leaveSystem">
             <span class="mobile-hidden">{{ $t('leave_system') }}</span>
         </UButton>
     </div>
@@ -349,7 +334,7 @@ function stayInSystem() {
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     padding: 4px;
     display: flex;
     flex-direction: column;

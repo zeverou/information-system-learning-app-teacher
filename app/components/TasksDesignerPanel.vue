@@ -41,6 +41,44 @@
           {{ t('task_new_task') }}
         </UButton>
 
+        <UPopover v-model:open="optionsOpen" arrow>
+          <UButton
+            icon="i-lucide-ellipsis"
+            color="neutral"
+            variant="soft"
+            @mouseenter="optionsOpen = true"
+          >
+            {{ t('task_options_menu') }}
+          </UButton>
+
+          <template #content>
+            <div
+              class="flex min-w-[230px] flex-col gap-1 rounded-lg border border-gray-200 bg-white p-2 shadow-xl dark:border-gray-700 dark:bg-gray-900"
+              @mouseenter="optionsOpen = true"
+              @mouseleave="optionsOpen = false"
+            >
+              <UButton
+                icon="i-lucide-file-json"
+                color="neutral"
+                variant="ghost"
+                class="justify-start"
+                @click="openImportTaskModal"
+              >
+                {{ t('task_add_from_json') }}
+              </UButton>
+              <UButton
+                icon="i-lucide-download"
+                color="neutral"
+                variant="ghost"
+                class="justify-start"
+                :disabled="!selectedTask"
+                @click="downloadSelectedTaskJson"
+              >
+                {{ t('task_download_json') }}
+              </UButton>
+            </div>
+          </template>
+        </UPopover>
       </div>
     </div>
 
@@ -68,16 +106,6 @@
               @click.stop="deleteTask(task.id)"
             />
           </HoverHint>
-        </UBadge>
-        <UBadge
-          as="button"
-          color="neutral"
-          variant="outline"
-          class="flex cursor-pointer items-center gap-1.5 border-dashed px-3 py-1 transition hover:bg-gray-50 dark:hover:bg-gray-800"
-          @click="showImportModal = true"
-        >
-          <UIcon name="i-lucide-file-json" class="h-3.5 w-3.5" />
-          {{ t('task_add_from_json') }}
         </UBadge>
       </div>
     </div>
@@ -175,6 +203,7 @@ const importAllJsonText = ref('')
 const importAllError = ref('')
 const importAllFile = ref<File | null>(null)
 const previewStudentView = ref(false)
+const optionsOpen = ref(false)
 
 function readFileAsText(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -287,14 +316,24 @@ const importAllFromJson = async () => {
   await persistSystemNow(system)
 }
 
-const exportAllTasks = () => {
-  const data = JSON.stringify(tasks.value, null, 2)
+const openImportTaskModal = () => {
+  optionsOpen.value = false
+  showImportModal.value = true
+}
+
+const downloadSelectedTaskJson = () => {
+  const task = selectedTask.value
+  if (!task) {
+    return
+  }
+
+  optionsOpen.value = false
+  const data = JSON.stringify(task, null, 2)
   const blob = new Blob([data], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  const systemName = systemsStore.selectedSystem?.name ?? 'tasks'
-  a.download = `${systemName}-tasks.json`
+  a.download = `task-${task.id}.json`
   a.click()
   URL.revokeObjectURL(url)
 }
