@@ -18,7 +18,7 @@ export const editVstupEmailUcastnikaKomponenta = new Component({
 .form-radek input { padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; }
 `,
 
-  js: `const je_validni_email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(edit_vstup_email_ucastnika);
+  js: `const je_validni_email = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(edit_vstup_email_ucastnika);
 
 let barva_ramecku = "#FFFFFF";
 

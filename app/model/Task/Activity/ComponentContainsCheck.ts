@@ -30,13 +30,15 @@ export function evaluateComponentContainsConstraints(
             return false;
         }
 
-        const snapshot = snapshots.find(item => String(item.componentId) === String(constraint.componentId));
-        if (!snapshot) {
+        const matchingSnapshots = snapshots.filter(item => String(item.componentId) === String(constraint.componentId));
+        if (!matchingSnapshots.length) {
             return false;
         }
 
-        const haystack = `${snapshot.html}\n${snapshot.text}`;
-        const contains = haystack.includes(text);
+        const contains = matchingSnapshots.some((snapshot) => {
+            const haystack = `${snapshot.html}\n${snapshot.text}`;
+            return haystack.includes(text);
+        });
 
         if (constraint.operator === 'not-contains') {
             return !contains;

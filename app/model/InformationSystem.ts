@@ -79,6 +79,11 @@ export class InformationSystem {
   public score: Score;
 
   /**
+   * Counts incorrect task evaluation attempts in this system.
+   */
+  public mistakesCount: number;
+
+  /**
    * The currently unlocked task level.
    */
   public currentRound: number;
@@ -102,6 +107,7 @@ export class InformationSystem {
     configData,
     createSchemaSql,
     score,
+    mistakesCount = 0,
     currentRound = 1,
     levelCount = 1,
   }: {
@@ -118,6 +124,7 @@ export class InformationSystem {
     configData?: any;
     createSchemaSql?: string;
     score?: Score;
+    mistakesCount?: number;
     currentRound?: number;
     levelCount?: number;
   }) {
@@ -134,6 +141,7 @@ export class InformationSystem {
     this.configData = configData;
     this.createSchemaSql = createSchemaSql;
     this.score = score ?? new Score();
+    this.mistakesCount = mistakesCount;
     this.currentRound = currentRound;
     this.levelCount = levelCount;
   }
@@ -150,6 +158,7 @@ export class InformationSystem {
       language: configData.language,
       description: configData.description,
       pages: configData.pages ?? [],
+      mistakesCount: Number(configData.mistakesCount ?? 0),
       currentRound: Number(configData.currentRound ?? 1),
       levelCount: Number(configData.levelCount ?? 1),
       createSchemaSql: typeof configData.createSchemaSql === 'string' ? configData.createSchemaSql : undefined,
@@ -179,6 +188,7 @@ export class InformationSystem {
         description: configData.description,
         tasks: (configData.tasks || []).map((task: any) => Task.fromJSON(task)),
         pages,
+        mistakesCount: Number(configData.mistakesCount ?? 0),
         currentRound: Number(configData.currentRound ?? 1),
         levelCount: Number(configData.levelCount ?? 1),
         createSchemaSql: Object.entries(filesContents).find(([path]) => path.endsWith('create_schema.sql'))?.[1],

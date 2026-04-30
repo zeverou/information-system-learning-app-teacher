@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import type { QueryExecResult } from 'sql.js';
-import { ref, onMounted, onBeforeUnmount, watch, computed, reactive, nextTick } from 'vue';
+import { ref, onMounted, onBeforeUnmount, onBeforeUpdate, onUpdated, watch, computed, reactive, nextTick } from 'vue';
 import { SqlHandler } from '~/core/SqlHandler';
 import { JsHandler } from '~/core/JsHandler';
 import { HtmlHandler } from '~/core/HtmlHandler';
@@ -83,6 +83,7 @@ const ownedSystemVariableNames = new Set<string>();
 const ownedComputedVariableNames = new Set<string>();
 let db: DatabaseWrapper | undefined = undefined;
 let isRefreshingSqlVars = false;
+let activeInputSnapshotBeforeUpdate: ActiveInputSnapshot | null = null;
 const componentCodeUpdatedEventName = 'component-code-updated';
 const componentsRepairedEventName = 'components-repaired';
 
@@ -95,6 +96,8 @@ type ActiveInputSnapshot = {
   selectionStart: number | null;
   selectionEnd: number | null;
 };
+
+type SystemFormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
 function mergeVariablesByName(...groups: Array<Variable[] | undefined>): Variable[] {
   const merged = new Map<string, Variable>();
@@ -460,10 +463,12 @@ async function populateSqlVariables(sqlRecord: Record<string, string>) {
   }
 }
 
-type SystemFormControl = HTMLInputElement | HTMLSelectElement;
-
 function getVariableValue(input: SystemFormControl): VariableType | null {
   if (input instanceof HTMLSelectElement) {
+    return input.value;
+  }
+
+  if (input instanceof HTMLTextAreaElement) {
     return input.value;
   }
 
@@ -501,7 +506,11 @@ function captureActiveSystemInput(): ActiveInputSnapshot | null {
   if (!wrapperRef.value) return null;
 
   const activeElement = document.activeElement;
-  if (!(activeElement instanceof HTMLInputElement)) return null;
+  if (
+    !(activeElement instanceof HTMLInputElement) &&
+    !(activeElement instanceof HTMLSelectElement) &&
+    !(activeElement instanceof HTMLTextAreaElement)
+  ) return null;
   if (!wrapperRef.value.contains(activeElement)) return null;
 
   const identifier = getInputIdentifier(activeElement);
@@ -510,8 +519,10 @@ function captureActiveSystemInput(): ActiveInputSnapshot | null {
   let selectionStart: number | null = null;
   let selectionEnd: number | null = null;
   try {
-    selectionStart = activeElement.selectionStart;
-    selectionEnd = activeElement.selectionEnd;
+    if (activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement) {
+      selectionStart = activeElement.selectionStart;
+      selectionEnd = activeElement.selectionEnd;
+    }
   } catch {
     // Some input types do not expose cursor selection information.
   }
@@ -530,7 +541,7 @@ async function restoreActiveSystemInput(snapshot: ActiveInputSnapshot | null) {
 
   await nextTick();
 
-  const input = Array.from(wrapperRef.value.querySelectorAll('input'))
+  const input = Array.from(wrapperRef.value.querySelectorAll<SystemFormControl>('input, select, textarea'))
     .find(inputElement => getInputIdentifier(inputElement) === snapshot.identifier);
 
   if (!input) return;
@@ -538,7 +549,11 @@ async function restoreActiveSystemInput(snapshot: ActiveInputSnapshot | null) {
   input.value = snapshot.value;
   input.focus({ preventScroll: true });
 
-  if (snapshot.selectionStart !== null && snapshot.selectionEnd !== null) {
+  if (
+    (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) &&
+    snapshot.selectionStart !== null &&
+    snapshot.selectionEnd !== null
+  ) {
     try {
       input.setSelectionRange(snapshot.selectionStart, snapshot.selectionEnd);
     } catch {
@@ -550,7 +565,11 @@ async function restoreActiveSystemInput(snapshot: ActiveInputSnapshot | null) {
 function handleInput(event: Event) {
   const target = event.target;
 
-  if (!(target instanceof HTMLInputElement) && !(target instanceof HTMLSelectElement)) return;
+  if (
+    !(target instanceof HTMLInputElement) &&
+    !(target instanceof HTMLSelectElement) &&
+    !(target instanceof HTMLTextAreaElement)
+  ) return;
 
   syncSystemInput(target);
 }
@@ -558,7 +577,7 @@ function handleInput(event: Event) {
 function registerInitialSystemInputs() {
   if (!wrapperRef.value) return;
 
-  const inputs = Array.from(wrapperRef.value.querySelectorAll('input, select'));
+  const inputs = Array.from(wrapperRef.value.querySelectorAll<SystemFormControl>('input, select, textarea'));
   for (const input of inputs) {
     syncSystemInput(input);
   }
@@ -580,13 +599,11 @@ async function refreshComponentCode() {
 async function refreshJsVariables(options: { preserveActiveInput?: boolean } = {}) {
   const activeInputSnapshot = options.preserveActiveInput ? captureActiveSystemInput() : null;
 
-  componentVariables.value.jsVariables = [];
-  await nextTick();
-
   if (props.component.js) {
     try {
       const fullCode = jsVarsHeader.value ? `${jsVarsHeader.value}\n${props.component.js}` : props.component.js;
-      componentVariables.value.jsVariables = JsHandler.getJsVariables(fullCode, props.component.js);
+      const nextJsVariables = JsHandler.getJsVariables(fullCode, props.component.js);
+      componentVariables.value.jsVariables = nextJsVariables;
       syncComputedSystemVariables();
 
       if (props.component.js.includes('document.')) {
@@ -595,7 +612,10 @@ async function refreshJsVariables(options: { preserveActiveInput?: boolean } = {
       }
     } catch (e) {
       console.error('Error parsing JS variables:', e);
+      componentVariables.value.jsVariables = [];
     }
+  } else {
+    componentVariables.value.jsVariables = [];
   }
 
   await restoreActiveSystemInput(activeInputSnapshot);
@@ -645,6 +665,16 @@ onMounted(async () => {
     window.addEventListener(componentCodeUpdatedEventName, handleComponentCodeUpdated);
     window.addEventListener(componentsRepairedEventName, handleComponentsRepaired);
   }
+});
+
+onBeforeUpdate(() => {
+  activeInputSnapshotBeforeUpdate = captureActiveSystemInput();
+});
+
+onUpdated(() => {
+  const snapshot = activeInputSnapshotBeforeUpdate;
+  activeInputSnapshotBeforeUpdate = null;
+  void restoreActiveSystemInput(snapshot);
 });
 
 onBeforeUnmount(() => {

@@ -60,6 +60,7 @@ export class SystemZipExporter {
       description: system.description,
       pages: (system.pages ?? []).map(SystemZipExporter.serializePage),
       tasks: SystemZipExporter.toPlainJson(system.tasks ?? []),
+      mistakesCount: system.mistakesCount,
       currentRound: system.currentRound,
       levelCount: system.levelCount,
     }

@@ -11,6 +11,8 @@ const isSystemRoute = computed(() => /^\/systems\/[^/]+\//.test(route.path))
 const isFullscreenSystemPage = computed(() => route.meta.fullscreenSystemPage === true)
 const showSystemChrome = computed(() => isSystemRoute.value && !isFullscreenSystemPage.value)
 const teacherMode = computed(() => globalSettings.teacherMode)
+const scoreValue = computed(() => systemsStore.selectedSystem?.score.score ?? 0)
+const mistakesCount = computed(() => systemsStore.selectedSystem?.mistakesCount ?? 0)
 
 // Resizable right panel
 const RIGHT_PANEL_MIN = 200
@@ -100,9 +102,16 @@ function openDesignerFromSidebar() {
               {{ t('go_to_designer') }}
             </UButton>
           </div>
-          <UBadge v-if="!teacherMode" color="red" variant="subtle" size="lg" class="font-bold px-3">
-            {{ t('score') }}: {{ systemsStore.selectedSystem?.score.score ?? 0 }}
-          </UBadge>
+          <ModernHoverPopover
+            v-if="!teacherMode"
+            :title="t('score')"
+            :description="t('score_mistakes_count', { count: mistakesCount })"
+            icon="i-lucide-alert-triangle"
+          >
+            <UBadge color="red" variant="subtle" size="lg" class="font-bold px-3">
+              {{ t('score') }}: {{ scoreValue }}
+            </UBadge>
+          </ModernHoverPopover>
         </div>
         <div class="flex-1 overflow-hidden">
           <CustomScrollbar>
@@ -135,9 +144,16 @@ function openDesignerFromSidebar() {
                   {{ t('go_to_designer') }}
                 </UButton>
               </div>
-              <UBadge v-if="!teacherMode" color="red" variant="subtle" size="lg" class="font-bold px-3">
-                {{ t('score') }}: {{ systemsStore.selectedSystem?.score.score ?? 0 }}
-              </UBadge>
+              <ModernHoverPopover
+                v-if="!teacherMode"
+                :title="t('score')"
+                :description="t('score_mistakes_count', { count: mistakesCount })"
+                icon="i-lucide-alert-triangle"
+              >
+                <UBadge color="red" variant="subtle" size="lg" class="font-bold px-3">
+                  {{ t('score') }}: {{ scoreValue }}
+                </UBadge>
+              </ModernHoverPopover>
             </div>
             <div class="flex-1 overflow-hidden">
               <CustomScrollbar>

@@ -440,11 +440,13 @@ function completeTask(task: Task) {
 }
 
 function applyIncorrectScore(task: Task) {
-  const score = systemsStore.selectedSystem?.score
-  if (!score || task.completed) return
+  const system = systemsStore.selectedSystem
+  const score = system?.score
+  if (!system || !score || task.completed) return
 
   score.decreaseScore(task.failPenalty)
   score.incrementMistakes()
+  system.mistakesCount += 1
 }
 
 function isTaskActivityCompleted(task: Task): boolean {

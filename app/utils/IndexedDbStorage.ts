@@ -23,6 +23,7 @@ interface StoredSystem {
     defaultDatabaseBinary: Uint8Array | null;
     createSchemaSql?: string;
     score: { mistakesCount: number; score: number } | null;
+    mistakesCount?: number;
     currentRound?: number;
     levelCount?: number;
 }
@@ -89,6 +90,7 @@ export class IndexedDbStorage {
                 defaultDatabaseBinary,
                 createSchemaSql: system.createSchemaSql,
                 score: { mistakesCount: system.score.mistakesCount, score: system.score.score },
+                mistakesCount: system.mistakesCount,
                 currentRound: system.currentRound,
                 levelCount: system.levelCount,
             };
@@ -140,6 +142,7 @@ export class IndexedDbStorage {
                 defaultDatabaseBinary,
                 createSchemaSql: system.createSchemaSql,
                 score: { mistakesCount: system.score.mistakesCount, score: system.score.score },
+                mistakesCount: system.mistakesCount,
                 currentRound: system.currentRound,
                 levelCount: system.levelCount,
             };
@@ -181,6 +184,7 @@ export class IndexedDbStorage {
             defaultComponents: Component.arrayFromJSON(record.defaultComponents ?? []),
             createSchemaSql: record.createSchemaSql,
             score,
+            mistakesCount: Number(record.mistakesCount ?? record.score?.mistakesCount ?? 0),
             currentRound: Number(record.currentRound ?? 1),
             levelCount: Number(record.levelCount ?? 1),
         });

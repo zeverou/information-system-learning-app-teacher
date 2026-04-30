@@ -175,24 +175,6 @@
       @click="openRefreshSystemModal"
     />
 
-    <!-- <UPopover v-model:open="resetPopoverOpen" arrow>
-            <UButton icon="i-heroicons-arrow-path" color="primary" variant="subtle" size="md">
-                <span class="mobile-hidden">{{ $t('refresh_system') }}</span>
-            </UButton>
-            <template #content>
-                <div class="p-2 flex flex-col gap-1">
-                    <UButton block :label="$t('refresh_system')" color="green" variant="ghost"
-                        icon="i-lucide-refresh-cw" @click="refreshSystem" class="justify-start" />
-                    <UButton block :label="$t('refresh_components')" color="primary" variant="ghost"
-                        icon="i-heroicons-squares-2x2" @click="refreshComponents" class="justify-start" />
-                    <UButton block :label="$t('refresh_tasks')" color="sky" variant="ghost"
-                        icon="i-heroicons-clipboard-document-check" @click="refreshTasks" class="justify-start" />
-                    <UButton block :label="$t('refresh_database')" color="orange" variant="ghost"
-                        icon="i-heroicons-circle-stack" @click="refreshDatabase" class="justify-start" />
-                </div>
-            </template>
-        </UPopover> -->
-
     <UButton
       v-if="globalSettings.teacherMode"
       icon="i-heroicons-arrow-right-on-rectangle"
@@ -207,7 +189,7 @@
     <UModal
       v-model:open="refreshSystemModalOpen"
       :title="t('refresh_system_modal_title')"
-      :ui="{ content: 'w-[460px]' }"
+      :ui="{ content: 'w-[520px]' }"
     >
       <template #body>
         <div class="flex flex-col gap-4">
@@ -215,30 +197,66 @@
             {{ t("refresh_system_modal_description") }}
           </p>
 
-          <div class="flex flex-col gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-800">
-            <label class="flex items-center justify-between gap-3">
-              <span class="flex min-w-0 flex-col">
+          <div class="flex flex-col gap-3">
+            <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-800">
+              <div class="mb-3 flex flex-col gap-1">
                 <span class="text-sm font-medium text-gray-900 dark:text-white">
                   {{ t("refresh_database") }}
                 </span>
                 <span class="text-xs text-gray-500 dark:text-gray-400">
                   {{ t("refresh_database_modal_option_description") }}
                 </span>
-              </span>
-              <USwitch v-model="refreshDatabaseEnabled" color="green" />
-            </label>
+              </div>
+              <UButton
+                block
+                color="orange"
+                variant="soft"
+                icon="i-heroicons-circle-stack"
+                @click="refreshDatabaseFromModal"
+              >
+                {{ t("refresh_database") }}
+              </UButton>
+            </div>
 
-            <label class="flex items-center justify-between gap-3">
-              <span class="flex min-w-0 flex-col">
+            <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-800">
+              <div class="mb-3 flex flex-col gap-1">
                 <span class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ t("refresh_tasks") }}
+                  {{ t("refresh_components") }}
                 </span>
                 <span class="text-xs text-gray-500 dark:text-gray-400">
-                  {{ t("refresh_tasks_modal_option_description") }}
+                  {{ t("refresh_components_modal_option_description") }}
                 </span>
-              </span>
-              <USwitch v-model="refreshTasksEnabled" color="green" />
-            </label>
+              </div>
+              <UButton
+                block
+                color="primary"
+                variant="soft"
+                icon="i-heroicons-squares-2x2"
+                @click="refreshComponentsFromModal"
+              >
+                {{ t("refresh_components") }}
+              </UButton>
+            </div>
+
+            <div class="rounded-lg border border-green-200 bg-green-50/50 p-4 dark:border-green-900/60 dark:bg-green-950/20">
+              <div class="mb-3 flex flex-col gap-1">
+                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                  {{ t("refresh_all") }}
+                </span>
+                <span class="text-xs text-gray-500 dark:text-gray-400">
+                  {{ t("refresh_all_modal_option_description") }}
+                </span>
+              </div>
+              <UButton
+                block
+                color="green"
+                variant="solid"
+                icon="i-lucide-refresh-cw"
+                @click="refreshAllFromModal"
+              >
+                {{ t("refresh_all") }}
+              </UButton>
+            </div>
           </div>
         </div>
       </template>
@@ -246,9 +264,6 @@
         <div class="flex w-full justify-end gap-2">
           <UButton color="neutral" variant="ghost" @click="refreshSystemModalOpen = false">
             {{ t("cancel") }}
-          </UButton>
-          <UButton color="green" icon="i-lucide-refresh-cw" @click="confirmRefreshSystem">
-            {{ t("refresh_system") }}
           </UButton>
         </div>
       </template>
@@ -262,7 +277,6 @@ import SettingsDrawer from "~/components/SettingsDrawer.vue";
 import StudentComponent from "~/components/StudentComponent.vue";
 import { IndexedDbHandler } from "~/utils/IndexedDbHandler";
 import { OperationResultType } from "~/utils/OperationResultType";
-import { Task } from "~/model/Task/Task";
 import { Component } from "~/model/Component";
 
 const highlightStore = useHighlightStore();
@@ -280,8 +294,6 @@ const exitPopoverOpen = ref(false);
 const studentDrawerOpen = ref(false);
 const taskPopoverOpen = ref(false);
 const refreshSystemModalOpen = ref(false);
-const refreshDatabaseEnabled = ref(true);
-const refreshTasksEnabled = ref(true);
 
 async function printTableData() {}
 
@@ -322,8 +334,6 @@ function openTaskDesignerForTask(taskId: string) {
 }
 
 function openRefreshSystemModal() {
-  refreshDatabaseEnabled.value = true;
-  refreshTasksEnabled.value = true;
   refreshSystemModalOpen.value = true;
 }
 
@@ -395,48 +405,22 @@ async function refreshSystem() {
   }
 }
 
-async function confirmRefreshSystem() {
+async function refreshDatabaseFromModal() {
   refreshSystemModalOpen.value = false;
-
-  if (refreshDatabaseEnabled.value && refreshTasksEnabled.value) {
-    await refreshSystem();
-    await pushFirstAvailablePage(null);
-    return;
-  }
-
-  await refreshComponents();
-
-  if (refreshTasksEnabled.value) {
-    await refreshTasks();
-  }
-
-  if (refreshDatabaseEnabled.value) {
-    await refreshDatabase();
-  }
-
+  await refreshDatabase();
   await pushFirstAvailablePage(null);
 }
 
-async function refreshTasks() {
-  const system = systemsStore.selectedSystem;
-  if (!system) return;
-  // Reset tasks to defaults (deep clone to avoid shared references)
-  system.tasks = system.defaultTasks.map((t: any) =>
-    Task.fromJSON(JSON.parse(JSON.stringify(t)))
-  );
-  // Reset score
-  system.score.reset();
-  system.currentRound = 1;
-  // Clear solved component IDs
-  globalSettings.solvedComponentIds = [];
-  globalSettings.selectedTaskId = null;
-  await systemsStore.updateSystem(system);
-  toast.add({
-    title: t("refresh_tasks_success"),
-    color: "primary",
-    icon: "i-lucide-check-circle",
-  });
-  resetPopoverOpen.value = false;
+async function refreshComponentsFromModal() {
+  refreshSystemModalOpen.value = false;
+  await refreshComponents();
+  await pushFirstAvailablePage(null);
+}
+
+async function refreshAllFromModal() {
+  refreshSystemModalOpen.value = false;
+  await refreshSystem();
+  await pushFirstAvailablePage(null);
 }
 
 async function refreshDatabase() {
