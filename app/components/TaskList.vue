@@ -198,6 +198,10 @@ function normalizeTaskRound(round: unknown): number {
 }
 
 function isTaskVisibleOnCurrentPage(task: Task): boolean {
+  if (globalSettings.teacherMode) {
+    return true
+  }
+
   if (!currentSystemPage.value) {
     return true
   }

@@ -70,12 +70,13 @@
             </div>
         </div>
         <div v-else
-            class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center dark:border-gray-700 dark:bg-gray-800/50">
-            <UIcon name="i-lucide-terminal-x" class="mb-4 h-12 w-12 text-gray-400" />
-            <p class="font-medium text-gray-700 dark:text-gray-200">{{ t('database_query_disabled_title') }}</p>
-            <p class="mt-1 max-w-xl text-sm text-gray-500 dark:text-gray-400">
-                {{ t('database_query_disabled_description') }}
-            </p>
+            class="grid min-h-[210px] place-items-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-6 text-center dark:border-gray-700 dark:bg-gray-800/50">
+            <div>
+                <p class="font-medium text-gray-700 dark:text-gray-200">{{ t('database_query_disabled_title') }}</p>
+                <p class="mt-1 max-w-xl text-sm text-gray-500 dark:text-gray-400">
+                    {{ t('database_query_disabled_description') }}
+                </p>
+            </div>
         </div>
     </div>
 </template>
