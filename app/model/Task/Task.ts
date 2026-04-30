@@ -45,6 +45,7 @@ export class Task {
     public errorComponents: Component[] = [],
     public isEditable: boolean = false,
     public isSubstituted: boolean = false,
+    public canExecuteQuery: boolean = false,
     public visiblePages?: Page[]
   ) { }
 
@@ -74,6 +75,7 @@ export class Task {
       errorComponents,
       data?.isEditable ?? data?.is_editable ?? false,
       data?.isSubstituted ?? false,
+      Boolean(data?.canExecuteQuery ?? false),
       Array.isArray(data?.visiblePages ?? data?.visible_pages)
         ? (data.visiblePages ?? data.visible_pages)
         : undefined

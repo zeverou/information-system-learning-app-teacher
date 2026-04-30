@@ -67,6 +67,12 @@
           </p>
         </UFormField>
 
+        <UCheckbox
+          v-model="taskForm.canExecuteQuery"
+          :label="t('task_can_execute_query')"
+          :description="t('task_can_execute_query_description')"
+        />
+
       </div>
 
       <div class="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
@@ -670,6 +676,7 @@ type TaskDetailForm = {
   feedback: string
   pointsReward: number
   failPenalty: number
+  canExecuteQuery: boolean
   activityType: ActivityType
   activityLabel: string
   activityDescription: string
@@ -882,6 +889,7 @@ const createDefaultForm = (): TaskDetailForm => ({
   feedback: '',
   pointsReward: 0,
   failPenalty: 1,
+  canExecuteQuery: false,
   activityType: ActivityType.REPAIR,
   activityLabel: '',
   activityDescription: '',
@@ -959,6 +967,7 @@ watch(
       feedback: task.feedback,
       pointsReward: task.pointsReward,
       failPenalty: task.failPenalty,
+      canExecuteQuery: Boolean(task.canExecuteQuery),
       activityType: task.activityType,
       activityLabel: task.activity?.label ?? '',
       activityDescription: task.activity?.description ?? '',
@@ -1034,6 +1043,7 @@ function buildTaskUpdate(selectedTask: Task): Task {
   return {
     ...selectedTask,
     ...taskForm,
+    canExecuteQuery: taskForm.canExecuteQuery,
     finishType: taskForm.finishType,
     finish,
     activityType: taskForm.activityType,

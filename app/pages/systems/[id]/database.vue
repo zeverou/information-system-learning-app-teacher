@@ -50,7 +50,7 @@
         <USeparator class="my-4" />
 
         <!-- Query Execution -->
-        <div class="flex flex-col gap-4">
+        <div v-if="canExecuteQuery" class="flex flex-col gap-4">
             <CodeBlock v-model:code="query" language="sql" :label="t('sql_query')" height="125px" :correct="isQueryValid" />
             <div class="flex justify-end items-center">
                 <UButton @click="handleExecuteQuery" icon="i-heroicons-arrow-path" color="teacher" variant="soft"
@@ -69,6 +69,14 @@
                 <span class="text-xs text-gray-400 whitespace-nowrap">{{ queryRowCount }} {{ t('rows') }}</span>
             </div>
         </div>
+        <div v-else
+            class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center dark:border-gray-700 dark:bg-gray-800/50">
+            <UIcon name="i-lucide-terminal-x" class="mb-4 h-12 w-12 text-gray-400" />
+            <p class="font-medium text-gray-700 dark:text-gray-200">{{ t('database_query_disabled_title') }}</p>
+            <p class="mt-1 max-w-xl text-sm text-gray-500 dark:text-gray-400">
+                {{ t('database_query_disabled_description') }}
+            </p>
+        </div>
     </div>
 </template>
 
@@ -82,6 +90,7 @@ import { OperationResultType } from '~/utils/OperationResultType'
 const { t } = useI18n()
 const toast = useToast()
 const { route, systemsStore, systemId } = useSyncSystemId()
+const globalSettings = useGlobalSettingsStore()
 
 const tableNames = ref<string[]>([])
 // default = 1st table
@@ -108,6 +117,15 @@ const isRefreshingDatabase = ref(false)
 const query = ref('')
 
 const isQueryValid = ref(false)
+const selectedTask = computed(() => {
+    const taskId = globalSettings.selectedTaskId
+    if (!taskId) {
+        return null
+    }
+
+    return systemsStore.selectedSystem?.tasks?.find(task => task.id === taskId) ?? null
+})
+const canExecuteQuery = computed(() => Boolean(selectedTask.value?.canExecuteQuery))
 
 watch(query, async (newQuery) => {
     if (!newQuery || newQuery.trim() === '') {
@@ -129,7 +147,17 @@ const queryPage = ref(1)
 const queryTotalPages = ref(1)
 const queryRowCount = ref(0)
 
+watch(canExecuteQuery, (isAllowed) => {
+    if (isAllowed) {
+        return
+    }
+
+    queryResult.value = null
+    queryPage.value = 1
+})
+
 async function handleExecuteQuery() {
+    if (!canExecuteQuery.value) return
     if (!query.value) return
     isExecuting.value = true
     queryResult.value = null
