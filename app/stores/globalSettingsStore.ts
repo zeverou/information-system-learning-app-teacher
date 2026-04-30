@@ -41,6 +41,13 @@ export const useGlobalSettingsStore = defineStore('globalSettings', () => {
     const selectedTaskId: Ref<GUID | null> = ref(null)
     const errorComponentIds: Ref<string[]> = ref([])
     const solvedComponentIds: Ref<string[]> = ref([])
+    const deletedPreloadedSystemIds: Ref<string[]> = ref([])
+
+    function markPreloadedSystemAsDeleted(id: string) {
+        if (!deletedPreloadedSystemIds.value.includes(id)) {
+            deletedPreloadedSystemIds.value.push(id)
+        }
+    }
 
     function syncTeacherModeFromRuntimeConfig() {
         teacherMode.value = isTeacherAppMode(runtimeConfig.public.appMode)
@@ -58,12 +65,13 @@ export const useGlobalSettingsStore = defineStore('globalSettings', () => {
         selectedTaskId,
         errorComponentIds,
         solvedComponentIds,
+        deletedPreloadedSystemIds,
+        markPreloadedSystemAsDeleted,
         syncTeacherModeFromRuntimeConfig
-
     }
 
 }, {
     persist: {
-        pick: ['globalLanguage', 'taskMenuDisplayedAsSidebar', 'solvedComponentIds', 'loadSystemsFromPublicFolder'],
+        pick: ['globalLanguage', 'taskMenuDisplayedAsSidebar', 'solvedComponentIds', 'loadSystemsFromPublicFolder', 'deletedPreloadedSystemIds'],
     }
 })

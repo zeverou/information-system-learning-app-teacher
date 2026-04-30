@@ -2,7 +2,7 @@
   <div class="max-w-5xl mx-auto py-12 px-4 sm:px-6">
     <div class="grid grid-cols-1 gap-8">
       <!-- Header Section -->
-      <EnvDebugButton />
+      <!-- <EnvDebugButton /> -->
       <UCard class="border-t-4 border-teacher-500 shadow-lg dark:bg-gray-900/50">
         <div class="flex flex-col md:flex-row items-start gap-6">
           <div class="flex-1">
@@ -189,7 +189,13 @@ async function loadStoredSystems() {
 async function loadPreloadedSystemsIntoStore() {
   await loadPreloaded();
 
+  const deletedIds = new Set(globalSettingsStore.deletedPreloadedSystemIds.map(String))
+
   for (const sys of preloadedSystems.value) {
+    if (deletedIds.has(String(sys.id))) {
+      continue;
+    }
+
     if (systemsStore.systems.some((existingSystem) => String(existingSystem.id) === String(sys.id))) {
       continue;
     }
@@ -236,6 +242,7 @@ async function navigateToDesigner(id: string) {
 }
 
 async function deleteSystem(id: string) {
+  globalSettingsStore.markPreloadedSystemAsDeleted(id);
   await systemsStore.deleteSystemById(id);
 }
 
