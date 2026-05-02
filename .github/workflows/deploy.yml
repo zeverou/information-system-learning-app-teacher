@@ -16,6 +16,13 @@ jobs:
           node-version: "20"
       # Pick your own package manager and build script
       - run: npm install
+      - name: Use repository app mode variable when configured
+        env:
+          REPOSITORY_APP_MODE: ${{ vars.NUXT_PUBLIC_APP_MODE }}
+        run: |
+          if [ -n "$REPOSITORY_APP_MODE" ]; then
+            echo "NUXT_PUBLIC_APP_MODE=$REPOSITORY_APP_MODE" >> "$GITHUB_ENV"
+          fi
       - run: npx nuxt build --preset github_pages
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
