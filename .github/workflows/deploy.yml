@@ -19,17 +19,40 @@ jobs:
           node-version: "20"
       # Pick your own package manager and build script
       - run: npm install
-      - name: Use repository app mode variable when configured
+      - name: Use repository variables when configured
         env:
-          REPOSITORY_APP_MODE: ${{ vars.NUXT_PUBLIC_APP_MODE }}
-          REPOSITORY_BASE_URL: ${{ vars.NUXT_APP_BASE_URL }}
+          REPOSITORY_NUXT_PUBLIC_APP_MODE: ${{ vars.NUXT_PUBLIC_APP_MODE }}
+          REPOSITORY_NUXT_PUBLIC_LOAD_COMPONENTS_FROM: ${{ vars.NUXT_PUBLIC_LOAD_COMPONENTS_FROM }}
+          REPOSITORY_NUXT_PUBLIC_LOAD_PAGES_FROM: ${{ vars.NUXT_PUBLIC_LOAD_PAGES_FROM }}
+          REPOSITORY_NUXT_PUBLIC_HTML_AVAILABLE: ${{ vars.NUXT_PUBLIC_HTML_AVAILABLE }}
+          REPOSITORY_NUXT_PUBLIC_CSS_AVAILABLE: ${{ vars.NUXT_PUBLIC_CSS_AVAILABLE }}
+          REPOSITORY_NUXT_PUBLIC_JS_AVAILABLE: ${{ vars.NUXT_PUBLIC_JS_AVAILABLE }}
+          REPOSITORY_NUXT_PUBLIC_SQL_AVAILABLE: ${{ vars.NUXT_PUBLIC_SQL_AVAILABLE }}
+          REPOSITORY_NUXT_PUBLIC_JS_CLICK_AVAILABLE: ${{ vars.NUXT_PUBLIC_JS_CLICK_AVAILABLE }}
+          REPOSITORY_NUXT_PUBLIC_SQL_CLICK_AVAILABLE: ${{ vars.NUXT_PUBLIC_SQL_CLICK_AVAILABLE }}
+          REPOSITORY_NUXT_PUBLIC_SINGLE_SYSTEM: ${{ vars.NUXT_PUBLIC_SINGLE_SYSTEM }}
+          REPOSITORY_NUXT_APP_BASE_URL: ${{ vars.NUXT_APP_BASE_URL }}
         run: |
-          if [ -n "$REPOSITORY_APP_MODE" ]; then
-            echo "NUXT_PUBLIC_APP_MODE=$REPOSITORY_APP_MODE" >> "$GITHUB_ENV"
-          fi
-          if [ -n "$REPOSITORY_BASE_URL" ]; then
-            echo "NUXT_APP_BASE_URL=$REPOSITORY_BASE_URL" >> "$GITHUB_ENV"
-          fi
+          set_repository_variable() {
+            local name="$1"
+            local value="$2"
+
+            if [ -n "$value" ]; then
+              echo "$name=$value" >> "$GITHUB_ENV"
+            fi
+          }
+
+          set_repository_variable "NUXT_PUBLIC_APP_MODE" "$REPOSITORY_NUXT_PUBLIC_APP_MODE"
+          set_repository_variable "NUXT_PUBLIC_LOAD_COMPONENTS_FROM" "$REPOSITORY_NUXT_PUBLIC_LOAD_COMPONENTS_FROM"
+          set_repository_variable "NUXT_PUBLIC_LOAD_PAGES_FROM" "$REPOSITORY_NUXT_PUBLIC_LOAD_PAGES_FROM"
+          set_repository_variable "NUXT_PUBLIC_HTML_AVAILABLE" "$REPOSITORY_NUXT_PUBLIC_HTML_AVAILABLE"
+          set_repository_variable "NUXT_PUBLIC_CSS_AVAILABLE" "$REPOSITORY_NUXT_PUBLIC_CSS_AVAILABLE"
+          set_repository_variable "NUXT_PUBLIC_JS_AVAILABLE" "$REPOSITORY_NUXT_PUBLIC_JS_AVAILABLE"
+          set_repository_variable "NUXT_PUBLIC_SQL_AVAILABLE" "$REPOSITORY_NUXT_PUBLIC_SQL_AVAILABLE"
+          set_repository_variable "NUXT_PUBLIC_JS_CLICK_AVAILABLE" "$REPOSITORY_NUXT_PUBLIC_JS_CLICK_AVAILABLE"
+          set_repository_variable "NUXT_PUBLIC_SQL_CLICK_AVAILABLE" "$REPOSITORY_NUXT_PUBLIC_SQL_CLICK_AVAILABLE"
+          set_repository_variable "NUXT_PUBLIC_SINGLE_SYSTEM" "$REPOSITORY_NUXT_PUBLIC_SINGLE_SYSTEM"
+          set_repository_variable "NUXT_APP_BASE_URL" "$REPOSITORY_NUXT_APP_BASE_URL"
       - run: npx nuxt build --preset github_pages
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
