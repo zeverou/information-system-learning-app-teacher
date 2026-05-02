@@ -10,7 +10,7 @@ Jedná se o webovou aplikaci postavenou na frameworku Nuxt.js, který je založe
 
 Jedná se o webovou aplikaci, která běží přímo v prohlížeči uživatele (client-side aplikace [1]). Níže uvedu jak aplikaci spustit lokálně, ale i jak ji nasadit na server, aby k ní měli přístup studenti.
 
-### Lokální spuštění
+## 1. Lokální spuštění
 
 #### Technické požadavky:
 
@@ -41,8 +41,6 @@ npm install
 
 V souboru `.env` nastavte `NUXT_PUBLIC_APP_MODE` na `TEACHER` pokud chcete spustit učitelskou verzi aplikace, Jinak nastavte `STUDENT` pro studentskou verzi.
 
-Pozn. .env soubor neexistuje, takže ho musíte vytvořit. Můžete do něj zkopírovat obsah souboru `.env.example` a upravit podle potřeby. Tento soubor by měl být umístěn v kořenovém adresáři projektu.
-
 ```env
 NUXT_PUBLIC_APP_MODE=TEACHER
 ```
@@ -61,6 +59,24 @@ Je možné, že port 3000 je již obsazený, v takovém případě se aplikace s
 
 ![spusteni vyvojoveho serveru - konzole](image.png)
 
+## 2. Online nasazení
+
+Pro maximální jednoduchost doporučuji použít pro nasazení službu Pages od GitHubu, která umožňuje snadno hostovat statické webové stránky přímo z vašeho repozitáře. Alternativně lze použít i třeba jiné služby jako [Vercel](https://vercel.com/docs/frameworks/full-stack/nuxt), anebo si aplikaci nasadit na vlastní [server](https://nuxt.com/docs/4.x/getting-started/deployment). Všechny možné příručky pro nasazení jsou dostupné v oficiální [dokumentaci](https://nuxt.com/deploy)
+
+## Nasazení pomocí GitHub Pages
+
+Je možné zvolit dva způsoby nasazení:
+
+1. Dva repozitáře pro učitelskou a studentskou verzi (doporučuji pro větší přehlednost).
+2. Jeden repozitář, ale bude vždy před tím, aby aplikaci studenti používali, změnit nastavení v GitHubu.
+
+### 1. Dva repozitáře
+
+1. Pokud nemáte účet na [GitHubu](https://github.com/), vytvořte si ho.
+2. [Vytvořte](https://github.com/new) dva repozitáře, například `information-system-learning-app-teacher` a `information-system-learning-app-student`.
+3. Ujistěte se, že oba repozitáře jsou veřejné (public).
+4. Naklonujte si repozitář aplikace
+
 ---
 
 ## Režimy aplikace
@@ -77,7 +93,7 @@ V souboru `.env` nastavte:
 NUXT_PUBLIC_APP_MODE=TEACHER
 ```
 
-V tomto režimu máte přístup ke správě vašich systémů a úkolů. Můžete přidávat nové systémy, přidávat úkoly, upravovat je a mazat. Tento režim je určen pro vás jako učitele, abyste mohli připravit materiály pro své studenty.
+V tomto režimu máte přístup ke správě vašich systémů a úkolů. Můžete přidávat nové systémy, přidávat úkoly, upravovat je a mazat. Tento režim je určen pro vás jako učitele, abyste mohli připravit materiály pro své studenty. Umožnuje také, přepínání mezi verzemi, abyste si mohli prohlédnout, jak bude aplikace vypadat pro studenty.
 
 ### Studentský režim (STUDENT)
 
@@ -88,6 +104,9 @@ V souboru `.env` nastavte:
 ```env
 NUXT_PUBLIC_APP_MODE=STUDENT
 ```
+
+V tomto režimu studenti řeší úkoly, které jste pro ně připravili. Nemají přístup k nastavení ani správě systémů a úkolů, ale mohou vidět všechny úkoly, které jste vytvořili, a pracovat na jejich řešení.
+
 
 
 ### Odkazy
