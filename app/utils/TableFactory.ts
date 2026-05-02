@@ -3,15 +3,13 @@ import { ColumnType } from './ColumnType';
 import { Operation } from './Operation';
 import { OperationResultType } from './OperationResultType';
 import initSqlJs, { type Database } from 'sql.js';
+import { getSqlWasmPath } from './sqlWasmPath';
 
 export class TableFactory {
 
     public async createDatabase(csvFilesContent: Record<string, string>): Promise<Operation<Database | null>> {
         const SQL = await initSqlJs({
-            // github pages:
-            // locateFile: () => '/information-system-learning-app/sql-wasm.wasm'
-
-            locateFile: () => '/information-system-learning-app/sql-wasm.wasm'
+            locateFile: getSqlWasmPath
         });
 
         const db = new SQL.Database();

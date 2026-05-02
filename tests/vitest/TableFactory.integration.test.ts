@@ -4,7 +4,7 @@ import { OperationResultType } from '../../app/utils/OperationResultType'
 import { join } from 'path'
 import { readFileSync, readdirSync } from 'fs'
 
-// In TableFactory, locateFile points to a web public URL: '/information-system-learning-app/sql-wasm.wasm'
+// In TableFactory, locateFile points to the Nuxt app base URL plus 'sql-wasm.wasm'.
 // For the integration test to work in Node environment, we mock sql.js initialization 
 // to use the default node loading mechanism (or ignore locateFile completely).
 vi.mock('sql.js', async (importOriginal) => {

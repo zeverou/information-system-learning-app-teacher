@@ -103,7 +103,7 @@ describe('SqljsDatabaseFactory', () => {
                 expect(selectResult?.[0].values[0][1]).toBe('Alice')
             } catch (error: any) {
                 // If the wasm loading fails in node environment due to absolute URL locateFile
-                if (error.message && error.message.includes('information-system-learning-app/sql-wasm.wasm')) {
+                if (error.message && error.message.includes('sql-wasm.wasm')) {
                     console.warn('Skipping actual DB creation check in Node because of wasm locateFile path')
                 } else {
                     throw error

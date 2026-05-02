@@ -2,6 +2,7 @@ import initSqlJs, { type Database } from 'sql.js';
 import { DatabaseHandler } from './DatabaseHandler';
 import { Operation } from './Operation';
 import { OperationResultType } from './OperationResultType';
+import { getSqlWasmPath } from './sqlWasmPath';
 export class DatabaseWrapper {
     /**
        * The special sync number used for forcing reactivity updates when the database is initialized or updated. 
@@ -49,7 +50,7 @@ export class DatabaseWrapper {
         if (this.binaryData === null) return;
 
         const SQL = await initSqlJs({
-            locateFile: () => '/information-system-learning-app/sql-wasm.wasm'
+            locateFile: getSqlWasmPath
         });
 
         this.sqlJsDatabase = new SQL.Database(this.binaryData);

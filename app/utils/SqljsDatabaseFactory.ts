@@ -2,6 +2,7 @@ import { ColumnType } from './ColumnType';
 import { Operation } from './Operation';
 import { OperationResultType } from './OperationResultType';
 import initSqlJs, { type Database } from 'sql.js';
+import { getSqlWasmPath } from './sqlWasmPath';
 
 export class SqljsDatabaseFactory {
 
@@ -12,7 +13,7 @@ export class SqljsDatabaseFactory {
     public static async createDatabaseFromSql(sql: string): Promise<Operation<Database | null>> {
         try {
             const SQL = await initSqlJs({
-                locateFile: () => '/information-system-learning-app/sql-wasm.wasm'
+                locateFile: getSqlWasmPath
             });
             const db = new SQL.Database();
             db.run(sql);
@@ -29,10 +30,7 @@ export class SqljsDatabaseFactory {
      */
     public static async createDatabase(csvFilesContent: Record<string, string>): Promise<Operation<Database | null>> {
         const SQL = await initSqlJs({
-            // github pages:
-            // locateFile: () => '/information-system-learning-app/sql-wasm.wasm'
-
-            locateFile: () => '/information-system-learning-app/sql-wasm.wasm'
+            locateFile: getSqlWasmPath
         });
 
         const db = new SQL.Database();
@@ -188,9 +186,7 @@ export class SqljsDatabaseFactory {
                 return new Operation<Database>(OperationResultType.ERROR, "No data provided for database import", null);
             }
             const SQL = await initSqlJs({
-                // github pages:
-                // locateFile: () => '/information-system-learning-app/sql-wasm.wasm'
-                locateFile: () => '/information-system-learning-app/sql-wasm.wasm'
+                locateFile: getSqlWasmPath
             });
             const db = new SQL.Database(data);
             return new Operation<Database>(OperationResultType.SUCCESS, "Database loaded successfully", db);
