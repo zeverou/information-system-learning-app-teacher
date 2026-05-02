@@ -73,11 +73,45 @@ Je možné zvolit dva způsoby nasazení:
 ### 1. Dva repozitáře
 
 1. Pokud nemáte účet na [GitHubu](https://github.com/), vytvořte si ho.
-2. [Vytvořte](https://github.com/new) dva repozitáře, například `information-system-learning-app-teacher` a `information-system-learning-app-student`.
-3. Ujistěte se, že oba repozitáře jsou veřejné (public).
-4. Naklonujte si repozitář aplikace
 
----
+2. [Vytvořte](https://github.com/new) dva repozitáře, například `information-system-learning-app-teacher` a `information-system-learning-app-student`.
+
+3. Ujistěte se, že oba repozitáře jsou veřejné (public).
+
+4. Přejděte do nastavení (Settings) každého repozitáře, najděte sekci "Pages" a v **Source** zvolte Deploy from a branch.
+
+
+5. Přejděte v nastavení repozitáře do sekce `Secrets and variables`, zvolte podsekci `Actions`, zvolte `Variables` místo `Secrets` a klikněte na `New repository variable`. Zadejte název `NUXT_PUBLIC_APP_MODE` a hodnotu `TEACHER` pro učitelský repozitář, a `STUDENT` pro studentský repozitář. Dále přidejte další proměnnou `NUXT_PUBLIC_BASE_URL`, což by mělo být `/<nazev-repozitare>/`, například `/information-system-learning-app-teacher` pro učitelský repozitář a `/information-system-learning-app-student` pro studentský repozitář.
+
+Pro repozitář `information-system-learning-app-teacher` by to mělo vypadat takto:
+
+![nastaveni promennych repozitare - screenshot](image-2.png)
+
+6. Naklonujte si repozitář aplikace a a přepněte se do něj:
+
+```bash
+git clone https://github.com/sol239/information-system-learning-app.git
+cd information-system-learning-app
+```
+
+7. Přidejte oba repozitáře jako vzdálené (remote) repozitáře:
+
+```bash
+# Například:
+git remote add teacher https://github.com/zeverou/information-system-learning-app-teacher.git
+git remote add student https://github.com/zeverou/information-system-learning-app-student.git
+git branch -M main
+git push teacher main
+git push student main
+```
+
+8. Stránky by poté měly být dostupné na adresách `https://<vaše-github-uživatelské-jméno>.github.io/<nazev-repozitare>/`
+To si můžete ověřit na adrese: `https://github.com/<vaše-github-uživatelské-jméno>/<nazev-repozitare>/deployments/github-pages`
+
+### 2. Jeden repozitář
+
+1. Postupujte úplně stejně jako v předchozím případě, akorát vytvořte pouze jeden repozitář, například `information-system-learning-app`. Poté pokud budete chtít změnit režim aplikace, tak budete muset změnit hodnotu proměnné `NUXT_PUBLIC_APP_MODE` a spustit `Run workflow` v sekci `Actions` repozitáře. Tím se aplikace znovu sestaví a nasadí s novým nastavením. To byste měli být schpni udělat odsud: `https://github.com/<vaše-github-uživatelské-jméno>/<nazev-repozitare>/actions/workflows/deploy.yml`
+
 
 ## Režimy aplikace
 
