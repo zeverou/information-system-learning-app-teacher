@@ -2,7 +2,6 @@
   <div class="flex flex-nowrap items-center gap-2 overflow-x-auto">
     <!-- <DebugButton /> -->
 
-    <!-- In teacher mode: wrap tasks button with a hover popover showing task list -->
     <UButton
       v-if="globalSettings.teacherMode"
       :icon="globalSettings.teacherHighlightEnabled ? 'i-lucide-eye' : 'i-lucide-eye-off'"
@@ -14,57 +13,16 @@
       "
     />
 
-    <UPopover
+    <UButton
       v-if="globalSettings.teacherMode"
-      v-model:open="taskPopoverOpen"
-      arrow
+      icon="i-lucide-pencil-ruler"
+      color="teacher"
+      variant="subtle"
+      size="md"
+      @click="openTaskDesigner"
     >
-      <UButton
-        icon="i-lucide-clipboard-list"
-        color="sky"
-        variant="subtle"
-        size="md"
-        @mouseenter="taskPopoverOpen = true"
-        @click="openTaskDesigner"
-      >
-        <span class="mobile-hidden">{{ t("tasks") }}</span>
-      </UButton>
-
-      <template #content>
-        <div
-          class="task-popover-inner"
-          @mouseenter="taskPopoverOpen = true"
-          @mouseleave="taskPopoverOpen = false"
-        >
-          <button
-            class="task-popover-item task-popover-item--designer"
-            @click="openTaskDesigner"
-          >
-            <UIcon name="i-lucide-pencil-ruler" class="w-4 h-4 shrink-0" />
-            {{ t("go_to_designer") }}
-          </button>
-          <div class="task-popover-separator" />
-          <button
-            v-for="task in systemsStore.selectedSystem?.tasks ?? []"
-            :key="task.id"
-            class="task-popover-item"
-            :class="{
-              'task-popover-item--active': globalSettings.selectedTaskId === task.id,
-            }"
-            @click="openTaskDesignerForTask(task.id)"
-          >
-            <UIcon name="i-lucide-circle-dot" class="w-3.5 h-3.5 shrink-0 opacity-60" />
-            <span class="truncate">{{ task.title || t("task_untitled") }}</span>
-          </button>
-          <div
-            v-if="!systemsStore.selectedSystem?.tasks?.length"
-            class="task-popover-empty"
-          >
-            {{ t("task_list_empty") }}
-          </div>
-        </div>
-      </template>
-    </UPopover>
+      <span class="mobile-hidden">{{ t("designer") }}</span>
+    </UButton>
 
     <UPopover>
       <!-- <UButton icon="i-heroicons-beaker" color="neutral" variant="ghost" size="md" /> -->
@@ -309,7 +267,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import SettingsDrawer from "~/components/SettingsDrawer.vue";
 import StudentComponent from "~/components/StudentComponent.vue";
 import { IndexedDbHandler } from "~/utils/IndexedDbHandler";
@@ -329,7 +287,6 @@ const { pushFirstAvailablePage } = useAvailableSystemPages();
 const resetPopoverOpen = ref(false);
 const exitPopoverOpen = ref(false);
 const studentDrawerOpen = ref(false);
-const taskPopoverOpen = ref(false);
 const refreshSystemModalOpen = ref(false);
 const versionSwitchModalOpen = ref(false);
 
@@ -349,24 +306,10 @@ function openComponentExplorer() {
 }
 
 function openTaskDesigner() {
-  taskPopoverOpen.value = false;
   navigateTo({
     path: `/systems/${systemsStore.selectedSystemId}/designer`,
     query: {
       backTo: route.fullPath,
-    },
-  });
-}
-
-function openTaskDesignerForTask(taskId: string) {
-  const isSelected = globalSettings.selectedTaskId === taskId;
-  globalSettings.selectedTaskId = isSelected ? null : (taskId as any);
-  taskPopoverOpen.value = false;
-  navigateTo({
-    path: `/systems/${systemsStore.selectedSystemId}/designer`,
-    query: {
-      backTo: route.fullPath,
-      ...(isSelected ? {} : { taskId }),
     },
   });
 }
@@ -527,68 +470,4 @@ function stayInSystem() {
   }
 }
 
-.task-popover {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 200;
-  min-width: 200px;
-  max-width: 280px;
-  padding-top: 4px;
-}
-
-.task-popover-inner {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  padding: 4px;
-  display: flex;
-  flex-direction: column;
-}
-
-.task-popover-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 7px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  text-align: left;
-  cursor: pointer;
-  color: #374151;
-  background: transparent;
-  border: none;
-  transition: background 0.15s;
-  overflow: hidden;
-}
-
-.task-popover-item:hover {
-  background: #f3f4f6;
-}
-
-.task-popover-item--designer {
-  color: #4f46e5;
-  font-weight: 500;
-}
-
-.task-popover-item--active {
-  color: #0ea5e9;
-  font-weight: 500;
-  background: #f0f9ff;
-}
-
-.task-popover-separator {
-  height: 1px;
-  background: #e5e7eb;
-  margin: 4px 0;
-}
-
-.task-popover-empty {
-  padding: 7px 12px;
-  font-size: 12px;
-  color: #9ca3af;
-  text-align: center;
-}
 </style>

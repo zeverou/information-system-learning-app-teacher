@@ -10,7 +10,6 @@ const systemsStore = useSystemsStore()
 const isSystemRoute = computed(() => /^\/systems\/[^/]+\//.test(route.path))
 const isFullscreenSystemPage = computed(() => route.meta.fullscreenSystemPage === true)
 const showSystemChrome = computed(() => isSystemRoute.value && !isFullscreenSystemPage.value)
-const teacherMode = computed(() => globalSettings.teacherMode)
 const scoreValue = computed(() => systemsStore.selectedSystem?.score.score ?? 0)
 const mistakesCount = computed(() => systemsStore.selectedSystem?.mistakesCount ?? 0)
 
@@ -44,16 +43,6 @@ function onDividerMousedown(e: MouseEvent) {
   window.addEventListener('mouseup', onMouseup)
 }
 
-function openDesignerFromSidebar() {
-  mobileTasksOpen.value = false
-  navigateTo({
-    path: `/systems/${systemsStore.selectedSystemId}/designer`,
-    query: {
-      backTo: route.fullPath,
-      ...(globalSettings.selectedTaskId ? { taskId: globalSettings.selectedTaskId } : {}),
-    },
-  })
-}
 </script>
 
 <template>
@@ -91,19 +80,9 @@ function openDesignerFromSidebar() {
         <div class="flex-shrink-0 px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ t('tasks') }}</h2>
-            <UButton
-              v-if="teacherMode"
-              icon="i-lucide-pencil-ruler"
-              color="teacher"
-              variant="soft"
-              size="sm"
-              @click="openDesignerFromSidebar"
-            >
-              {{ t('go_to_designer') }}
-            </UButton>
           </div>
           <ModernHoverPopover
-            v-if="!teacherMode"
+            v-if="!globalSettings.teacherMode"
             :title="t('score')"
             :description="t('score_mistakes_count', { count: mistakesCount })"
             icon="i-lucide-alert-triangle"
@@ -133,19 +112,9 @@ function openDesignerFromSidebar() {
             <div class="flex-shrink-0 px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ t('tasks') }}</h2>
-                <UButton
-                  v-if="teacherMode"
-                  icon="i-lucide-pencil-ruler"
-                  color="teacher"
-                  variant="soft"
-                  size="sm"
-                  @click="openDesignerFromSidebar"
-                >
-                  {{ t('go_to_designer') }}
-                </UButton>
               </div>
               <ModernHoverPopover
-                v-if="!teacherMode"
+                v-if="!globalSettings.teacherMode"
                 :title="t('score')"
                 :description="t('score_mistakes_count', { count: mistakesCount })"
                 icon="i-lucide-alert-triangle"
