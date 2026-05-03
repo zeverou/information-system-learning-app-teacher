@@ -69,7 +69,7 @@
     "add_system": "Add System",
     "enter_json_path": "Enter JSON Path",
     "homepage_welcome_message": "Welcome to the error-finding application for information systems",
-    "manage_your_systems_description": "This is the teacher version of the application, which allows you to add tasks to information systems. If you would like to create your own system, it is possible—please refer to the guide, specifically the section: System Creation.",
+    "manage_your_systems_description": "This is the teacher version of the application, which allows you to add tasks to information systems.",
     "view_on_github": "View on GitHub",
     "new_tasks_added": "New tasks added ({count})",
     "all_tasks_completed": "All tasks have been successfully completed",
