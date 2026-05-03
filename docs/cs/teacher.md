@@ -174,7 +174,149 @@ V proměnných repozitáře GitHubu vytvote proměnnou `NUXT_PUBLIC_APP_MODE` s 
 NUXT_PUBLIC_APP_MODE=TEACHER
 ``` 
 
-### 
+### První spuštění
+
+Při otevření odkazu webové stránky budete přesměrování na adresu `/systems`, kde jako učitel uvidítě všechny systémy, které máte k dispozici, a můžete přidávat nové systémy pomocí tlačítka `Přidat nový systém`. Jakmile na stránce budete mít nějaké systémy, tak u nich uvidiíte tlačítko `Tužky`, které vám umožní upravit systém - upravit jeho ID, název a popis, a tlačítko `Koše`, které vám umožní systém smazat. Dále každý systém má tlačítko `Vstoupit do systému`, které vás přesměruje do systému.
+
+TODO: vložit screenshot
+
+### Přidání systému
+
+Po kliknutí se vám otevře okno pro nahrání nového systému, buď můžete nahrát `.zip` souboru reprezentující systém, anebo zvolit nějaký systém z nabídky předpřipravených systémů, více o předpřipravených systémech v sekci TODO.
+
+TODO: vložit screenshot
+
+### Orientace systému
+
+Po vstupu do systému uvidíte vaši, že vaše obrazovka je rozdělena na dvě části vertikální čárou. 
+- **Část vlevo**: reprezentuje samotný systém, se kterým budou studenti pracovat. Můžete zde vidět nahoře stránky, na které se dá vstupovat, a pod nimi se nachází různé komponenty.
+- **Část vpravo**: nahoře můžete vidět opět různé možnosti, které jsou popsané v sekci Možnosti učitelské verze TODO. Pod nimi jsou úkoly, dostupné v daném systému. Můžete zde přidávat nové úkoly pomocí tlačítka `Vytvořit úkol`, a u každého úkolu se nachází tlačítko `Koše`, které vám umožní úkol smazat. Na každý úkol jde kliknout a tím jej vybrat. Poté co na něj kliknete, tak ho uvidítě v nabídce modře ohraničený a v systému vlevo uvidítě, tmavě červěně ohraničené komponenty, které jsou k úkolu přiřazené.
+
+TODO: vložit screenshot
+
+### Možnosti učitelské verze
+
+V právé části obrazovky se nachází několik možností - tlačítek, které vám umožňují různé akce:
+
+- **Ikona oka**: umožňuje vám vidět přesně, kde komponenty systému začínajjí a končí díky modrému ohraničení, také vám umožňuje vidět název komponenty. Při kliknutí na název komponenty se komponenta přidá do úkolu, to je popsané více v sekci TODO.
+- **Návrhář**: přesměruje vás na stránku `/designer`, kde můžete přidávat a upravovaat úkoly, více o této stránce v sekci TODO.
+- **Obnovit systém**: otevře okno, které vám umožňuje obnovit databázi, komponenty a systém samotný do původního stavu, více o obnovování systému v sekci TODO.
+- **Opustit systém**: opustí systém a přesměruje vás zpět na stránku se systémy `/systems`.
+- **Změnit verzi**: umožňuje vám přepnout mezi učitelskou a studentskou verzí.
+
+## Tvorba úkolů (stránka návrháře `/designer`)
+
+V pravém horním rohu jsou tlačítka: 
+- `Stáhnout systém`: otevře okno, které vám umožní stáhnout systém ve formátu `.zip`, který můžete později nahrát jako nový systém, nebo ho použít v předpřipravených systémech.
+- `Zpět do systému`: přesměruje vás zpět do systému, kde jste byli předtím.
+
+Níže uvidíte položky:
+
+### Počet úrovní
+
+Úkoly mohou být seskupeny do úrovní (např. úroveň 1, úroveň 2, atd.). Tato položka vám umožňuje nastavit počet úrovní, které chcete mít ve vašem systému. Student prvně řeší úkoly z úrovně 1, a jakmile je všechny vyřeší, tak se odemknou úkoly z úrovně 2, a tak dále.
+
+### Tlačítka `Náhled studenta/editoru`, `Nový úkol` a `Možnosti`
+
+- `Náhled studenta/editoru`: umožňuje vám přepnout mezi zobrazením úkolů tak, jak je vidí studenti, a zobrazením pro editaci úkolů.
+- `Nový úkol`: po kliknutí se vytvoří nový úkol, který se přidá do první úrovně.
+- `Možnosti`: otevře nabídku, která okbsahuje možnosti:
+    - `Přidat úkol z JSON`: umožňuje vám přidat úkol z JSON formátu.
+    - `Stáhnout úkol jako JSON`: umožňuje vám stáhnout úkol ve formátu JSON, který můžete později použít pro přidání úkolu z JSON.
+    Tyhle možnosti tu jsou hlavně pro případ, kdybyste chtěli si třeba stáhnout reprezentaci úkolu, tak abyste mohli říct nějakému nástroji umělé inteligence, aby vám ji upravil.
+
+### Úkoly
+
+Zde vidíte za sebou štítky s názvy úkolů, které máte v systému. kliknutím na ikonu `Koše` můžete úkol smazat.
+
+### Sekce Detail úkolu
+
+#### Název
+
+Zde můžete upravit název úkolu.
+
+#### Popis
+
+Zde můžete upravit popis úkolu.
+
+#### Viditelné stránky
+
+Zde můžete zvolit, které stránky budou pro studenty viditelné, během daného úkolu. To znamená, že když student bude řešit úkol, tak uvidí pouze ty stránky, které zde zvolíte a nemůže vstupovat na ostatní stránky, dokud nevyřeší všechny úkoly z aktuální úrovně. Úkoly v jedné úrovni musí mít stejné viditelné stránky, pokud dojde k tomu, že úkoly ve stejné úrovni mají různé viditelné stránky, tak se vám zobrazí varování, které musíte vyřešit.
+
+#### Povolit SQL dotazy
+
+Zda studenti mohou během řešení úkolu na stránce `/database` spouštět SQL dotazy, nebo ne.
+
+### Sekce Úroveň
+
+#### Úroveň
+
+Zde můžete zvolit úroveň, do které chcete úkol zařadit.
+
+#### Úkoly v této úrovni
+
+Zde vidíte všechny úkoly, které jsou v zvolené úrovni.
+
+### Sekce Bodování
+
+#### Odměna bodů
+
+Zde můžete nastavit, kolik bodů student získá za vyřešení úkolu.
+
+#### Penalizace za selhání
+
+Zde můžete nastavit, kolik bodů student ztratí, když se pokusí úkol vyřešit, ale neuspěje.
+
+### Sekce Vybrané komponenty
+
+Zde vidíte seznam všech komponent, které jsou přiřazené k úkolu. Komponenty se přidávají kliknutím na modrý název komponenty v systému, anebo lze přidat komponentu ručně pomocí tlačítka `Přidat komponentu`, kde můžete vložit její JSON reprezentaci, to je opět užitečné v případě, že chcete použít nějaký nástroj umělé inteligence pro úpravu komponenty.
+
+Každé komponenta obsahuje 3 tlačítka:
+
+- `Kopírovat`: umožňuje vám zkopírovat komponentu jako JSON, který můžete použít v nástrojích umělé inteligence.
+- `Koš`: umožňuje vám odebrat komponentu z úkolu.
+- `Tužka`: umožňuje vám upravit komponentu, po kliknutí se vám otevře okno s úpravou komponenty, o tom více v sekci TODO.
+
+### Sekce Aktivita (více o aktivitách v sekci TODO)
+
+#### Název aktivity
+
+Zde můžete nastavit název aktivity.
+
+#### Typ aktivity
+
+Zde můžete zvolit typ aktivity úkolu. Pokud zvolíte `Výběr možností`, tak se vám zobrazí pole, pro vytváření možností, které student může vybírat, zelená fajka znamená, že možnost je správná, a červený křížek znamená, že možnost je nesprávná.
+
+#### Popis aktivity
+
+Zde můžete upravit popis aktivity.
+
+#### Nahradit chybné komponenty původními po dokončení aktivity
+
+Zda se mají po dokončení aktivity přiřazené (např. nějak upravené) komponenty nahradit původními (výchozími) komponentami.
+
+#### Zkontrolovat opravu (při zvolení typu aktivity `Oprava komponent`)
+
+Pokud tuto možnost nezvolíte, tak student už bude moct pracovat na **Dokončení úkolu** bez toho, aniž by musel nejdříve opravit komponenty, avšak to se mu nepovede, pokud je úkol navržen, tak aby to bez konkrétní opravy nešlo. Tahle možnost tu je proto, že některé opravy by zkontrolovat nešly.
+Pokud zvolíte, že chcete zkontrolovat opravu, tak se vám zobrazí pole `Podmínky kontroly opravy` pro nastavení kontroly opravy - zvolíte komponentu a déte kontrolu zda má obsahovat / nemá obsahovat nějakou hodnotu.
+
+### Sekce Dokončení (více o dokončení úkolu v sekci TODO)
+
+#### Název dokončení
+
+Zde můžete nastavit název dokončení úkolu.
+
+#### Popis dokončení
+
+Zde můžete upravit popis dokončení úkolu.
+
+#### Typ dokončení
+
+Zde můžete zvolit typ dokončení úkolu. Pokud zvolíte `Výběr možností`, tak se vám zobrazí pole, pro vytváření možností, které student může vybírat, zelená fajka znamená, že možnost je správná, a červený křížek znamená, že možnost je nesprávná. Pokud zvolíte `Napsat správně`, tak se vám zobrazí pole pro napsaní správné odpovědi, kterou student musí napsat, aby úkol dokončil. Pokud zvolíte `Po aktualizaci databáze`, tak se úkol vyhodnotí jako dokončený, pokud dotaz, který zadáte níže, vrátí nějaký výsledek.
+
+### Zpětná vazba
+
+Umožňuje vám nastavit zpětnou vazbu, kterou studenti uvidí po vyřešení úkolu.
 
 ## Studentská verze
 
@@ -188,15 +330,16 @@ V proměnných repozitáře GitHubu vytvote proměnnou `NUXT_PUBLIC_APP_MODE` s 
 NUXT_PUBLIC_APP_MODE=STUDENT
 ```
 
-### 
+### První spuštění
 
 ## Předpřipravený systém s úkoly
 
 
 
 
+## Úkoly
 
----
+Tahle část se zabývá tím, ajké úkoly lze vytvářet, jak je navrhnout a jak fungují pro studenty.
 
 ## Odkazy
 
