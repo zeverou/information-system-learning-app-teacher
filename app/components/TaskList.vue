@@ -13,6 +13,16 @@
         {{ t('back_to_tasks') }}
       </UButton>
       <TaskStudentDetail :task="selectedTask" />
+      <UButton
+        icon="i-lucide-arrow-left"
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        class="self-start"
+        @click="closeTask"
+      >
+        {{ t('back_to_tasks') }}
+      </UButton>
     </div>
 
     <!-- Task list view -->
