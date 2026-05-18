@@ -183,10 +183,17 @@ import { DatabaseWrapper } from '~/utils/DatabaseWrapper';
 import { TableMap } from '~/core/TableMap';
 import { useSystemsStore } from '~/stores/systemsStore';
 import type { VariableType } from '~/model/types/VariableType';
+import {
+  codeEditEnvironmentFromRuntimeConfig,
+  effectiveCodeEditPermissions,
+  type CodeEditPermissions
+} from '~/utils/codeEditPermissions';
 
 const props = defineProps<{
   component: SystemComponent;
   variables?: ComponentVariables;
+  codeEditPermissions?: Partial<CodeEditPermissions>;
+  ignoreTaskCodeEditPermissions?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -199,13 +206,20 @@ const emit = defineEmits<{
 const systemsStore = useSystemsStore();
 const db = computed(() => systemsStore.selectedSystem?.database ?? undefined);
 const runtimeConfig = useRuntimeConfig();
-const isPublicFlagEnabled = (value: unknown, fallback: boolean) => String(value ?? fallback).trim().toLowerCase() === 'true';
-const htmlAvailable = computed(() => isPublicFlagEnabled(runtimeConfig.public.htmlAvailable, true));
-const cssAvailable = computed(() => isPublicFlagEnabled(runtimeConfig.public.cssAvailable, true));
-const jsAvailable = computed(() => isPublicFlagEnabled(runtimeConfig.public.jsAvailable, true));
-const sqlAvailable = computed(() => isPublicFlagEnabled(runtimeConfig.public.sqlAvailable, true));
-const jsClickAvailable = computed(() => isPublicFlagEnabled(runtimeConfig.public.jsClickAvailable, false));
-const sqlClickAvailable = computed(() => isPublicFlagEnabled(runtimeConfig.public.sqlClickAvailable, true));
+const codeEditEnvironment = computed(() =>
+  codeEditEnvironmentFromRuntimeConfig(runtimeConfig.public as Record<string, unknown>)
+);
+const availableCodeEdits = computed(() =>
+  props.ignoreTaskCodeEditPermissions
+    ? codeEditEnvironment.value
+    : effectiveCodeEditPermissions(props.codeEditPermissions, codeEditEnvironment.value)
+);
+const htmlAvailable = computed(() => availableCodeEdits.value.html);
+const cssAvailable = computed(() => availableCodeEdits.value.css);
+const jsAvailable = computed(() => availableCodeEdits.value.js);
+const sqlAvailable = computed(() => availableCodeEdits.value.sql);
+const jsClickAvailable = computed(() => availableCodeEdits.value.js_click);
+const sqlClickAvailable = computed(() => availableCodeEdits.value.sql_click);
 const clickActionsAvailable = computed(() => jsClickAvailable.value || sqlClickAvailable.value);
 
 // Form state

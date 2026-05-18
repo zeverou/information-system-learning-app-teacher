@@ -31,6 +31,7 @@
     </div>
 
     <EditComponentModal v-model:open="isEditModalOpened" :component="props.component" :variables="componentVariables"
+      :code-edit-permissions="selectedTaskCodeEditPermissions"
       @save="handleModalSave" />
   </div>
 </template>
@@ -52,6 +53,7 @@ import { TableMap } from '~/core/TableMap';
 import type { VariableType } from '~/model/types/VariableType';
 import EditComponentModal from './EditComponentModal.vue'; // Adjust path as needed
 import { useSystemInputVariables } from '~/composables/useSystemInputVariables';
+import type { CodeEditPermissions } from '~/utils/codeEditPermissions';
 
 const props = defineProps<{
   component: SystemComponent
@@ -112,6 +114,12 @@ function mergeVariablesByName(...groups: Array<Variable[] | undefined>): Variabl
 }
 
 const declaredJsVariableNames = computed(() => new Set(JsHandler.getDeclaredVariableNames(props.component.js ?? '')));
+const selectedTaskCodeEditPermissions = computed<Partial<CodeEditPermissions> | undefined>(() => {
+  const taskId = globalSettings.selectedTaskId;
+  if (!taskId) return undefined;
+
+  return systemsStore.selectedSystem?.tasks?.find(task => task.id === taskId)?.codeEditPermissions;
+});
 
 const externalSystemVariables = computed(() =>
   systemInputVariables.value.filter(variable => !declaredJsVariableNames.value.has(variable.name))

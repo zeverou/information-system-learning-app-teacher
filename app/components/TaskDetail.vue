@@ -71,6 +71,47 @@
           :description="t('task_can_execute_query_description')"
         />
 
+        <UFormField
+          :label="t('task_possible_edits')"
+          :description="t('task_possible_edits_description')"
+        >
+          <div class="flex flex-wrap gap-2">
+            <template v-for="option in codeEditPermissionOptions" :key="option.key">
+              <ModernHoverPopover
+                v-if="!option.envAllowed"
+                :title="option.label"
+                :description="t('task_code_edit_env_disabled')"
+                icon="i-lucide-lock"
+              >
+                <UBadge
+                  color="neutral"
+                  variant="subtle"
+                  class="flex cursor-not-allowed items-center gap-1.5 px-3 py-1 opacity-55"
+                >
+                  <UIcon name="i-lucide-lock" class="h-3.5 w-3.5" />
+                  {{ option.label }}
+                </UBadge>
+              </ModernHoverPopover>
+              <UBadge
+                v-else
+                as="button"
+                role="checkbox"
+                :aria-checked="option.enabled"
+                color="neutral"
+                :variant="option.enabled ? 'solid' : 'subtle'"
+                class="flex cursor-pointer items-center gap-1.5 px-3 py-1 transition"
+                @click="toggleCodeEditPermission(option.key)"
+              >
+                <UIcon
+                  :name="option.enabled ? 'i-lucide-check' : 'i-lucide-x'"
+                  class="h-3.5 w-3.5"
+                />
+                {{ option.label }}
+              </UBadge>
+            </template>
+          </div>
+        </UFormField>
+
       </div>
 
       <div class="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-800">
@@ -235,6 +276,7 @@
       </div>
 
       <EditComponentBody :key="editingComponent.id" ref="editComponentBodyRef" :component="editingComponent"
+        :ignore-task-code-edit-permissions="true"
         @validation-change="isEditingComponentValid = $event" />
     </div>
 
@@ -661,6 +703,14 @@ import { FinishType } from '~/model/Task/Finish/FinishType'
 import type { VariableConstraint, VariableConstraintOperator, VariableConstraintScope } from '~/model/Task/Finish/VariableConstraintFinish'
 import { Task } from '~/model/Task/Task'
 import { useSystemsStore } from '~/stores/systemsStore'
+import {
+  CODE_EDIT_PERMISSION_KEYS,
+  CODE_EDIT_PERMISSION_LABELS,
+  codeEditEnvironmentFromRuntimeConfig,
+  effectiveCodeEditPermissions,
+  type CodeEditPermissionKey,
+  type CodeEditPermissions
+} from '~/utils/codeEditPermissions'
 import { inconsistentVisiblePageLevels } from '~/utils/taskLevels'
 import { systemVisiblePages } from '~/utils/taskPageVisibility'
 
@@ -688,6 +738,7 @@ type TaskDetailForm = {
   finishVariableConstraints: VariableConstraintForm[]
   substituteAfterActivity: boolean
   visiblePages: Page[]
+  codeEditPermissions: CodeEditPermissions
 }
 
 type ActivityOption = {
@@ -734,6 +785,18 @@ const props = defineProps<{
 }>()
 const globalSettings = useGlobalSettingsStore()
 const systemsStore = useSystemsStore()
+const runtimeConfig = useRuntimeConfig()
+const codeEditEnvironment = computed(() =>
+  codeEditEnvironmentFromRuntimeConfig(runtimeConfig.public as Record<string, unknown>)
+)
+const codeEditPermissionOptions = computed(() =>
+  CODE_EDIT_PERMISSION_KEYS.map(key => ({
+    key,
+    label: CODE_EDIT_PERMISSION_LABELS[key],
+    envAllowed: codeEditEnvironment.value[key],
+    enabled: taskForm.codeEditPermissions[key]
+  }))
+)
 const selectedTaskFromSettings = computed<Task | null>(() => {
   if (!globalSettings.selectedTaskId) {
     return null
@@ -910,7 +973,8 @@ const createDefaultForm = (): TaskDetailForm => ({
   finishCheckQuery: '',
   finishVariableConstraints: [],
   substituteAfterActivity: false,
-  visiblePages: []
+  visiblePages: [],
+  codeEditPermissions: effectiveCodeEditPermissions(undefined, codeEditEnvironment.value)
 })
 
 const taskForm = reactive<TaskDetailForm>(createDefaultForm())
@@ -1008,7 +1072,8 @@ watch(
       substituteAfterActivity: (task.activity as any)?.substituteAfterActivity ?? false,
       visiblePages: (Array.isArray(task.visiblePages)
         ? task.visiblePages
-        : systemPages.value).map(toTaskPage)
+        : systemPages.value).map(toTaskPage),
+      codeEditPermissions: effectiveCodeEditPermissions(task.codeEditPermissions, codeEditEnvironment.value)
     })
 
     nextTick(() => {
@@ -1075,7 +1140,8 @@ function buildTaskUpdate(selectedTask: Task): Task {
         }))
         : undefined
     },
-    visiblePages: taskForm.visiblePages.map(toTaskPage)
+    visiblePages: taskForm.visiblePages.map(toTaskPage),
+    codeEditPermissions: effectiveCodeEditPermissions(taskForm.codeEditPermissions, codeEditEnvironment.value)
   }
 }
 
@@ -1494,6 +1560,14 @@ function toggleVisiblePage(page: Page) {
   }
 
   taskForm.visiblePages.splice(pageIndex, 1)
+}
+
+function toggleCodeEditPermission(key: CodeEditPermissionKey) {
+  if (!codeEditEnvironment.value[key]) {
+    return
+  }
+
+  taskForm.codeEditPermissions[key] = !taskForm.codeEditPermissions[key]
 }
 
 function toTaskPage(page: Page): Page {

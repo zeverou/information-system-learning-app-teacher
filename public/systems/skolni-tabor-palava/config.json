@@ -168,7 +168,15 @@
       "finishCorrectAnswer": "9",
       "finishCheckQuery": "",
       "finishVariableConstraints": [],
-      "substituteAfterActivity": true
+      "substituteAfterActivity": true,
+      "codeEditPermissions": {
+        "html": true,
+        "css": true,
+        "js": true,
+        "sql": true,
+        "js_click": false,
+        "sql_click": true
+      }
     },
     {
       "id": "df76dd1c-e5d8-4987-a5bc-3415e7ed3902",
@@ -323,7 +331,15 @@
       "finishCorrectAnswer": "6",
       "finishCheckQuery": "",
       "finishVariableConstraints": [],
-      "substituteAfterActivity": true
+      "substituteAfterActivity": true,
+      "codeEditPermissions": {
+        "html": true,
+        "css": true,
+        "js": true,
+        "sql": true,
+        "js_click": false,
+        "sql_click": true
+      }
     },
     {
       "id": "4881a760-cb8d-41cb-8784-fed13faa6a76",
@@ -468,7 +484,15 @@
       "finishCorrectAnswer": "7",
       "finishCheckQuery": "",
       "finishVariableConstraints": [],
-      "substituteAfterActivity": false
+      "substituteAfterActivity": false,
+      "codeEditPermissions": {
+        "html": true,
+        "css": true,
+        "js": true,
+        "sql": true,
+        "js_click": false,
+        "sql_click": true
+      }
     },
     {
       "id": "384fbf48-d405-4599-9d5f-ecd8338e78c2",
@@ -661,7 +685,15 @@
       "finishCorrectAnswer": "",
       "finishCheckQuery": "",
       "finishVariableConstraints": [],
-      "substituteAfterActivity": false
+      "substituteAfterActivity": false,
+      "codeEditPermissions": {
+        "html": true,
+        "css": true,
+        "js": true,
+        "sql": true,
+        "js_click": false,
+        "sql_click": true
+      }
     },
     {
       "id": "fee117f5-d7b0-40bb-990a-6ea6a1d418d6",
@@ -838,7 +870,15 @@
       "finishCorrectAnswer": "",
       "finishCheckQuery": "SELECT 1\nFROM ucastnici_alergeny ua\nJOIN ucastnici u \n  ON u.id_ucastnika = ua.id_ucastnika\nJOIN alergeny a\n  ON a.id_alergenu = ua.id_alergenu\nWHERE u.jmeno = 'Denisa Kolmanová'\n  AND a.jmeno IN ('Sezam', 'Mléko')\nGROUP BY u.id_ucastnika\nHAVING COUNT(DISTINCT a.jmeno) = 2;",
       "finishVariableConstraints": [],
-      "substituteAfterActivity": true
+      "substituteAfterActivity": true,
+      "codeEditPermissions": {
+        "html": true,
+        "css": true,
+        "js": true,
+        "sql": true,
+        "js_click": false,
+        "sql_click": true
+      }
     },
     {
       "id": "60fe51fb-bd94-4630-8ac1-e123c9f2ec1b",
@@ -982,7 +1022,15 @@
       "finishCorrectAnswer": "",
       "finishCheckQuery": "SELECT * FROM vedouci WHERE jmeno = 'Tomáš Garrigue Masaryk';",
       "finishVariableConstraints": [],
-      "substituteAfterActivity": false
+      "substituteAfterActivity": false,
+      "codeEditPermissions": {
+        "html": true,
+        "css": true,
+        "js": true,
+        "sql": true,
+        "js_click": false,
+        "sql_click": true
+      }
     },
     {
       "id": "96875e4c-839c-4f4c-9377-99a2f1434201",
@@ -1143,7 +1191,15 @@
           "description": "Database",
           "vueFile": "database.vue"
         }
-      ]
+      ],
+      "codeEditPermissions": {
+        "html": true,
+        "css": true,
+        "js": true,
+        "sql": true,
+        "js_click": false,
+        "sql_click": true
+      }
     }
   ],
   "currentRound": 1,

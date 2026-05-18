@@ -35,6 +35,8 @@
         ref="bodyRef"
         :component="props.component"
         :variables="props.variables"
+        :code-edit-permissions="props.codeEditPermissions"
+        :ignore-task-code-edit-permissions="props.ignoreTaskCodeEditPermissions"
         @validation-change="isFormValid = $event"
         @edit-change="isFormEdited = $event"
       />
@@ -48,6 +50,7 @@ import { Component as SystemComponent } from "~/model/Component";
 import { ComponentVariables } from "~/model/ComponentVariables";
 import EditComponentBody from "./EditComponentBody.vue";
 import { useI18n } from "vue-i18n";
+import type { CodeEditPermissions } from "~/utils/codeEditPermissions";
 
 const { t } = useI18n();
 
@@ -55,6 +58,8 @@ const props = defineProps<{
   open: boolean;
   component: SystemComponent;
   variables?: ComponentVariables;
+  codeEditPermissions?: Partial<CodeEditPermissions>;
+  ignoreTaskCodeEditPermissions?: boolean;
 }>();
 
 const emit = defineEmits<{

@@ -16,6 +16,7 @@ import { SelectOptionsFinish } from "./Finish/SelectOptionsFinish";
 import { TypeCorrectFinish } from "./Finish/TypeCorrectFinish";
 import { VariableConstraintFinish } from "./Finish/VariableConstraintFinish";
 import type { Option } from "./Option";
+import type { CodeEditPermissions } from "~/utils/codeEditPermissions";
 
 export class Task {
   constructor(
@@ -46,7 +47,8 @@ export class Task {
     public isEditable: boolean = false,
     public isSubstituted: boolean = false,
     public canExecuteQuery: boolean = false,
-    public visiblePages?: Page[]
+    public visiblePages?: Page[],
+    public codeEditPermissions?: CodeEditPermissions
   ) { }
 
   public static fromJSON(data: any): Task {
@@ -78,7 +80,8 @@ export class Task {
       Boolean(data?.canExecuteQuery ?? false),
       Array.isArray(data?.visiblePages ?? data?.visible_pages)
         ? (data.visiblePages ?? data.visible_pages)
-        : undefined
+        : undefined,
+      data?.codeEditPermissions ?? data?.code_edit_permissions
     );
 
     return task;
