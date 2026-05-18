@@ -16,13 +16,16 @@ CREATE TABLE jidla (
 CREATE TABLE jidla_alergeny (
     id_alergenu INTEGER,
     id_jidla INTEGER,
-    PRIMARY KEY (id_alergenu, id_jidla)
+    PRIMARY KEY (id_alergenu, id_jidla),
+    FOREIGN KEY (id_alergenu) REFERENCES alergeny(id_alergenu),
+    FOREIGN KEY (id_jidla) REFERENCES jidla(id_jidla)
 );
 
 CREATE TABLE kniha_jidel (
     id_jidla INTEGER,
     datum DATE,
-    PRIMARY KEY (id_jidla, datum)
+    PRIMARY KEY (id_jidla, datum),
+    FOREIGN KEY (id_jidla) REFERENCES jidla(id_jidla)
 );
 
 CREATE TABLE turnusy (
@@ -45,20 +48,26 @@ CREATE TABLE ucastnici (
 CREATE TABLE turnusy_ucastnici (
     id_ucastnika INTEGER,
     id_turnusu INTEGER,
-    PRIMARY KEY (id_ucastnika, id_turnusu)
+    PRIMARY KEY (id_ucastnika, id_turnusu),
+    FOREIGN KEY (id_ucastnika) REFERENCES ucastnici(id_ucastnika),
+    FOREIGN KEY (id_turnusu) REFERENCES turnusy(id_turnusu)
 );
 
 CREATE TABLE ucastnici_alergeny (
     id_ucastnika INTEGER,
     id_alergenu INTEGER,
-    PRIMARY KEY (id_ucastnika, id_alergenu)
+    PRIMARY KEY (id_ucastnika, id_alergenu),
+    FOREIGN KEY (id_ucastnika) REFERENCES ucastnici(id_ucastnika),
+    FOREIGN KEY (id_alergenu) REFERENCES alergeny(id_alergenu)
 );
 
 CREATE TABLE ucastnici_jidla (
     id_jidla INTEGER,
     id_ucastnika INTEGER,
     datum_podavani DATE,
-    PRIMARY KEY (id_jidla, id_ucastnika, datum_podavani)
+    PRIMARY KEY (id_jidla, id_ucastnika, datum_podavani),
+    FOREIGN KEY (id_jidla) REFERENCES jidla(id_jidla),
+    FOREIGN KEY (id_ucastnika) REFERENCES ucastnici(id_ucastnika)
 );
 
 CREATE TABLE vedouci (
@@ -74,20 +83,26 @@ CREATE TABLE vedouci (
 CREATE TABLE vedouci_alergeny (
     id_vedouciho INTEGER,
     id_alergenu INTEGER,
-    PRIMARY KEY (id_vedouciho, id_alergenu)
+    PRIMARY KEY (id_vedouciho, id_alergenu),
+    FOREIGN KEY (id_vedouciho) REFERENCES vedouci(id_vedouciho),
+    FOREIGN KEY (id_alergenu) REFERENCES alergeny(id_alergenu)
 );
 
 CREATE TABLE vedouci_turnusy (
     id_turnusu INTEGER,
     id_vedouciho INTEGER,
-    PRIMARY KEY (id_turnusu, id_vedouciho)
+    PRIMARY KEY (id_turnusu, id_vedouciho),
+    FOREIGN KEY (id_turnusu) REFERENCES turnusy(id_turnusu),
+    FOREIGN KEY (id_vedouciho) REFERENCES vedouci(id_vedouciho)
 );
 
 CREATE TABLE jidla_vedouci (
     id_jidla INTEGER,
     id_vedouciho INTEGER,
     datum_podavani DATE,
-    PRIMARY KEY (id_jidla, id_vedouciho, datum_podavani)
+    PRIMARY KEY (id_jidla, id_vedouciho, datum_podavani),
+    FOREIGN KEY (id_jidla) REFERENCES jidla(id_jidla),
+    FOREIGN KEY (id_vedouciho) REFERENCES vedouci(id_vedouciho)
 );
 
 -- ============================================================

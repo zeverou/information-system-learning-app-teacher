@@ -15,7 +15,7 @@
             <div class="grid gap-3 lg:grid-cols-[16rem_minmax(0,1fr)]">
                 <div class="hidden lg:block"></div>
                 <div class="flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2">
+                    <div v-if="!isSchemaPreviewSelected" class="flex items-center gap-2">
                         <UButton icon="i-heroicons-chevron-left" variant="soft" color="neutral" size="sm"
                             :disabled="tablePage <= 1" @click="tablePage--" />
                         <span class="text-sm text-gray-500 whitespace-nowrap">{{ tablePage }} / {{ tableTotalPages }}</span>
@@ -23,38 +23,45 @@
                             :disabled="tablePage >= tableTotalPages" @click="tablePage++" />
                         <span class="text-xs text-gray-400 whitespace-nowrap">{{ tableRowCount }} {{ t('rows') }}</span>
                     </div>
-                    <ModernHoverPopover
-                        :title="t('refresh_database_popover_title')"
-                        :description="t('refresh_database_popover_description')"
-                        icon="i-heroicons-circle-stack"
-                    >
-                        <UButton @click="handleRefreshDatabase" icon="i-heroicons-circle-stack" color="orange"
-                            variant="soft" size="sm" :loading="isRefreshingDatabase">
-                            {{ t('refresh_database') }}
-                        </UButton>
-                    </ModernHoverPopover>
+                    <div class="ml-auto flex justify-end">
+                        <ModernHoverPopover
+                            :title="t('refresh_database_popover_title')"
+                            :description="t('refresh_database_popover_description')"
+                            icon="i-heroicons-circle-stack"
+                        >
+                            <UButton @click="handleRefreshDatabase" icon="i-heroicons-circle-stack" color="orange"
+                                variant="soft" size="sm" :loading="isRefreshingDatabase">
+                                {{ t('refresh_database') }}
+                            </UButton>
+                        </ModernHoverPopover>
+                    </div>
                 </div>
 
-                <aside class="h-[420px] w-full overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
+                <aside class="h-[70vh] w-full overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
                     <CustomScrollbar always-visible>
                         <button
-                            v-for="tableName in tableNames"
-                            :key="tableName"
+                            v-for="item in tableMenuItems"
+                            :key="item.value"
                             type="button"
                             class="flex w-full items-center justify-between gap-3 border-b border-gray-100 px-4 py-3 pr-6 text-left text-sm transition-colors last:border-b-0 dark:border-gray-800"
-                            :class="value === tableName
+                            :class="value === item.value
                                 ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300'
                                 : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800/70'"
-                            @click="value = tableName"
+                            @click="value = item.value"
                         >
-                            <span class="min-w-0 truncate font-medium">{{ tableName }}</span>
-                            <UIcon v-if="value === tableName" name="i-lucide-check" class="h-4 w-4 shrink-0" />
+                            <span class="min-w-0 truncate font-medium">{{ item.label }}</span>
+                            <UIcon v-if="value === item.value" name="i-lucide-check" class="h-4 w-4 shrink-0" />
                         </button>
                     </CustomScrollbar>
                 </aside>
 
-                <div class="h-[420px] min-w-0">
-                    <DatabaseTable v-if="value" :queryResult="tableQueryResult" :page="tablePage" :tableName="value"
+                <div class="h-[70vh] min-w-0">
+                    <DatabaseSchemaDiagram
+                        v-if="isSchemaPreviewSelected"
+                        :database="systemsStore.selectedSystem?.database?.sqlJsDatabase"
+                        :schema-version="systemsStore.selectedSystem?.database?.dbNumber"
+                    />
+                    <DatabaseTable v-else-if="value" :queryResult="tableQueryResult" :page="tablePage" :tableName="value"
                         @update:totalPages="tableTotalPages = $event" @update:rowCount="tableRowCount = $event" />
                 </div>
             </div>
@@ -112,18 +119,25 @@ const toast = useToast()
 const { route, systemsStore, systemId } = useSyncSystemId()
 const globalSettings = useGlobalSettingsStore()
 
+const SCHEMA_PREVIEW_VALUE = '__schema_preview__'
 const tableNames = ref<string[]>([])
-// default = 1st table
-const value = ref(tableNames.value[0])
+const value = ref(SCHEMA_PREVIEW_VALUE)
 const tableQueryResult = ref<Awaited<ReturnType<typeof DatabaseHandler.query>> | null>(null)
 const tablePage = ref(1)
 const tableTotalPages = ref(1)
 const tableRowCount = ref(0)
+const isSchemaPreviewSelected = computed(() => value.value === SCHEMA_PREVIEW_VALUE)
+const tableMenuItems = computed(() => [
+    { value: SCHEMA_PREVIEW_VALUE, label: 'Náhled tabulek' },
+    ...tableNames.value.map(tableName => ({ value: tableName, label: tableName })),
+])
 
 watch(value, async (tableName) => {
     tableQueryResult.value = null
     tablePage.value = 1
-    if (!tableName) return
+    tableTotalPages.value = 1
+    tableRowCount.value = 0
+    if (!tableName || tableName === SCHEMA_PREVIEW_VALUE) return
     const db = systemsStore.selectedSystem?.database
     if (!db) return
     tableQueryResult.value = await db.query(`SELECT * FROM "${tableName}"`)
@@ -250,7 +264,7 @@ async function handleRefreshDatabase() {
         await system.database.resetDatabase()
         await systemsStore.updateSystem(system)
 
-        value.value = ''
+        value.value = SCHEMA_PREVIEW_VALUE
         tableQueryResult.value = null
         queryResult.value = null
         tablePage.value = 1
@@ -279,16 +293,21 @@ const loadDatabaseInfo = async () => {
             const result = await DatabaseHandler.getTableNames(system.database.sqlJsDatabase)
             if (result.result === OperationResultType.SUCCESS && result.data) {
                 tableNames.value = result.data
-                if (!value.value) value.value = result.data[0]
+                if (value.value !== SCHEMA_PREVIEW_VALUE && !result.data.includes(value.value)) {
+                    value.value = SCHEMA_PREVIEW_VALUE
+                }
             } else {
                 tableNames.value = []
+                value.value = SCHEMA_PREVIEW_VALUE
             }
         } else {
             tableNames.value = []
+            value.value = SCHEMA_PREVIEW_VALUE
         }
     } else {
         isDbReady.value = false
         tableNames.value = []
+        value.value = SCHEMA_PREVIEW_VALUE
     }
 }
 
