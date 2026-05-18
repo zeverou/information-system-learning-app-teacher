@@ -99,6 +99,8 @@ V souboru `.env` nastavte `NUXT_PUBLIC_APP_MODE` na `TEACHER` pokud chcete spust
 
 ```env
 NUXT_PUBLIC_APP_MODE=TEACHER
+```env
+NUXT_PUBLIC_APP_MODE=TEACHER
 ```
 
 
@@ -525,3 +527,4 @@ Pokud máte jakékoliv dotazy, nápady na vylepšení, nebo chcete sdílet své 
 ## 15 Odkazy
 
 1. https://www.cloudflare.com/learning/serverless/glossary/client-side-vs-server-side/
+
