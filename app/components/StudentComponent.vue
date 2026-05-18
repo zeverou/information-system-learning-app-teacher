@@ -23,8 +23,6 @@
     <p class="mb-4 p-4 bg-white rounded-lg shadow-md text-justify">Na stránce <code class="bg-gray-100 px-2 py-1 rounded text-red-600 font-mono border">Databáze</code> lze vidět přehled všech tabulek v databázi. Můžete zde provádět SQL dotazy. Lze zde obnovit databázi do výchozího stavu.</p>
     <h3 class="text-xl font-medium text-blue-700 mt-6 mb-2 pl-2 border-l-4 border-gray-400">Skóré</h3>
     <p class="mb-4 p-4 bg-white rounded-lg shadow-md text-justify">V kolonce <code class="bg-gray-100 px-2 py-1 rounded text-red-600 font-mono border">Skóré</code> lze vidět vaše aktuální skóré. Za chybnou odpověď získáváte penalizaci a za správnou odpověď získáváte body.</p>
-    <h3 class="text-xl font-medium text-blue-700 mt-6 mb-2 pl-2 border-l-4 border-gray-400">Zapnout/Vypnout zvýraznění</h3>
-    <p class="mb-4 p-4 bg-white rounded-lg shadow-md text-justify">V kolonce <code class="bg-gray-100 px-2 py-1 rounded text-red-600 font-mono border">Zapnout/Vypnout zvýraznění</code> lze zapnout nebo vypnout režim zvýraznění. Tento režim slouží k tomu, abyste mohli vybrat chybné komponenty.</p>
     <h3 class="text-xl font-medium text-blue-700 mt-6 mb-2 pl-2 border-l-4 border-gray-400">Zapnout/Vypnout úpravy</h3>
     <p class="mb-4 p-4 bg-white rounded-lg shadow-md text-justify">V kolonce <code class="bg-gray-100 px-2 py-1 rounded text-red-600 font-mono border">Zapnout/Vypnout úpravy</code> lze zapnout nebo vypnout režim úprav. Tento režim slouží k tomu, abyste mohli upravovat komponenty.</p>
     <h3 class="text-xl font-medium text-blue-700 mt-6 mb-2 pl-2 border-l-4 border-gray-400">Student</h3>

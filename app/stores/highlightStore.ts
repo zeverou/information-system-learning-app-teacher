@@ -24,6 +24,13 @@ export const useHighlightStore = defineStore('highlight', () => {
         isHighlightActive.value = !isHighlightActive.value;
     }
 
+    function setHighlightActive(value: boolean) {
+        if (!value) {
+            selectedHighlightedComponentsIds.value = new Set();
+        }
+        isHighlightActive.value = value;
+    }
+
 
     function toggleEditMode() {
         isEditModeActive.value = !isEditModeActive.value;
@@ -38,6 +45,7 @@ export const useHighlightStore = defineStore('highlight', () => {
         selectedHighlightedComponentsIds,
         selectHighlightedComponent,
         toggleHighlight,
+        setHighlightActive,
         toggleEditMode,
         clearHighlights
     }

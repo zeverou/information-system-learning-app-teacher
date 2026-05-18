@@ -1,6 +1,9 @@
+import { ActivityType } from '~/model/Task/Activity/ActivityType'
+
 export default defineNuxtPlugin((_nuxtApp) => {
     const systemsStore = useSystemsStore()
     const globalSettings = useGlobalSettingsStore()
+    const highlightStore = useHighlightStore()
 
     const sync = () => {
         const tasks = systemsStore.selectedSystem?.tasks ?? []
@@ -36,6 +39,23 @@ export default defineNuxtPlugin((_nuxtApp) => {
         }
     }
 
+    let previousSelectedTaskId: string | null = null
+
+    const syncStudentHighlightMode = () => {
+        const selectedTaskId = globalSettings.selectedTaskId ? String(globalSettings.selectedTaskId) : null
+        const selectedTask = selectedTaskId
+            ? systemsStore.selectedSystem?.tasks?.find(task => String(task.id) === selectedTaskId)
+            : null
+        const shouldHighlight = !globalSettings.teacherMode && selectedTask?.activityType === ActivityType.SELECT
+
+        if (previousSelectedTaskId !== selectedTaskId) {
+            highlightStore.clearHighlights()
+            previousSelectedTaskId = selectedTaskId
+        }
+
+        highlightStore.setHighlightActive(shouldHighlight)
+    }
+
     watch(
         () => [
             systemsStore.selectedSystemId,
@@ -55,6 +75,17 @@ export default defineNuxtPlugin((_nuxtApp) => {
             (systemsStore.selectedSystem?.tasks?.find(t => t.id === globalSettings.selectedTaskId)?.errorComponents ?? []).map(c => String(c.id)).join(',')
         ] as const,
         syncSelectedComponents,
+        { immediate: true }
+    )
+
+    watch(
+        () => [
+            globalSettings.selectedTaskId,
+            systemsStore.selectedSystemId,
+            globalSettings.teacherMode,
+            systemsStore.selectedSystem?.tasks?.find(task => task.id === globalSettings.selectedTaskId)?.activityType ?? null
+        ] as const,
+        syncStudentHighlightMode,
         { immediate: true }
     )
 })

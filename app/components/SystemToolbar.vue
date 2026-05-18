@@ -70,24 +70,6 @@
 
       <UButton
         :icon="
-          highlightStore.isHighlightActive
-            ? 'i-lucide-lightbulb'
-            : 'i-lucide-lightbulb-off'
-        "
-        color="lime"
-        :variant="highlightStore.isHighlightActive ? 'solid' : 'subtle'"
-        size="md"
-        @click="highlightStore.toggleHighlight"
-      >
-        <span class="mobile-hidden">{{
-          highlightStore.isHighlightActive
-            ? $t("disable_highlight")
-            : $t("enable_highlight")
-        }}</span>
-      </UButton>
-
-      <UButton
-        :icon="
           highlightStore.isEditModeActive ? 'i-lucide-pencil' : 'i-lucide-pencil-off'
         "
         color="yellow"
