@@ -15,7 +15,7 @@
     
     <transition name="scrollbar-fade">
       <div 
-        v-show="showScrollbar && hasOverflow"
+        v-show="(showScrollbar || alwaysVisible) && hasOverflow"
         class="scrollbar-track"
         @mousedown.prevent="onTrackClick"
       >
@@ -32,6 +32,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+
+defineProps<{
+  alwaysVisible?: boolean
+}>()
 
 const containerRef = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)

@@ -1,16 +1,16 @@
 <template>
-    <div>
-        <div v-if="error" class="flex items-center gap-2 py-4 text-red-500">
+    <div class="h-full">
+        <div v-if="error" class="flex h-full items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-4 text-red-500 dark:border-red-900/60 dark:bg-red-950/20">
             <UIcon name="i-heroicons-exclamation-circle" class="w-5 h-5" />
             <span>{{ error }}</span>
         </div>
 
-        <div v-else-if="columns.length === 0" class="flex flex-col items-center justify-center py-10 text-gray-400">
+        <div v-else-if="columns.length === 0" class="flex h-full flex-col items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-400 dark:border-gray-700 dark:bg-gray-900">
             <UIcon name="i-heroicons-table-cells" class="w-10 h-10 mb-2" />
             <span>No data to display</span>
         </div>
 
-        <div v-else class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+        <div v-else class="h-full overflow-auto rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
                 <thead class="bg-gray-50 dark:bg-gray-800">
                     <tr>

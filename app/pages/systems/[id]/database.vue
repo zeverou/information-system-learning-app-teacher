@@ -1,9 +1,6 @@
 <template>
     <div class="p-6">
-        <div class="flex items-center gap-2 mb-6">
-            <UBadge color="neutral" variant="subtle" size="lg">
-                <span>{{ t('tables') }}: {{ tableNames.length }}</span>
-            </UBadge>
+        <div v-if="!isDbReady" class="flex items-center gap-2 mb-6">
             <UButton v-if="!isDbReady" @click="handleCheckReady" icon="i-heroicons-shield-check" color="sky"
                 variant="soft" size="sm" :loading="isChecking">
                 Check Status
@@ -12,32 +9,54 @@
                 variant="soft" size="sm" :loading="isInitializing">
                 Initialize Database
             </UButton>
-            <ModernHoverPopover
-                :title="t('refresh_database_popover_title')"
-                :description="t('refresh_database_popover_description')"
-                icon="i-heroicons-circle-stack"
-            >
-                <UButton @click="handleRefreshDatabase" icon="i-heroicons-circle-stack" color="orange"
-                    variant="soft" size="sm" :loading="isRefreshingDatabase">
-                    {{ t('refresh_database') }}
-                </UButton>
-            </ModernHoverPopover>
         </div>
 
         <div v-if="isDbReady" class="flex flex-col gap-4">
-            <div class="flex items-center gap-2">
-                <USelect color="neutral" v-model="value" :items="tableNames" placeholder="Select a table"
-                    class="w-64" />
-                <UButton icon="i-heroicons-chevron-left" variant="soft" color="neutral" size="sm"
-                    :disabled="tablePage <= 1" @click="tablePage--" />
-                <span class="text-sm text-gray-500 whitespace-nowrap">{{ tablePage }} / {{ tableTotalPages }}</span>
-                <UButton icon="i-heroicons-chevron-right" variant="soft" color="neutral" size="sm"
-                    :disabled="tablePage >= tableTotalPages" @click="tablePage++" />
-                <span class="text-xs text-gray-400 whitespace-nowrap">{{ tableRowCount }} {{ t('rows') }}</span>
-            </div>
-            <div class="h-[420px] overflow-y-auto">
-                <DatabaseTable v-if="value" :queryResult="tableQueryResult" :page="tablePage" :tableName="value"
-                    @update:totalPages="tableTotalPages = $event" @update:rowCount="tableRowCount = $event" />
+            <div class="grid gap-3 lg:grid-cols-[16rem_minmax(0,1fr)]">
+                <div class="hidden lg:block"></div>
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <UButton icon="i-heroicons-chevron-left" variant="soft" color="neutral" size="sm"
+                            :disabled="tablePage <= 1" @click="tablePage--" />
+                        <span class="text-sm text-gray-500 whitespace-nowrap">{{ tablePage }} / {{ tableTotalPages }}</span>
+                        <UButton icon="i-heroicons-chevron-right" variant="soft" color="neutral" size="sm"
+                            :disabled="tablePage >= tableTotalPages" @click="tablePage++" />
+                        <span class="text-xs text-gray-400 whitespace-nowrap">{{ tableRowCount }} {{ t('rows') }}</span>
+                    </div>
+                    <ModernHoverPopover
+                        :title="t('refresh_database_popover_title')"
+                        :description="t('refresh_database_popover_description')"
+                        icon="i-heroicons-circle-stack"
+                    >
+                        <UButton @click="handleRefreshDatabase" icon="i-heroicons-circle-stack" color="orange"
+                            variant="soft" size="sm" :loading="isRefreshingDatabase">
+                            {{ t('refresh_database') }}
+                        </UButton>
+                    </ModernHoverPopover>
+                </div>
+
+                <aside class="h-[420px] w-full overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
+                    <CustomScrollbar always-visible>
+                        <button
+                            v-for="tableName in tableNames"
+                            :key="tableName"
+                            type="button"
+                            class="flex w-full items-center justify-between gap-3 border-b border-gray-100 px-4 py-3 pr-6 text-left text-sm transition-colors last:border-b-0 dark:border-gray-800"
+                            :class="value === tableName
+                                ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300'
+                                : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800/70'"
+                            @click="value = tableName"
+                        >
+                            <span class="min-w-0 truncate font-medium">{{ tableName }}</span>
+                            <UIcon v-if="value === tableName" name="i-lucide-check" class="h-4 w-4 shrink-0" />
+                        </button>
+                    </CustomScrollbar>
+                </aside>
+
+                <div class="h-[420px] min-w-0">
+                    <DatabaseTable v-if="value" :queryResult="tableQueryResult" :page="tablePage" :tableName="value"
+                        @update:totalPages="tableTotalPages = $event" @update:rowCount="tableRowCount = $event" />
+                </div>
             </div>
         </div>
 
